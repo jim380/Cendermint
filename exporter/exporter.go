@@ -58,7 +58,7 @@ func Start(chain string, log *zap.Logger) {
 			defer func() {
 				if r := recover(); r != nil {
 					//Error Log
-					panic("oops...something bad happened")
+					//panic("oops...something bad happened")
 				}
 				time.Sleep(1000 * time.Millisecond)
 			}()

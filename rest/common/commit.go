@@ -15,7 +15,7 @@ func getCommit(blockData Blocks, consHexAddr string) commitInfo {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
-					panic("oops..something bad happened")
+					// panic("oops..something bad happened")
 				}
 			}()
 
