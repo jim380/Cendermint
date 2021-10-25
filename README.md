@@ -13,7 +13,7 @@ Cosmos(cosmoshub-4), IRISnet(irishub-1), BandProtocol-testnet(band-laozi-testnet
 ## Install
 ```bash
 cd $HOME
-git clone https://github.com/node-a-team/Cosmos-IE.git
+git clone https://github.com/jim380/Cosmos-IE.git
 cd $HOME/Cosmos-IE
 
 go build

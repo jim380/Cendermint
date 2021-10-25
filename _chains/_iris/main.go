@@ -2,11 +2,12 @@ package iris
 
 import (
 	"fmt"
-	"go.uber.org/zap"
 	"net/http"
 
+	"go.uber.org/zap"
+
+	"github.com/jim380/Cosmos-IE/chains/iris/exporter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/node-a-team/Cosmos-IE/chains/iris/exporter"
 )
 
 func Main(port string) {

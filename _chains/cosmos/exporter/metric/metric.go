@@ -3,112 +3,106 @@ package metric
 import (
 	"go.uber.org/zap"
 
-	rest "github.com/node-a-team/Cosmos-IE/chains/cosmos/getData/rest"
-//	rpc "github.com/node-a-team/Cosmos-IE/chains/cosmos/getData/rpc"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	rest "github.com/jim380/Cosmos-IE/chains/cosmos/getData/rest"
+	//	rpc "github.com/jim380/Cosmos-IE/chains/cosmos/getData/rpc"
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
 	metricData metric
 
-	DenomList = []string{"uatom"}
+	DenomList           = []string{"uatom"}
 	GaugesNamespaceList = [...]string{"blockHeight",
-				"notBondedTokens",
-				"bondedTokens",
-				"totalSupply",
-				"bondedRatio",
-				"totalProposalCount",
-				"votingProposalCount",
-				"votingPower",
-				"minSelfDelegation",
-				"jailStatus",
-				"proposerRanking",
-				"proposerStatus",
-				"delegationShares",
-				"delegationRatio",
-				"delegatorCount",
-				"delegationSelf",
-				"commissionRate",
-				"commissionMaxRate",
-				"commissionMaxChangeRate",
-				"commitVoteType",
-				"precommitStatus",
-				"inflation",
-				"actualInflation",
-				}
+		"notBondedTokens",
+		"bondedTokens",
+		"totalSupply",
+		"bondedRatio",
+		"totalProposalCount",
+		"votingProposalCount",
+		"votingPower",
+		"minSelfDelegation",
+		"jailStatus",
+		"proposerRanking",
+		"proposerStatus",
+		"delegationShares",
+		"delegationRatio",
+		"delegatorCount",
+		"delegationSelf",
+		"commissionRate",
+		"commissionMaxRate",
+		"commissionMaxChangeRate",
+		"commitVoteType",
+		"precommitStatus",
+		"inflation",
+		"actualInflation",
+	}
 )
 
 type metric struct {
-
 	Network struct {
-		ChainID         string
-		BlockHeight	int64
-		PrecommitRate	float64
+		ChainID       string
+		BlockHeight   int64
+		PrecommitRate float64
 
 		Staking struct {
-			NotBondedTokens	float64
-			BondedTokens	float64
-			TotalSupply	float64
-			BondedRatio	float64
+			NotBondedTokens float64
+			BondedTokens    float64
+			TotalSupply     float64
+			BondedRatio     float64
 		}
 
 		Minting struct {
-			Inflation	float64
-			ActualInflation	float64
+			Inflation       float64
+			ActualInflation float64
 		}
 
-		Gov struct{
-                        TotalProposalCount      float64
-                        VotingProposalCount     float64
-                }
+		Gov struct {
+			TotalProposalCount  float64
+			VotingProposalCount float64
+		}
 	}
 
 	Validator struct {
-		Moniker			string
-		VotingPower		float64
-		MinSelfDelegation       float64
-                JailStatus              float64
-
-
+		Moniker           string
+		VotingPower       float64
+		MinSelfDelegation float64
+		JailStatus        float64
 
 		Address struct {
-			Account		string
-			Operator	string
-			ConsensusHex	string
+			Account      string
+			Operator     string
+			ConsensusHex string
 		}
 		Proposer struct {
-			Ranking		float64
-			Status		float64
+			Ranking float64
+			Status  float64
 		}
 
 		Delegation struct {
-			Shares		float64
-			Ratio		float64
-			DelegatorCount	float64
-			Self		float64
+			Shares         float64
+			Ratio          float64
+			DelegatorCount float64
+			Self           float64
 		}
 
 		Commission struct {
-			Rate		float64
-			MaxRate		float64
-			MaxChangeRate	float64
+			Rate          float64
+			MaxRate       float64
+			MaxChangeRate float64
 		}
 
 		Account struct {
-			Balances	[]rest.Coin
-			Commission	[]rest.Coin
-			Rewards		[]rest.Coin
+			Balances   []rest.Coin
+			Commission []rest.Coin
+			Rewards    []rest.Coin
 		}
 
 		Commit struct {
-			VoteType                float64
-	                PrecommitStatus         float64
+			VoteType        float64
+			PrecommitStatus float64
 		}
-
 	}
 }
-
-
 
 func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
@@ -118,7 +112,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	//// network
 	metricData.Network.ChainID = restData.Commit.ChainId
-        metricData.Network.BlockHeight = currentBlock
+	metricData.Network.BlockHeight = currentBlock
 
 	metricData.Network.Staking.NotBondedTokens = utils.StringToFloat64(restData.StakingPool.Result.Not_bonded_tokens)
 	metricData.Network.Staking.BondedTokens = utils.StringToFloat64(restData.StakingPool.Result.Bonded_tokens)
@@ -131,12 +125,11 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// gov
 	metricData.Network.Gov.TotalProposalCount = restData.Gov.TotalProposalCount
-        metricData.Network.Gov.VotingProposalCount = restData.Gov.VotingProposalCount
-
+	metricData.Network.Gov.VotingProposalCount = restData.Gov.VotingProposalCount
 
 	//// validator
 	metricData.Validator.Moniker = restData.Validators.Description.Moniker
-        metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey][1])
+	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey][1])
 	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validators.MinSelfDelegation)
 	metricData.Validator.JailStatus = utils.BoolToFloat64(restData.Validators.Jailed)
 
@@ -166,10 +159,8 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Account.Rewards = restData.Rewards
 
 	// commit
-//	metricData.Validator.Commit.VoteType = restData.Commit.VoteType
-        metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
-
-
+	//	metricData.Validator.Commit.VoteType = restData.Commit.VoteType
+	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
 
 }
 
@@ -179,5 +170,5 @@ func GetMetric() *metric {
 }
 
 func GetDenomList() []string {
-	return  DenomList
+	return DenomList
 }

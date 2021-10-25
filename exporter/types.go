@@ -1,7 +1,7 @@
 package exporter
 
 import (
-	rest "github.com/node-a-team/Cosmos-IE/rest/common"
+	rest "github.com/jim380/Cosmos-IE/rest/common"
 )
 
 var (
@@ -17,8 +17,6 @@ var (
 		"votingPower",
 		"minSelfDelegation",
 		"jailStatus",
-		//                                "proposerRanking",
-		//                                "proposerStatus",
 		"delegationShares",
 		"delegationRatio",
 		"delegatorCount",
@@ -26,7 +24,6 @@ var (
 		"commissionRate",
 		"commissionMaxRate",
 		"commissionMaxChangeRate",
-		//                                "commitVoteType",
 		"precommitStatus",
 		"inflation",
 		"actualInflation",
@@ -73,10 +70,11 @@ type metric struct {
 			Operator     string
 			ConsensusHex string
 		}
-		Proposer struct {
-			Ranking float64
-			Status  float64
-		}
+
+		// Proposer struct {
+		// 	Ranking float64
+		// 	Status  float64
+		// }
 
 		Delegation struct {
 			Shares         float64
@@ -98,7 +96,7 @@ type metric struct {
 		}
 
 		Commit struct {
-			VoteType        float64
+			// VoteType        float64
 			PrecommitStatus float64
 		}
 
@@ -135,8 +133,8 @@ func getDenomList(chain string) []string {
 			"eeur", "echf", "edkk", "enok", "esek"}
 	case "starname":
 		dList = []string{"uiov"}
-	case "certik":
-		dList = []string{"uctk"}
+	case "umee":
+		dList = []string{"uumee"}
 	}
 
 	return dList

@@ -3,15 +3,14 @@ package metric
 import (
 	"go.uber.org/zap"
 
-	rest "github.com/node-a-team/Cosmos-IE/chains/certik/getData/rest"
-	//	rpc "github.com/node-a-team/Cosmos-IE/chains/terra/getData/rpc"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	rest "github.com/jim380/Cosmos-IE/chains/umee/getData/rest"
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
 	metricData metric
 
-	DenomList           = []string{"uctk"}
+	DenomList           = []string{"uumee"}
 	GaugesNamespaceList = [...]string{"blockHeight",
 		"notBondedTokens",
 		"bondedTokens",

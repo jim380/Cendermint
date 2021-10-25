@@ -1,41 +1,39 @@
 package rest
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 	"go.uber.org/zap"
-	"encoding/json"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
 )
 
-type delegations struct {
-//	Height	string	`json:"height"`
+type delegationInfo struct {
+	DelegationCount float64
+	SelfDelegation  float64
+}
 
+type delegations struct {
 	Delegation_responses []struct {
 		Delegation delegation
 	}
 
 	Pagination struct {
-		Total	string
+		Total string
 	}
 }
 
 type selfDelegation struct {
-//      Height  string  `json:"height"`
-        Delegation_response struct {
+	Delegation_response struct {
 		Delegation delegation
 	}
 }
 
 type delegation struct {
-	Delegator_address	string	`json:"delegator_address"`
-	Validator_address	string	`json:"validator_address"`
-	Shares			string	`json:"shares"`
-}
-
-type delegationInfo struct {
-	DelegationCount	float64
-	SelfDelegation	float64
+	Delegator_address string `json:"delegator_address"`
+	Validator_address string `json:"validator_address"`
+	Shares            string `json:"shares"`
 }
 
 var (
@@ -45,15 +43,13 @@ var (
 func getDelegations(log *zap.Logger) delegationInfo {
 	var d delegations
 
-	res, _ := runRESTCommand("/cosmos/staking/v1beta1/validators/" +OperAddr +"/delegations?pagination.limit=10000")
+	res, _ := runRESTCommand("/cosmos/staking/v1beta1/validators/" + OperAddr + "/delegations?pagination.limit=10000")
 	json.Unmarshal(res, &d)
-	// log
-        if strings.Contains(string(res), "not found") {
-                // handle error
-                log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res),))
-        } else {
-                log.Info("", zap.Bool("Success", true), zap.String("Delegation Count", fmt.Sprint(len(d.Delegation_responses))),)
-        }
+	if strings.Contains(string(res), "not found") {
+		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else {
+		log.Info("", zap.Bool("Success", true), zap.String("Delegation Count", fmt.Sprint(len(d.Delegation_responses))))
+	}
 
 	dInfo.DelegationCount = float64(len(d.Delegation_responses))
 
@@ -62,7 +58,6 @@ func getDelegations(log *zap.Logger) delegationInfo {
 			dInfo.SelfDelegation = utils.StringToFloat64(value.Delegation.Shares)
 		}
 	}
-
 
 	return dInfo
 }

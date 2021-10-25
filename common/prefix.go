@@ -6,7 +6,7 @@ import (
 
 const (
 	// Bech32MainPrefix is the common prefix of all prefixes.
-	Bech32MainPrefix = "certik"
+	Bech32MainPrefix = "umee"
 
 	// Bech32PrefixAccAddr is the prefix of account addresses.
 	Bech32PrefixAccAddr = Bech32MainPrefix

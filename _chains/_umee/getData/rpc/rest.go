@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
@@ -41,7 +41,6 @@ func newRESTData(blockHeight int64) *RESTData {
 }
 
 func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) *RESTData {
-
 	accAddr := utils.GetAccAddrFromOperAddr(OperAddr, log)
 
 	rd := newRESTData(blockHeight)
@@ -50,13 +49,10 @@ func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) *RESTData {
 
 	rd.Validatorsets = getValidatorsets(blockHeight, log)
 	rd.Validators = getValidators(log)
-	//	rd.Delegations = getDelegations(accAddr, log)
 	rd.Balances = getBalances(accAddr, log)
 	rd.Rewards, rd.Commission = getRewardsAndCommisson(log)
 
 	rd.Gov = getGovInfo(log)
-
-	//	fmt.Println("--------------- ", rd.Validatorsets["terravalconspub1zcjduepqxwldt5hvylqaggs8nthxwepc0jxe85rvsrrcufgzfnu6fxtg2vlqmp66wp"])
 	consHexAddr := utils.Bech32AddrToHexAddr(rd.Validatorsets[rd.Validators.ConsPubKey][0], log)
 
 	rd.Commit = getCommit(blockData, consHexAddr)

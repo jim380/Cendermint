@@ -3,9 +3,9 @@ package metric
 import (
 	"go.uber.org/zap"
 
-	rest "github.com/node-a-team/Cosmos-IE/chains/iris/getData/rest"
-//	rpc "github.com/node-a-team/Cosmos-IE/chains/iris/getData/rpc"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	rest "github.com/jim380/Cosmos-IE/chains/iris/getData/rest"
+	//	rpc "github.com/jim380/Cosmos-IE/chains/iris/getData/rpc"
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
@@ -159,7 +159,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Account.Rewards = restData.Rewards
 
 	// commit
-//	metricData.Validator.Commit.VoteType = restData.Commit.VoteType
+	//	metricData.Validator.Commit.VoteType = restData.Commit.VoteType
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
 
 }

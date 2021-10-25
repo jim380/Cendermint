@@ -4,7 +4,7 @@ import (
 	"strings"
 	"go.uber.org/zap"
 	"encoding/json"
-	utils "github.com/node-a-team/Cosmos-IE/chains/emoney/utils"
+	utils "github.com/jim380/Cosmos-IE/chains/emoney/utils"
 )
 
 type oracle struct {

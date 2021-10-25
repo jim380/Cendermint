@@ -2,14 +2,13 @@ package exporter
 
 import (
 	"fmt"
-	//	"time"
 	"strconv"
 
 	"go.uber.org/zap"
 
-	metric "github.com/node-a-team/Cosmos-IE/chains/certik/exporter/metric"
-	rest "github.com/node-a-team/Cosmos-IE/rest/common"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	metric "github.com/jim380/Cosmos-IE/chains/certik/exporter/metric"
+	rest "github.com/jim380/Cosmos-IE/rest/common"
+	utils "github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -19,7 +18,6 @@ var (
 )
 
 func Start(log *zap.Logger) {
-
 	gaugesNamespaceList := metric.GaugesNamespaceList
 
 	var gauges []prometheus.Gauge = make([]prometheus.Gauge, len(gaugesNamespaceList))
@@ -52,17 +50,6 @@ func Start(log *zap.Logger) {
 
 	for {
 		func() {
-			/*			defer func() {
-
-							if r := recover(); r != nil {
-								//Error Log
-							}
-
-							time.Sleep(500 * time.Millisecond)
-
-						}()
-			*/
-
 			blockData := rest.GetBlocks(log)
 			currentBlockHeight, _ := strconv.ParseInt(blockData.Block.Header.Height, 10, 64)
 
@@ -71,12 +58,7 @@ func Start(log *zap.Logger) {
 				fmt.Println("")
 				log.Info("RPC-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Block Height: "+fmt.Sprint(currentBlockHeight)))
 
-				//				restData, consHexAddr := rest.GetData(currentBlockHeight, log)
-				//				rpcData := rpc.GetData(currentBlockHeight, consHexAddr, log)
-
 				restData := rest.GetData(currentBlockHeight, blockData, log)
-
-				//				metric.SetMetric(currentBlockHeight, restData, rpcData, log)
 				metric.SetMetric(currentBlockHeight, restData, log)
 
 				metricData := metric.GetMetric()

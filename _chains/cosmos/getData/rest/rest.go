@@ -1,46 +1,45 @@
 package rest
 
 import (
-	"go.uber.org/zap"
 	"os/exec"
 
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	"go.uber.org/zap"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
-        Addr string
+	Addr     string
 	OperAddr string
 )
 
-
 type RESTData struct {
+	BlockHeight int64
+	Commit      commitInfo
+	StakingPool stakingPool
 
-	BlockHeight	int64
-	Commit		commitInfo
-	StakingPool	stakingPool
+	Validatorsets map[string][]string
+	Validators    validator
+	Delegations   delegationInfo
+	Balances      []Coin
+	Rewards       []Coin
+	Commission    []Coin
+	Inflation     float64
 
-	Validatorsets	map[string][]string
-	Validators	validator
-	Delegations	delegationInfo
-	Balances	[]Coin
-	Rewards		[]Coin
-	Commission	[]Coin
-	Inflation	float64
-
-	Gov		govInfo
+	Gov govInfo
 }
 
 func newRESTData(blockHeight int64) *RESTData {
 
-	rd := &RESTData {
-		BlockHeight:	blockHeight,
-		Validatorsets:	make(map[string][]string),
-        }
+	rd := &RESTData{
+		BlockHeight:   blockHeight,
+		Validatorsets: make(map[string][]string),
+	}
 
 	return rd
 }
 
-func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) (*RESTData) {
+func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) *RESTData {
 
 	accAddr := utils.GetAccAddrFromOperAddr(OperAddr, log)
 
@@ -64,9 +63,9 @@ func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) (*RESTData) {
 }
 
 func runRESTCommand(str string) ([]uint8, error) {
-        cmd := "curl -s -XGET " +Addr +str +" -H \"accept:application/json\""
-        out, err := exec.Command("/bin/bash", "-c", cmd).Output()
-//	fmt.Println(cmd)
+	cmd := "curl -s -XGET " + Addr + str + " -H \"accept:application/json\""
+	out, err := exec.Command("/bin/bash", "-c", cmd).Output()
+	//	fmt.Println(cmd)
 
-        return out, err
+	return out, err
 }

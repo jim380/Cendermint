@@ -2,21 +2,21 @@ package exporter
 
 import (
 	"fmt"
-	"time"
-	"go.uber.org/zap"
 	"strconv"
+	"time"
 
-//	rpc "github.com/node-a-team/Cosmos-IE/chains/emoney/getData/rpc"
-	rest "github.com/node-a-team/Cosmos-IE/chains/emoney/getData/rest"
-	metric "github.com/node-a-team/Cosmos-IE/chains/emoney/exporter/metric"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	"go.uber.org/zap"
+
+	//	rpc "github.com/jim380/Cosmos-IE/chains/emoney/getData/rpc"
+	metric "github.com/jim380/Cosmos-IE/chains/emoney/exporter/metric"
+	rest "github.com/jim380/Cosmos-IE/chains/emoney/getData/rest"
+	utils "github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 var (
-	previousBlockHeight	int64
-
+	previousBlockHeight int64
 )
 
 func Start(log *zap.Logger) {
@@ -24,15 +24,13 @@ func Start(log *zap.Logger) {
 	gaugesNamespaceList := metric.GaugesNamespaceList
 
 	var gauges []prometheus.Gauge = make([]prometheus.Gauge, len(gaugesNamespaceList))
-        var gaugesDenom []prometheus.Gauge = make([]prometheus.Gauge, len(metric.DenomList)*3) // wallet, rewards, commission
-
+	var gaugesDenom []prometheus.Gauge = make([]prometheus.Gauge, len(metric.DenomList)*3) // wallet, rewards, commission
 
 	// nomal guages
 	for i := 0; i < len(gaugesNamespaceList); i++ {
-                gauges[i] = utils.NewGauge("exporter", gaugesNamespaceList[i], "")
-                prometheus.MustRegister(gauges[i])
-        }
-
+		gauges[i] = utils.NewGauge("exporter", gaugesNamespaceList[i], "")
+		prometheus.MustRegister(gauges[i])
+	}
 
 	// denom gagues
 	count := 0
@@ -47,13 +45,11 @@ func Start(log *zap.Logger) {
 		count++
 	}
 
-
 	// labels
 	labels := []string{"chainId", "moniker", "operatorAddress", "accountAddress", "consHexAddress"}
 	gaugesForLabel := utils.NewCounterVec("exporter", "labels", "", labels)
 
 	prometheus.MustRegister(gaugesForLabel)
-
 
 	for {
 		func() {
@@ -67,27 +63,24 @@ func Start(log *zap.Logger) {
 
 			}()
 
-
 			blockData := rest.GetBlocks(log)
-                        currentBlockHeight, _:= strconv.ParseInt(blockData.Block.Header.Height, 10, 64)
+			currentBlockHeight, _ := strconv.ParseInt(blockData.Block.Header.Height, 10, 64)
 
 			if previousBlockHeight != currentBlockHeight {
 
 				fmt.Println("")
-				log.Info("RPC-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Block Height: " +fmt.Sprint(currentBlockHeight)))
+				log.Info("RPC-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Block Height: "+fmt.Sprint(currentBlockHeight)))
 
-
-//				restData, consHexAddr := rest.GetData(currentBlockHeight, log)
-//				rpcData := rpc.GetData(currentBlockHeight, consHexAddr, log)
+				//				restData, consHexAddr := rest.GetData(currentBlockHeight, log)
+				//				rpcData := rpc.GetData(currentBlockHeight, consHexAddr, log)
 
 				restData := rest.GetData(currentBlockHeight, blockData, log)
 
-//				metric.SetMetric(currentBlockHeight, restData, rpcData, log)
+				//				metric.SetMetric(currentBlockHeight, restData, rpcData, log)
 				metric.SetMetric(currentBlockHeight, restData, log)
 
 				metricData := metric.GetMetric()
 				denomList := metric.GetDenomList()
-
 
 				count := 0
 				for i := 0; i < len(denomList); i++ {
@@ -99,19 +92,18 @@ func Start(log *zap.Logger) {
 						}
 					}
 					for _, value := range metricData.Validator.Account.Commission {
-                                                if value.Denom == denomList[i] {
+						if value.Denom == denomList[i] {
 							gaugesDenom[count].Set(utils.StringToFloat64(value.Amount))
 							count++
-                                                }
-                                        }
+						}
+					}
 					for _, value := range metricData.Validator.Account.Rewards {
-                                                if value.Denom == denomList[i] {
+						if value.Denom == denomList[i] {
 							gaugesDenom[count].Set(utils.StringToFloat64(value.Amount))
 							count++
-                                                }
-                                        }
+						}
+					}
 				}
-
 
 				gaugesValue := [...]float64{
 					float64(metricData.Network.BlockHeight),
@@ -121,8 +113,8 @@ func Start(log *zap.Logger) {
 					metricData.Network.Staking.TotalSupply,
 					metricData.Network.Staking.BondedRatio,
 
-//					metricData.Network.Gov.TotalProposalCount,
-//					metricData.Network.Gov.VotingProposalCount,
+					//					metricData.Network.Gov.TotalProposalCount,
+					//					metricData.Network.Gov.VotingProposalCount,
 
 					metricData.Validator.VotingPower,
 					metricData.Validator.MinSelfDelegation,
@@ -142,9 +134,9 @@ func Start(log *zap.Logger) {
 					metricData.Validator.Commit.VoteType,
 					metricData.Validator.Commit.PrecommitStatus,
 
-//  					metricData.Network.Minting.Inflation,
-//  a                                   metricData.Network.Minting.ActualInflation,
-//					metricData.Validator.Oracle.Miss,
+					//  					metricData.Network.Minting.Inflation,
+					//  a                                   metricData.Network.Minting.ActualInflation,
+					//					metricData.Validator.Oracle.Miss,
 
 				}
 
@@ -152,12 +144,11 @@ func Start(log *zap.Logger) {
 					gauges[i].Set(gaugesValue[i])
 				}
 
-
 				gaugesForLabel.WithLabelValues(metricData.Network.ChainID,
-								metricData.Validator.Moniker,
-								metricData.Validator.Address.Operator,
-								metricData.Validator.Address.Account,
-								metricData.Validator.Address.ConsensusHex,
+					metricData.Validator.Moniker,
+					metricData.Validator.Address.Operator,
+					metricData.Validator.Address.Account,
+					metricData.Validator.Address.ConsensusHex,
 				).Add(0)
 
 			}
@@ -166,5 +157,3 @@ func Start(log *zap.Logger) {
 		}()
 	}
 }
-
-

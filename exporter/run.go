@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	iris "github.com/irisnet/irishub/address"
-	"github.com/node-a-team/Cosmos-IE/common"
+	"github.com/jim380/Cosmos-IE/common"
 
 	terra "github.com/terra-project/core/types"
 	//	kava "github.com/kava-labs/kava/app"
@@ -16,8 +16,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
-
-var ()
 
 func Go(chain string, port string) {
 
@@ -40,8 +38,8 @@ func Go(chain string, port string) {
 
 }
 
+// set custom configs
 func setConfig(chain string) {
-
 	config := sdk.GetConfig()
 
 	switch chain {
@@ -59,18 +57,12 @@ func setConfig(chain string) {
 		config.SetBech32PrefixForValidator(validatorPrefix, validatorPrefix+sdk.PrefixPublic)
 		config.SetBech32PrefixForConsensusNode(consensusPrefix, consensusPrefix+sdk.PrefixPublic)
 		config.SetCoinType(bip44CoinType)
-
-		//		fmt.Println(accountPrefix, validatorPrefix, consensusPrefix)
-
 	case "terra":
 		config.SetCoinType(terra.CoinType)
 		config.SetFullFundraiserPath(terra.FullFundraiserPath)
 		config.SetBech32PrefixForAccount(terra.Bech32PrefixAccAddr, terra.Bech32PrefixAccPub)
 		config.SetBech32PrefixForValidator(terra.Bech32PrefixValAddr, terra.Bech32PrefixValPub)
 		config.SetBech32PrefixForConsensusNode(terra.Bech32PrefixConsAddr, terra.Bech32PrefixConsPub)
-		//		case "kava":
-		//			kava.SetBech32AddressPrefixes(config)
-		//			kava.SetBip44CoinType(config)
 	case "emoney":
 		emoney.ConfigureSDK()
 	case "starname":
@@ -85,7 +77,7 @@ func setConfig(chain string) {
 		config.SetBech32PrefixForAccount(Bech32PrefixAccAddr, Bech32PrefixAccPub)
 		config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
 		config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
-	case "certik":
+	case "umee":
 		config := sdk.GetConfig()
 		config.SetBech32PrefixForAccount(common.Bech32PrefixAccAddr, common.Bech32PrefixAccPub)
 		config.SetBech32PrefixForValidator(common.Bech32PrefixValAddr, common.Bech32PrefixValPub)

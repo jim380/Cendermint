@@ -1,16 +1,17 @@
 package rest
 
 import (
-	"strings"
-	"go.uber.org/zap"
 	"encoding/json"
+	"strings"
 
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	"go.uber.org/zap"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 type inflation struct {
-	Height string	`json:"height"`
-	Result string	`json:"result"`
+	Height string `json:"height"`
+	Result string `json:"result"`
 }
 
 func getInflation(log *zap.Logger) float64 {
@@ -20,13 +21,13 @@ func getInflation(log *zap.Logger) float64 {
 	res, _ := runRESTCommand("/minting/inflation")
 	json.Unmarshal(res, &i)
 
-	// log 
+	// log
 	if strings.Contains(string(res), "not found") {
-                // handle error
-                log.Fatal("REST-Server", zap.Bool("Success", false), zap.String("err", string(res),))
-        } else {
-                log.Info("REST-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Inflation"),)
-        }
+		// handle error
+		log.Fatal("REST-Server", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else {
+		log.Info("REST-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Inflation"))
+	}
 
-        return utils.StringToFloat64(i.Result)
+	return utils.StringToFloat64(i.Result)
 }

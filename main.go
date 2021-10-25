@@ -16,16 +16,15 @@ limitations under the License.
 package main
 
 import (
-	"github.com/node-a-team/Cosmos-IE/cmd"
+	"github.com/jim380/Cosmos-IE/cmd"
 )
 
 var (
-	//        chainList = []string{"cosmos", "terra", "iris", "kava", "iov", "emoney", "band", "certik"}
+	// chainList = []string{"cosmos", "osmosis", "iris", "akash", "juno", "microtick", "regen", "umee", "nym"}
 	// Chains with stargate upgrade applied
-	chainList = []string{"cosmos", "iris", "band", "terra", "starname", "certik", "terra"}
+	chainList = []string{"cosmos", "umee"}
 )
 
 func main() {
 	cmd.Execute(chainList)
-
 }

@@ -1,10 +1,11 @@
 package rest
 
 import (
-	"go.uber.org/zap"
 	"os/exec"
 
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	"go.uber.org/zap"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
@@ -13,19 +14,19 @@ var (
 )
 
 type RESTData struct {
-	BlockHeight	int64
-	Commit		commitInfo
-	StakingPool	stakingPool
+	BlockHeight int64
+	Commit      commitInfo
+	StakingPool stakingPool
 
-	Validatorsets	map[string][]string
-	Validators	validator
-	Delegations	delegationInfo
-	Balances	[]Coin
-	Rewards		[]Coin
-	Commission	[]Coin
-	Inflation	float64
+	Validatorsets map[string][]string
+	Validators    validator
+	Delegations   delegationInfo
+	Balances      []Coin
+	Rewards       []Coin
+	Commission    []Coin
+	Inflation     float64
 
-	Gov		govInfo
+	Gov govInfo
 }
 
 func newRESTData(blockHeight int64) *RESTData {
@@ -38,7 +39,7 @@ func newRESTData(blockHeight int64) *RESTData {
 	return rd
 }
 
-func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) (*RESTData) {
+func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) *RESTData {
 
 	accAddr := utils.GetAccAddrFromOperAddr_localPrefixes(OperAddr, log, Bech32Prefixes)
 

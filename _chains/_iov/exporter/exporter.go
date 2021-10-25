@@ -3,18 +3,18 @@ package exporter
 import (
 	"fmt"
 	"time"
+
 	"go.uber.org/zap"
 
-	rpc "github.com/node-a-team/Cosmos-IE/chains/iov/getData/rpc"
-	metric "github.com/node-a-team/Cosmos-IE/chains/iov/exporter/metric"
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	metric "github.com/jim380/Cosmos-IE/chains/iov/exporter/metric"
+	rpc "github.com/jim380/Cosmos-IE/chains/iov/getData/rpc"
+	utils "github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 var (
-	previousBlockHeight	int64
-
+	previousBlockHeight int64
 )
 
 func Start(log *zap.Logger) {
@@ -23,19 +23,17 @@ func Start(log *zap.Logger) {
 
 	var gauges []prometheus.Gauge = make([]prometheus.Gauge, len(gaugesNamespaceList))
 
-
 	// nomal guages
 	for i := 0; i < len(gaugesNamespaceList); i++ {
-                gauges[i] = utils.NewGauge("exporter", gaugesNamespaceList[i], "")
-                prometheus.MustRegister(gauges[i])
-        }
+		gauges[i] = utils.NewGauge("exporter", gaugesNamespaceList[i], "")
+		prometheus.MustRegister(gauges[i])
+	}
 
 	// labels
 	labels := []string{"chainId"}
 	gaugesForLabel := utils.NewCounterVec("exporter", "labels", "", labels)
 
 	prometheus.MustRegister(gaugesForLabel)
-
 
 	for {
 		func() {
@@ -49,21 +47,18 @@ func Start(log *zap.Logger) {
 
 			}()
 
-
 			currentBlockHeight := rpc.BlockHeight()
 
 			if previousBlockHeight != currentBlockHeight {
 
 				fmt.Println("")
-				log.Info("RPC-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Block Height: " +fmt.Sprint(currentBlockHeight)))
-
+				log.Info("RPC-Server", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Get Data", "Block Height: "+fmt.Sprint(currentBlockHeight)))
 
 				rpcData := rpc.GetData(currentBlockHeight, rpc.ConsHexAddr, log)
 
 				metric.SetMetric(currentBlockHeight, rpcData, log)
 
 				metricData := metric.GetMetric()
-
 
 				gaugesValue := [...]float64{
 					float64(metricData.Network.BlockHeight),
@@ -76,13 +71,10 @@ func Start(log *zap.Logger) {
 					gauges[i].Set(gaugesValue[i])
 				}
 
-				gaugesForLabel.WithLabelValues(metricData.Network.ChainID,
-				).Add(0)
+				gaugesForLabel.WithLabelValues(metricData.Network.ChainID).Add(0)
 			}
 
 			previousBlockHeight = currentBlockHeight
 		}()
 	}
 }
-
-

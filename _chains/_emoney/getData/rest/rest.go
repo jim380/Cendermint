@@ -1,46 +1,45 @@
 package rest
 
 import (
-	"go.uber.org/zap"
 	"os/exec"
 
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	"go.uber.org/zap"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
-        Addr string
+	Addr     string
 	OperAddr string
 )
 
-
 type RESTData struct {
+	BlockHeight int64
+	Commit      commitInfo
+	StakingPool stakingPool
 
-	BlockHeight	int64
-	Commit		commitInfo
-	StakingPool	stakingPool
+	Validatorsets map[string][]string
+	Validators    validator
+	Delegations   delegationInfo
+	Balances      []Coin
+	Rewards       []Coin
+	Commission    []Coin
 
-	Validatorsets	map[string][]string
-	Validators	validator
-	Delegations	delegationInfo
-	Balances	[]Coin
-	Rewards		[]Coin
-	Commission	[]Coin
-
-//	Oracle		oracle
-//	Gov		govInfo
+	//	Oracle		oracle
+	//	Gov		govInfo
 }
 
 func newRESTData(blockHeight int64) *RESTData {
 
-	rd := &RESTData {
-		BlockHeight:	blockHeight,
-		Validatorsets:	make(map[string][]string),
-        }
+	rd := &RESTData{
+		BlockHeight:   blockHeight,
+		Validatorsets: make(map[string][]string),
+	}
 
 	return rd
 }
 
-func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) (*RESTData) {
+func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) *RESTData {
 
 	accAddr := utils.GetAccAddrFromOperAddr(OperAddr, log)
 
@@ -53,8 +52,8 @@ func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) (*RESTData) {
 	rd.Balances = getBalances(accAddr, log)
 	rd.Rewards, rd.Commission = getRewardsAndCommisson(log)
 
-//	rd.Oracle = getOracleMiss(log)
-//	rd.Gov = getGovInfo(log)
+	//	rd.Oracle = getOracleMiss(log)
+	//	rd.Gov = getGovInfo(log)
 
 	consHexAddr := utils.Bech32AddrToHexAddr(rd.Validatorsets[rd.Validators.ConsPubKey][0], log)
 
@@ -64,8 +63,8 @@ func GetData(blockHeight int64, blockData Blocks, log *zap.Logger) (*RESTData) {
 }
 
 func runRESTCommand(str string) ([]uint8, error) {
-        cmd := "curl -s -XGET " +Addr +str +" -H \"accept:application/json\""
-        out, err := exec.Command("/bin/bash", "-c", cmd).Output()
+	cmd := "curl -s -XGET " + Addr + str + " -H \"accept:application/json\""
+	out, err := exec.Command("/bin/bash", "-c", cmd).Output()
 
-        return out, err
+	return out, err
 }

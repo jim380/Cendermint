@@ -1,48 +1,43 @@
 package rest
 
 import (
-//	"fmt"
-	"strings"
-	"go.uber.org/zap"
 	"encoding/json"
+	"strings"
 
-	utils "github.com/node-a-team/Cosmos-IE/utils"
+	"go.uber.org/zap"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 type govInfo struct {
-	TotalProposalCount	float64
-	VotingProposalCount	float64
+	TotalProposalCount  float64
+	VotingProposalCount float64
 }
 
-
 type gov struct {
-//	Height	stringa
-	Proposals	[]proposal
-	Pagination	struct {
-		Total	string
+	Proposals  []proposal
+	Pagination struct {
+		Total string
 	}
 }
 
 type proposal struct {
-	Status	string
+	Status string
 }
 
 func getGovInfo(log *zap.Logger) govInfo {
-
 	var g gov
 	var gi govInfo
 
 	votingCount := 0
 
-        res, _ := runRESTCommand("/cosmos/gov/v1beta1/proposals")
-        json.Unmarshal(res, &g)
-	// log
-        if strings.Contains(string(res), "not found") {
-                // handle error
-                log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res),))
-        } else {
-                log.Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count", g.Pagination.Total),)
-        }
+	res, _ := runRESTCommand("/cosmos/gov/v1beta1/proposals")
+	json.Unmarshal(res, &g)
+	if strings.Contains(string(res), "not found") {
+		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else {
+		log.Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count", g.Pagination.Total))
+	}
 
 	for _, value := range g.Proposals {
 		if value.Status == "PROPOSAL_STATUS_VOTING_PERIOD" {

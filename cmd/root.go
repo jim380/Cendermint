@@ -17,8 +17,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -32,7 +33,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "Cosmos-IE",
 	Short: "",
-	Long: `Integrated Exporter for CosmosSDK`,
+	Long:  `Integrated Exporter for CosmosSDK`,
 
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
@@ -42,7 +43,6 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(Chains []string) {
-
 	chainList = Chains
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -52,18 +52,17 @@ func Execute(Chains []string) {
 }
 
 func init() {
-
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-//	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.Cosmos-IE.yaml)")
+	//	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.Cosmos-IE.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-//	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -87,8 +86,8 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-/*	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
-*/
+	/*	if err := viper.ReadInConfig(); err == nil {
+			fmt.Println("Using config file:", viper.ConfigFileUsed())
+		}
+	*/
 }
