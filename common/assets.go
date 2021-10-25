@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	MicroCTKDenom = "uctk"
+	MicroCTKDenom = "uumee"
 	MicroUnit     = int64(1e6)
 
 	// MaxTimestamp is max timestamp supported by Amino.

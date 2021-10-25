@@ -18,7 +18,6 @@ import (
 )
 
 func Go(chain string, port string) {
-
 	log, _ := zap.NewDevelopment()
 	defer log.Sync()
 

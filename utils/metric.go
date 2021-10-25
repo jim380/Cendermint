@@ -1,35 +1,29 @@
 package utils
 
 import (
-
-        "github.com/prometheus/client_golang/prometheus"
-)
-
-var (
-
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 func NewGauge(nameSpace string, name string, help string) prometheus.Gauge {
-        result := prometheus.NewGauge(
-                prometheus.GaugeOpts{
-                        Namespace: "" + nameSpace,
-                        Name:      "" + name,
-                        Help:      "" + help,
-                },
-        )
+	result := prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Namespace: "" + nameSpace,
+			Name:      "" + name,
+			Help:      "" + help,
+		},
+	)
 
-        return result
+	return result
 }
 
 func NewCounterVec(nameSpace string, name string, help string, labels []string) prometheus.CounterVec {
-        result := prometheus.NewCounterVec(
-                prometheus.CounterOpts{
-                        Namespace: "" + nameSpace,
-                        Name:      "" + name,
-                        Help:      "" + help,
-                },
-                labels,
-        )
-        return *result
+	result := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: "" + nameSpace,
+			Name:      "" + name,
+			Help:      "" + help,
+		},
+		labels,
+	)
+	return *result
 }
-
