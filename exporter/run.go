@@ -7,9 +7,8 @@ import (
 	"go.uber.org/zap"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	iris "github.com/irisnet/irishub/address"
-	"github.com/jim380/Cosmos-IE/common"
 	"github.com/jim380/Cosmos-IE/logging"
+	"github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -33,18 +32,23 @@ func Go(chain string, port string) {
 
 // set custom configs
 func setConfig(chain string) {
+	// Bech32MainPrefix is the common prefix of all prefixes
+	Bech32MainPrefix := utils.GetPrefix(chain)
+	// Bech32PrefixAccAddr is the prefix of account addresses
+	Bech32PrefixAccAddr := Bech32MainPrefix
+	// Bech32PrefixAccPub is the prefix of account public keys
+	Bech32PrefixAccPub := Bech32MainPrefix + sdk.PrefixPublic
+	// Bech32PrefixValAddr is the prefix of validator operator addresses
+	Bech32PrefixValAddr := Bech32MainPrefix + sdk.PrefixValidator + sdk.PrefixOperator
+	// Bech32PrefixValPub is the prefix of validator operator public keys
+	Bech32PrefixValPub := Bech32MainPrefix + sdk.PrefixValidator + sdk.PrefixOperator + sdk.PrefixPublic
+	// Bech32PrefixConsAddr is the prefix of consensus node addresses
+	Bech32PrefixConsAddr := Bech32MainPrefix + sdk.PrefixValidator + sdk.PrefixConsensus
+	// Bech32PrefixConsPub is the prefix of consensus node public keys
+	Bech32PrefixConsPub := Bech32MainPrefix + sdk.PrefixValidator + sdk.PrefixConsensus + sdk.PrefixPublic
 	config := sdk.GetConfig()
-
-	switch chain {
-	case "iris":
-		iris.ConfigureBech32Prefix()
-	case "umee":
-		config := sdk.GetConfig()
-		config.SetBech32PrefixForAccount(common.Bech32PrefixAccAddr, common.Bech32PrefixAccPub)
-		config.SetBech32PrefixForValidator(common.Bech32PrefixValAddr, common.Bech32PrefixValPub)
-		config.SetBech32PrefixForConsensusNode(common.Bech32PrefixConsAddr, common.Bech32PrefixConsPub)
-		config.Seal()
-	}
-
+	config.SetBech32PrefixForAccount(Bech32PrefixAccAddr, Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 	config.Seal()
 }

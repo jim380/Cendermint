@@ -33,7 +33,7 @@ func (b *Blocks) GetInfo() Blocks {
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("Common Info", zap.Bool("Success", true), zap.String("Block Info", string(res)))
+		zap.L().Info("Info", zap.Bool("Success", true), zap.String("Block Info ", "successfully fetched."))
 	}
 
 	return *b

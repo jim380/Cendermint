@@ -22,7 +22,7 @@ import (
 var (
 	// chainList = []string{"cosmos", "osmosis", "iris", "akash", "juno", "microtick", "regen", "umee", "nym"}
 	// Chains with stargate upgrade applied
-	chainList = []string{"cosmos", "umee"}
+	chainList = []string{"cosmos", "umee", "nym"}
 )
 
 func main() {

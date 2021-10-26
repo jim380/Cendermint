@@ -10,6 +10,19 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func GetPrefix(chain string) string {
+	switch chain {
+	case "cosmos":
+		return "cosmos"
+	case "umee":
+		return "umee"
+	case "nym":
+		return "punk"
+	default:
+		return "cosmos"
+	}
+}
+
 // Bech32 Addr -> Hex Addr
 func Bech32AddrToHexAddr(bech32str string) string {
 	_, bz, err := bech32.DecodeAndConvert(bech32str)
