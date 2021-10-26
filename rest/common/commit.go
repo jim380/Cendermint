@@ -2,6 +2,7 @@ package rest
 
 import (
 	utils "github.com/jim380/Cosmos-IE/utils"
+	"go.uber.org/zap"
 )
 
 type commitInfo struct {
@@ -25,6 +26,9 @@ func (rd *RESTData) getCommit(blockData Blocks) {
 
 			if consHexAddr == v.Validator_address {
 				cInfo.ValidatorPrecommitStatus = 1.0
+				zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit:", "signed"))
+			} else {
+				zap.L().Fatal("", zap.Bool("Success", false), zap.String("Precommit:", "missed"))
 			}
 		}()
 
