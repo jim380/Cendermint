@@ -37,8 +37,8 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// validator addresses
 	metricData.Validator.Address.Operator = operAddr
-	metricData.Validator.Address.Account = utils.GetAccAddrFromOperAddr(operAddr, log)
-	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr, log)
+	metricData.Validator.Address.Account = utils.GetAccAddrFromOperAddr(operAddr)
+	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr)
 
 	// validator delegation
 	metricData.Validator.Delegation.Shares = utils.StringToFloat64(restData.Validator.DelegatorShares)

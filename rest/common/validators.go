@@ -40,19 +40,19 @@ type validator struct {
 	MinSelfDelegation string `json:"min_self_delegation"`
 }
 
-func getValidators(log *zap.Logger) validator {
+func (rd *RESTData) getValidators() {
 	var v validators
 
 	res, err := runRESTCommand("/cosmos/staking/v1beta1/validators/" + OperAddr)
 	if err != nil {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
 	json.Unmarshal(res, &v)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("\t", zap.Bool("Success", true), zap.String("Validator Moniker", v.Validator.Description.Moniker))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Validator Moniker", v.Validator.Description.Moniker))
 	}
 
-	return v.Validator
+	rd.Validator = v.Validator
 }

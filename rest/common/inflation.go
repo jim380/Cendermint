@@ -21,34 +21,40 @@ type inflation_iris struct {
 	}
 }
 
-func getInflation(chain string, denom string, log *zap.Logger) float64 {
+func (rd *RESTData) getInflation(chain string, denom string) {
 	var result string
 
 	switch chain {
 	case "iris":
 		var i inflation_iris
 
-		res, _ := runRESTCommand("/irishub/mint/params")
+		res, err := runRESTCommand("/irishub/mint/params")
+		if err != nil {
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		}
 		json.Unmarshal(res, &i)
 		if strings.Contains(string(res), "not found") {
-			log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 		} else {
 			result = i.Params.Inflation
-			log.Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
+			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 		}
 	default:
 		var i inflation
 		// Does not work
 		// res, _ := runRESTCommand("/cosmos/mint/v1beta1/inflation")
-		res, _ := runRESTCommand("/minting/inflation")
+		res, err := runRESTCommand("/minting/inflation")
+		if err != nil {
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		}
 		json.Unmarshal(res, &i)
 		if strings.Contains(string(res), "not found") {
-			log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 		} else {
 			result = i.Result
-			log.Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
+			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 		}
 	}
 
-	return utils.StringToFloat64(result)
+	rd.Inflation = utils.StringToFloat64(result)
 }

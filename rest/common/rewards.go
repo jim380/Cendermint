@@ -12,16 +12,19 @@ type rewards struct {
 	Rewards []Coin
 }
 
-func getRewards(log *zap.Logger) []Coin {
+func (rd *RESTData) getRewards() {
 	var r rewards
 
-	res, _ := runRESTCommand("/cosmos/distribution/v1beta1/delegators/" + AccAddr + "/rewards/" + OperAddr)
+	res, err := runRESTCommand("/cosmos/distribution/v1beta1/delegators/" + AccAddr + "/rewards/" + OperAddr)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+	}
 	json.Unmarshal(res, &r)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(r.Rewards)))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(r.Rewards)))
 	}
 
-	return r.Rewards
+	rd.Rewards = r.Rewards
 }

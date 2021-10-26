@@ -24,16 +24,17 @@ type Blocks struct {
 	}
 }
 
-func GetBlocks(log *zap.Logger) Blocks {
-	var b Blocks
-
-	res, _ := runRESTCommand("/blocks/latest")
+func (b *Blocks) GetInfo() Blocks {
+	res, err := runRESTCommand("/blocks/latest")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+	}
 	json.Unmarshal(res, &b)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("Common Info", zap.Bool("Success", true), zap.String("Block Info", string(res)))
+		zap.L().Info("Common Info", zap.Bool("Success", true), zap.String("Block Info", string(res)))
 	}
 
-	return b
+	return *b
 }

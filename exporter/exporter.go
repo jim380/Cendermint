@@ -14,9 +14,8 @@ import (
 )
 
 var (
-	defaultGauges    []prometheus.Gauge
-	additionalGauges []prometheus.Gauge
-	gaugesDenom      []prometheus.Gauge
+	defaultGauges []prometheus.Gauge
+	gaugesDenom   []prometheus.Gauge
 )
 
 func Start(chain string, log *zap.Logger) {
@@ -63,13 +62,15 @@ func Start(chain string, log *zap.Logger) {
 				time.Sleep(1000 * time.Millisecond)
 			}()
 
-			blockData := rest.GetBlocks(log)
-			currentBlockHeight, _ := strconv.ParseInt(blockData.Block.Header.Height, 10, 64)
+			var block rest.Blocks
+			block.GetInfo()
 
+			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
 			if previousBlockHeight != currentBlockHeight {
 				fmt.Println("")
-				log.Info("\t", zap.Bool("Success", true), zap.String("Block Height", fmt.Sprint(currentBlockHeight)))
-				restData := rest.GetData(chain, currentBlockHeight, blockData, denomList[0], log)
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block Height", fmt.Sprint(currentBlockHeight)))
+
+				restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
 
 				SetMetric(currentBlockHeight, restData, log)
 				metricData := GetMetric()

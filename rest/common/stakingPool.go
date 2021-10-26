@@ -9,8 +9,6 @@ import (
 	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
-var ()
-
 type stakingPool struct {
 	Pool struct {
 		Not_bonded_tokens string `json:"not_bonded_tokens"`
@@ -23,23 +21,22 @@ type totalSupply struct {
 	Amount Coin
 }
 
-func getStakingPool(denom string, log *zap.Logger) stakingPool {
+func (rd *RESTData) getStakingPool(denom string) {
 	var sp stakingPool
 
 	res, err := runRESTCommand("/cosmos/staking/v1beta1/pool")
 	if err != nil {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
 	json.Unmarshal(res, &sp)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.Bonded_tokens))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.Bonded_tokens))
 	}
 
-	sp.Pool.Total_supply = getTotalSupply(denom, log)
-
-	return sp
+	sp.Pool.Total_supply = getTotalSupply(denom, zap.L())
+	rd.StakingPool = sp
 }
 
 func getTotalSupply(denom string, log *zap.Logger) float64 {

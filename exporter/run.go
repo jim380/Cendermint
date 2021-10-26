@@ -9,26 +9,24 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	iris "github.com/irisnet/irishub/address"
 	"github.com/jim380/Cosmos-IE/common"
+	"github.com/jim380/Cosmos-IE/logging"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func Go(chain string, port string) {
-	log, _ := zap.NewDevelopment()
-	defer log.Sync()
-
+	logging.InitLogger()
+	logger := zap.L()
 	setConfig(chain)
 
 	http.Handle("/metrics", promhttp.Handler())
-	go Start(chain, log)
+	go Start(chain, logger)
 
 	err := http.ListenAndServe(":"+port, nil)
-	// log
 	if err != nil {
-		// handle error
-		log.Fatal("HTTP Handle", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
+		logger.Fatal("HTTP Handle", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	} else {
-		log.Info("HTTP Handle", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Listen&Serve", "Prometheus Handler(Port: "+port+")"))
+		logger.Info("HTTP Handle", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Listen&Serve", "Prometheus Handler(Port: "+port+")"))
 	}
 
 }

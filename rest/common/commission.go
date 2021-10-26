@@ -12,16 +12,19 @@ type commission struct {
 	Commission []Coin
 }
 
-func getCommission(log *zap.Logger) []Coin {
+func (rd *RESTData) getCommission() {
 	var c commission
 
-	res, _ := runRESTCommand("/cosmos/distribution/v1beta1/validators/" + OperAddr + "/commission")
+	res, err := runRESTCommand("/cosmos/distribution/v1beta1/validators/" + OperAddr + "/commission")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+	}
 	json.Unmarshal(res, &c)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(c.Commission)))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(c.Commission)))
 	}
 
-	return c.Commission
+	rd.Commission = c.Commission
 }

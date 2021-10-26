@@ -19,16 +19,19 @@ type validatorsets struct {
 	}
 }
 
-func getValidatorsets(currentBlockHeight int64, log *zap.Logger) map[string][]string {
+func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 	var vSets validatorsets
 	var vSetsResult map[string][]string = make(map[string][]string)
 
-	res, _ := runRESTCommand("/cosmos/base/tendermint/v1beta1/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?pagination.limit=1000")
+	res, err := runRESTCommand("/cosmos/base/tendermint/v1beta1/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?pagination.limit=1000")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+	}
 	json.Unmarshal(res, &vSets)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("", zap.Bool("Success", true), zap.String("Number of loaded validators", fmt.Sprint(len(vSets.Validators))))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Number of loaded validators", fmt.Sprint(len(vSets.Validators))))
 	}
 
 	for _, value := range vSets.Validators {
@@ -36,5 +39,5 @@ func getValidatorsets(currentBlockHeight int64, log *zap.Logger) map[string][]st
 		vSetsResult[value.Pub_key.Key] = []string{value.Address, value.Voting_power}
 	}
 
-	return vSetsResult
+	rd.Validatorsets = vSetsResult
 }

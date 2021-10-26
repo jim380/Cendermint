@@ -2,10 +2,6 @@ package rest
 
 import (
 	"os/exec"
-
-	"go.uber.org/zap"
-
-	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
@@ -29,38 +25,32 @@ type RESTData struct {
 	Gov           govInfo
 }
 
-func newRESTData(blockHeight int64) *RESTData {
-	rd := &RESTData{
+func (rd RESTData) new(blockHeight int64) *RESTData {
+	return &RESTData{
 		BlockHeight:   blockHeight,
 		Validatorsets: make(map[string][]string),
 	}
-
-	return rd
 }
 
-func GetData(chain string, blockHeight int64, blockData Blocks, denom string, log *zap.Logger) *RESTData {
-	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr, log)
+func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+	var restData RESTData
 
-	rd := newRESTData(blockHeight)
-	rd.StakingPool = getStakingPool(denom, log)
-
-	rd.Validatorsets = getValidatorsets(blockHeight, log)
-	rd.Validator = getValidators(log)
+	rd := restData.new(blockHeight)
+	rd.getStakingPool(denom)
+	rd.getValidatorsets(blockHeight)
+	rd.getValidators()
 	/* Block synchronization problem occurs
 	   when using "/cosmos/staking/v1beta1/validators/{validator_addr}/delegations" in rest-server
 	   after gaiad v4.2.0 */
 	// if chain != "cosmos" {
 	// 	rd.Delegations = getDelegations(log)
 	// }
-
-	rd.Balances = getBalances(AccAddr, log)
-	rd.Rewards = getRewards(log)
-	rd.Commission = getCommission(log)
-	rd.Inflation = getInflation(chain, denom, log)
-	rd.Gov = getGovInfo(log)
-
-	consHexAddr := utils.Bech32AddrToHexAddr(rd.Validatorsets[rd.Validator.Consensus_pubkey.Key][0], log)
-	rd.Commit = getCommit(blockData, consHexAddr)
+	rd.getBalances()
+	rd.getRewards()
+	rd.getCommission()
+	rd.getInflation(chain, denom)
+	rd.getGovInfo()
+	rd.getCommit(blockData)
 
 	return rd
 }

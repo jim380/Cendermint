@@ -25,18 +25,21 @@ type proposal struct {
 	Status string
 }
 
-func getGovInfo(log *zap.Logger) govInfo {
+func (rd *RESTData) getGovInfo() {
 	var g gov
 	var gi govInfo
 
 	votingCount := 0
 
-	res, _ := runRESTCommand("/cosmos/gov/v1beta1/proposals")
+	res, err := runRESTCommand("/cosmos/gov/v1beta1/proposals")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+	}
 	json.Unmarshal(res, &g)
 	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count", g.Pagination.Total))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count", g.Pagination.Total))
 	}
 
 	for _, value := range g.Proposals {
@@ -48,5 +51,5 @@ func getGovInfo(log *zap.Logger) govInfo {
 	gi.TotalProposalCount = utils.StringToFloat64(g.Pagination.Total)
 	gi.VotingProposalCount = float64(votingCount)
 
-	return gi
+	rd.Gov = gi
 }
