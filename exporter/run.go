@@ -10,10 +10,6 @@ import (
 	iris "github.com/irisnet/irishub/address"
 	"github.com/jim380/Cosmos-IE/common"
 
-	terra "github.com/terra-project/core/types"
-	//	kava "github.com/kava-labs/kava/app"
-	emoney "github.com/e-money/em-ledger/types"
-
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -44,38 +40,6 @@ func setConfig(chain string) {
 	switch chain {
 	case "iris":
 		iris.ConfigureBech32Prefix()
-	case "band":
-		bech32MainPrefix := "band"
-		var bip44CoinType uint32 = 494
-
-		accountPrefix := bech32MainPrefix
-		validatorPrefix := bech32MainPrefix + sdk.PrefixValidator + sdk.PrefixOperator
-		consensusPrefix := bech32MainPrefix + sdk.PrefixValidator + sdk.PrefixConsensus
-
-		config.SetBech32PrefixForAccount(accountPrefix, accountPrefix+sdk.PrefixPublic)
-		config.SetBech32PrefixForValidator(validatorPrefix, validatorPrefix+sdk.PrefixPublic)
-		config.SetBech32PrefixForConsensusNode(consensusPrefix, consensusPrefix+sdk.PrefixPublic)
-		config.SetCoinType(bip44CoinType)
-	case "terra":
-		config.SetCoinType(terra.CoinType)
-		config.SetFullFundraiserPath(terra.FullFundraiserPath)
-		config.SetBech32PrefixForAccount(terra.Bech32PrefixAccAddr, terra.Bech32PrefixAccPub)
-		config.SetBech32PrefixForValidator(terra.Bech32PrefixValAddr, terra.Bech32PrefixValPub)
-		config.SetBech32PrefixForConsensusNode(terra.Bech32PrefixConsAddr, terra.Bech32PrefixConsPub)
-	case "emoney":
-		emoney.ConfigureSDK()
-	case "starname":
-		Bech32Prefix := "star"
-		Bech32PrefixAccAddr := Bech32Prefix
-		Bech32PrefixAccPub := Bech32Prefix + sdk.PrefixPublic
-		Bech32PrefixValAddr := Bech32Prefix + sdk.PrefixValidator + sdk.PrefixOperator
-		Bech32PrefixValPub := Bech32Prefix + sdk.PrefixValidator + sdk.PrefixOperator + sdk.PrefixPublic
-		Bech32PrefixConsAddr := Bech32Prefix + sdk.PrefixValidator + sdk.PrefixConsensus
-		Bech32PrefixConsPub := Bech32Prefix + sdk.PrefixValidator + sdk.PrefixConsensus + sdk.PrefixPublic
-		config := sdk.GetConfig()
-		config.SetBech32PrefixForAccount(Bech32PrefixAccAddr, Bech32PrefixAccPub)
-		config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
-		config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 	case "umee":
 		config := sdk.GetConfig()
 		config.SetBech32PrefixForAccount(common.Bech32PrefixAccAddr, common.Bech32PrefixAccPub)

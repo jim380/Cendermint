@@ -58,13 +58,6 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// validator commit
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
-
-	//// oracle
-	// Terra
-	metricData.Validator.Oracle.Miss = restData.Oracle_terra
-	// Band
-	metricData.Validator.Oracle.Active = restData.Oracle_band
-
 }
 
 func GetMetric() *metric {

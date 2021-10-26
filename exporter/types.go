@@ -29,9 +29,6 @@ var (
 		"actualInflation",
 	}
 
-	gaugesNamespaceList_Terra = [...]string{"oracleMiss"}
-	gaugesNamespaceList_Band  = [...]string{"oracleActive"}
-
 	metricData metric
 )
 
@@ -99,14 +96,6 @@ type metric struct {
 			// VoteType        float64
 			PrecommitStatus float64
 		}
-
-		// for Terra & Band
-		Oracle struct {
-			// Terra
-			Miss float64
-			// Band
-			Active float64
-		}
 	}
 }
 
@@ -120,19 +109,6 @@ func getDenomList(chain string) []string {
 		dList = []string{"uatom"}
 	case "iris":
 		dList = []string{"uiris"}
-		//		dList = []string{"ubif"}
-	case "band":
-		dList = []string{"uband"}
-	case "terra":
-		dList = []string{"uluna",
-			"uaud", "ucad", "uchf", "ucny", "udkk", "ueur", "ugbp", "uhkd", "uinr", "ujpy", "ukrw", "umnt", "unok", "usdr", "usek", "usgd", "uthb", "uusd"}
-	case "kava":
-		dList = []string{"ukava"}
-	case "emoney":
-		dList = []string{"ungm",
-			"eeur", "echf", "edkk", "enok", "esek"}
-	case "starname":
-		dList = []string{"uiov"}
 	case "umee":
 		dList = []string{"uumee"}
 	}

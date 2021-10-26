@@ -4,17 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/spf13/cobra"
-
-	//	cosmos "github.com/jim380/Cosmos-IE/chains/cosmos"
-	//        terra "github.com/jim380/Cosmos-IE/chains/terra"
-	//        iris "github.com/jim380/Cosmos-IE/chains/iris"
-	//        kava "github.com/jim380/Cosmos-IE/chains/kava"
-	//        iov "github.com/jim380/Cosmos-IE/chains/iov"
-	//        emoney "github.com/jim380/Cosmos-IE/chains/emoney"
-	//        band "github.com/jim380/Cosmos-IE/chains/bandprotocol"
-
 	exporter "github.com/jim380/Cosmos-IE/exporter"
+	"github.com/spf13/cobra"
 )
 
 var (

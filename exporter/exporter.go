@@ -140,48 +140,9 @@ func Start(chain string, log *zap.Logger) {
 					metricData.Validator.Address.ConsensusHex,
 				).Add(0)
 
-				addGauges(chain, metricData, log)
-
 			}
 
 			previousBlockHeight = currentBlockHeight
 		}()
-	}
-}
-
-// register additional guages
-func addGauges(chain string, metricData *metric, log *zap.Logger) {
-	if chain == "band" {
-		if len(additionalGauges) == 0 {
-			additionalGauges = make([]prometheus.Gauge, len(gaugesNamespaceList_Band))
-
-			for i := 0; i < len(gaugesNamespaceList_Band); i++ {
-				additionalGauges[i] = utils.NewGauge("exporter", gaugesNamespaceList_Band[i], "")
-				prometheus.MustRegister(additionalGauges[i])
-			}
-		} else {
-			gaugesValue := [...]float64{
-				metricData.Validator.Oracle.Active,
-			}
-			for i := 0; i < len(gaugesNamespaceList_Band); i++ {
-				additionalGauges[i].Set(gaugesValue[i])
-			}
-		}
-	} else if chain == "terra" {
-		if len(additionalGauges) == 0 {
-			additionalGauges = make([]prometheus.Gauge, len(gaugesNamespaceList_Terra))
-
-			for i := 0; i < len(gaugesNamespaceList_Terra); i++ {
-				additionalGauges[i] = utils.NewGauge("exporter", gaugesNamespaceList_Terra[i], "")
-				prometheus.MustRegister(additionalGauges[i])
-			}
-		} else {
-			gaugesValue := [...]float64{
-				metricData.Validator.Oracle.Miss,
-			}
-			for i := 0; i < len(gaugesNamespaceList_Terra); i++ {
-				additionalGauges[i].Set(gaugesValue[i])
-			}
-		}
 	}
 }

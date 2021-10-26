@@ -5,8 +5,6 @@ import (
 
 	"go.uber.org/zap"
 
-	band "github.com/jim380/Cosmos-IE/rest/chains/band"
-	terra "github.com/jim380/Cosmos-IE/rest/chains/terra"
 	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
@@ -29,9 +27,6 @@ type RESTData struct {
 	Commission    []Coin
 	Inflation     float64
 	Gov           govInfo
-
-	Oracle_terra float64
-	Oracle_band  float64
 }
 
 func newRESTData(blockHeight int64) *RESTData {
@@ -66,13 +61,6 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string, lo
 
 	consHexAddr := utils.Bech32AddrToHexAddr(rd.Validatorsets[rd.Validator.Consensus_pubkey.Key][0], log)
 	rd.Commit = getCommit(blockData, consHexAddr)
-
-	if chain == "band" {
-		rd.Oracle_band = band.CheckOracleActive(Addr, OperAddr, log)
-	}
-	if chain == "terra" {
-		rd.Oracle_terra = terra.GetOracleMiss(Addr, OperAddr, log)
-	}
 
 	return rd
 }
