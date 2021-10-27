@@ -31,7 +31,7 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Number of loaded validators", fmt.Sprint(len(vSets.Validators))))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Number of loaded validators", fmt.Sprint(len(vSets.Validators))))
 	}
 
 	for _, value := range vSets.Validators {

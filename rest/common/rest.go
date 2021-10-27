@@ -2,6 +2,8 @@ package rest
 
 import (
 	"os/exec"
+
+	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
 var (
@@ -34,6 +36,7 @@ func (rd RESTData) new(blockHeight int64) *RESTData {
 
 func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
 	var restData RESTData
+	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 
 	rd := restData.new(blockHeight)
 	rd.getStakingPool(denom)

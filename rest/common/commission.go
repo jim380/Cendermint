@@ -9,6 +9,10 @@ import (
 )
 
 type commission struct {
+	commissionInner
+}
+
+type commissionInner struct {
 	Commission []Coin
 }
 

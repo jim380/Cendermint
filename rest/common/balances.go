@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	utils "github.com/jim380/Cosmos-IE/utils"
 	"go.uber.org/zap"
 )
 
@@ -20,9 +19,8 @@ type Coin struct {
 
 func (rd *RESTData) getBalances() {
 	var b balances
-	accAddr := utils.GetAccAddrFromOperAddr(OperAddr)
 
-	res, err := runRESTCommand("/cosmos/bank/v1beta1/balances/" + accAddr)
+	res, err := runRESTCommand("/cosmos/bank/v1beta1/balances/" + AccAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
