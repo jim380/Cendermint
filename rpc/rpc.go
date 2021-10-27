@@ -26,8 +26,9 @@ func newRPCData() *RPCData {
 	return rd
 }
 
-func connect() {
-	client, err := tmhttp.NewWithClient("tcp://"+Addr, "/ws", http.DefaultClient)
+func Connect() {
+	client, _ := tmhttp.NewWithClient("tcp://"+Addr, "/ws", http.DefaultClient)
+	err := client.Start()
 	if err != nil {
 		zap.L().Fatal("RPC-Server", zap.Bool("Success", false), zap.String("err", fmt.Sprintf("%s", err)))
 	} else {
