@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	rest "github.com/jim380/Cosmos-IE/rest/common"
+	"github.com/jim380/Cosmos-IE/rpc"
 	utils "github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -70,7 +71,11 @@ func Start(chain string, log *zap.Logger) {
 				fmt.Println("")
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block Height", fmt.Sprint(currentBlockHeight)))
 
+				// fetch info from REST
 				restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
+				// fetch commit info from RPC
+				consHexAddr := utils.Bech32AddrToHexAddr(restData.Validatorsets[restData.Validators.ConsPubKey][0])
+				restData.Commit = rpc.GetData(currentBlockHeight, consHexAddr).Commit
 
 				SetMetric(currentBlockHeight, restData, log)
 				metricData := GetMetric()

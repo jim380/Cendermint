@@ -9,7 +9,7 @@ import (
 
 func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	operAddr := rest.OperAddr
-	consPubKey := restData.Validator.Consensus_pubkey.Key
+	consPubKey := restData.Validators.ConsPubKey
 	consAddr := restData.Validatorsets[consPubKey][0]
 
 	// network
@@ -30,10 +30,10 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Network.Gov.VotingProposalCount = restData.Gov.VotingProposalCount
 
 	// validator info
-	metricData.Validator.Moniker = restData.Validator.Description.Moniker
+	metricData.Validator.Moniker = restData.Validators.Description.Moniker
 	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey][1])
-	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validator.MinSelfDelegation)
-	metricData.Validator.JailStatus = utils.BoolToFloat64(restData.Validator.Jailed)
+	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validators.MinSelfDelegation)
+	metricData.Validator.JailStatus = utils.BoolToFloat64(restData.Validators.Jailed)
 
 	// validator addresses
 	metricData.Validator.Address.Operator = operAddr
@@ -41,15 +41,15 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr)
 
 	// validator delegation
-	metricData.Validator.Delegation.Shares = utils.StringToFloat64(restData.Validator.DelegatorShares)
+	metricData.Validator.Delegation.Shares = utils.StringToFloat64(restData.Validators.DelegatorShares)
 	metricData.Validator.Delegation.Ratio = metricData.Validator.Delegation.Shares / metricData.Network.Staking.BondedTokens
 	metricData.Validator.Delegation.DelegatorCount = restData.Delegations.DelegationCount
 	metricData.Validator.Delegation.Self = restData.Delegations.SelfDelegation
 
 	// validator commission
-	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validator.Commission.Commission_rates.Rate)
-	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validator.Commission.Commission_rates.Max_rate)
-	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validator.Commission.Commission_rates.Max_change_rate)
+	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validators.Commission.Commission_rates.Rate)
+	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validators.Commission.Commission_rates.Max_rate)
+	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validators.Commission.Commission_rates.Max_change_rate)
 
 	//// validator account
 	metricData.Validator.Account.Balances = restData.Balances

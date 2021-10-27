@@ -12,11 +12,8 @@ type validators struct {
 }
 
 type validator struct {
-	OperAddr         string `json:"operator_address"`
-	Consensus_pubkey struct {
-		Type string `json:"@type"`
-		Key  string
-	}
+	OperAddr        string `json:"operator_address"`
+	ConsPubKey      string `json:"consensus_pubkey"`
 	Jailed          bool   `json:"jailed"`
 	Status          int    `json:"status"`
 	Tokens          string `json:"tokens"`
@@ -54,5 +51,5 @@ func (rd *RESTData) getValidators() {
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Validator Moniker", v.Validator.Description.Moniker))
 	}
 
-	rd.Validator = v.Validator
+	rd.Validators = v.Validator
 }

@@ -3,6 +3,7 @@ package rest
 import (
 	"os/exec"
 
+	"github.com/jim380/Cosmos-IE/rpc"
 	utils "github.com/jim380/Cosmos-IE/utils"
 )
 
@@ -14,11 +15,11 @@ var (
 
 type RESTData struct {
 	BlockHeight int64
-	Commit      commitInfo
+	Commit      rpc.CommitInfo
 	StakingPool stakingPool
 
 	Validatorsets map[string][]string
-	Validator     validator
+	Validators    validator
 	Delegations   delegationInfo
 	Balances      []Coin
 	Rewards       []Coin
@@ -53,7 +54,6 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	rd.getCommission()
 	rd.getInflation(chain, denom)
 	rd.getGovInfo()
-	rd.getCommit(blockData)
 
 	return rd
 }

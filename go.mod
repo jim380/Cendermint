@@ -9,6 +9,7 @@ require (
 	github.com/prometheus/client_golang v1.8.0
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
+	github.com/tendermint/tendermint v0.34.13
 	go.uber.org/zap v1.15.0
 	google.golang.org/genproto v0.0.0-20210204154452-deb828366460 // indirect
 )
