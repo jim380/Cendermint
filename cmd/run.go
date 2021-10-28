@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	exporter "github.com/jim380/Cosmos-IE/exporter"
+	exporter "github.com/jim380/Cendermint/exporter"
 	"github.com/spf13/cobra"
 )
 
@@ -24,8 +24,8 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Validator Operator Address",
 	Long: `Be sure to enter either Validator Operator Address
-ex#1_Local REST Server) Cosmos-IE run --chain cosmos --oper-addr cosmosvaloper14l0fp639yudfl46zauvv8rkzjgd4u0zk2aseys
-ex#2_Remote REST Server) Cosmos-IE run --chain cosmos --oper-addr cosmosvaloper14l0fp639yudfl46zauvv8rkzjgd4u0zk2aseys --rest-server 192.168.0.10:1317 
+ex#1_Local REST Server) Cendermint run --chain cosmos --oper-addr cosmosvaloper14l0fp639yudfl46zauvv8rkzjgd4u0zk2aseys
+ex#2_Remote REST Server) Cendermint run --chain cosmos --oper-addr cosmosvaloper14l0fp639yudfl46zauvv8rkzjgd4u0zk2aseys --rest-server 192.168.0.10:1317 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		check_chain()

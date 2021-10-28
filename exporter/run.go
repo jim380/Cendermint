@@ -7,8 +7,8 @@ import (
 	"go.uber.org/zap"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/jim380/Cosmos-IE/logging"
-	"github.com/jim380/Cosmos-IE/utils"
+	"github.com/jim380/Cendermint/logging"
+	"github.com/jim380/Cendermint/utils"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )

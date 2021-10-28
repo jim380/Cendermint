@@ -22,7 +22,7 @@ import (
 )
 
 var (
-	version string = "v3.0.7"
+	version string = "v0.1.0"
 
 	// versionCmd represents the version command
 	versionCmd = &cobra.Command{
@@ -30,7 +30,7 @@ var (
 		Short: "Software version",
 		Long:  ``,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("Cosmos-IE %s\n", version)
+			fmt.Printf("Cendermint %s\n", version)
 		},
 	}
 )

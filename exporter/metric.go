@@ -3,8 +3,8 @@ package exporter
 import (
 	"go.uber.org/zap"
 
-	"github.com/jim380/Cosmos-IE/rest"
-	utils "github.com/jim380/Cosmos-IE/utils"
+	"github.com/jim380/Cendermint/rest"
+	utils "github.com/jim380/Cendermint/utils"
 )
 
 func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {

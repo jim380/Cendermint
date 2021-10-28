@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	common "github.com/jim380/Cosmos-IE/rest"
+	common "github.com/jim380/Cendermint/rest"
 )
 
 // set rest and rpc addresses

@@ -1,4 +1,4 @@
-module github.com/jim380/Cosmos-IE
+module github.com/jim380/Cendermint
 
 go 1.15
 

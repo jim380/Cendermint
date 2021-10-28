@@ -1,6 +1,6 @@
 package exporter
 
-import "github.com/jim380/Cosmos-IE/rest"
+import "github.com/jim380/Cendermint/rest"
 
 var (
 	previousBlockHeight int64

@@ -7,8 +7,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/jim380/Cosmos-IE/rest"
-	utils "github.com/jim380/Cosmos-IE/utils"
+	"github.com/jim380/Cendermint/rest"
+	utils "github.com/jim380/Cendermint/utils"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

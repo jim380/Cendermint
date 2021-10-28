@@ -1,55 +1,20 @@
-# Cosmos-IE
-![CreatePlan](https://img.shields.io/badge/release-v3.0.7-red)
-![CreatePlan](https://img.shields.io/badge/go-1.15%2B-blue)
-![CreatePlan](https://img.shields.io/badge/license-Apache--2.0-green)  
-Integrated Exporter for CosmosSDK
+# Cendermint
+![CreatePlan](https://img.shields.io/badge/release-v0.1.0-red) ![CreatePlan](https://img.shields.io/badge/go-1.15%2B-blue) ![CreatePlan](https://img.shields.io/badge/license-Apache--2.0-green)  
+Prometheus Exporter for Tendermint based blockchains.
 
-## Introduction
-This Prometheus exporter is for monitoring information which is not provided from Tendermint’s basic Prometheus exporter(localhost:26660)
+## Disclaimer
+This project is a fork of [Cosmos-IE](https://github.com/node-a-team/Cosmos-IE) by [Node A-Team](https://github.com/node-a-team). I'd like to express my greatest gratitude and appreciation to them for initiating and open-sourcing their awesome work.
 
-## List of supported chains
-Cosmos(cosmoshub-4), IRISnet(irishub-1), BandProtocol-testnet(band-laozi-testnet1), Terra(bombay), Starname(iov-mainnet-ibc), Certik(shentu-2)
+## Supported chains
+- Cosmos(`cosmoshub-4`)
+- NYM (`testnet-milhon`)
+- Umme (`umeevengers-1c`)
 
 ## Install
 ```bash
-cd $HOME
-git clone https://github.com/jim380/Cosmos-IE.git
-cd $HOME/Cosmos-IE
+$ cd $GOPATH/src/githb.com
+$ git clone https://github.com/jim380/Cendermint.git
+$ cd $HOME/Cendermint
+$ go build
 
-go build
-
-./Cosmos-IE version
-## Cosmos-IE v3.0.7
-```
-
-## Service(ex: cosmos)
-- **--chain** _string_: Chain name of the monitoring node(cosmos | iris | band | terra | starname)
-```bash
-## Create a systemd service
-sudo tee /etc/systemd/system/Cosmos-IE.service > /dev/null <<EOF
-[Unit]
-Description=Integrated Exporter for CosmosSDK
-After=network-online.target
-
-[Service]
-User=${USER}
-ExecStart=$HOME/Cosmos-IE/Cosmos-IE run \
-  --chain "cosmos" \
-  --oper-addr "cosmosvaloper14l0fp639yudfl46zauvv8rkzjgd4u0zk2aseys"
-Restart=always
-RestartSec=3
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=Cosmos-IE
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-## Start service
-sudo systemctl enable Cosmos-IE
-sudo systemctl start Cosmos-IE
-
-## log
-journalctl -f -u Cosmos-IE.service
-```
+$ ./Cendermint run --chain "chain_name" --oper-addr "operAddr"

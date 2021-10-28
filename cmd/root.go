@@ -31,9 +31,9 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "Cosmos-IE",
+	Use:   "Cendermint",
 	Short: "",
-	Long:  `Integrated Exporter for CosmosSDK`,
+	Long:  `Prometheus exporter for Tendermint-based chains`,
 
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
@@ -80,7 +80,7 @@ func initConfig() {
 
 		// Search config in home directory with name ".Cosmos-IE" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".Cosmos-IE")
+		viper.SetConfigName(".Cendermint")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

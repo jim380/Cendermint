@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	utils "github.com/jim380/Cosmos-IE/utils"
+	utils "github.com/jim380/Cendermint/utils"
 )
 
 type inflation struct {

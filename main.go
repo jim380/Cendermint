@@ -16,7 +16,7 @@ limitations under the License.
 package main
 
 import (
-	"github.com/jim380/Cosmos-IE/cmd"
+	"github.com/jim380/Cendermint/cmd"
 )
 
 var (
