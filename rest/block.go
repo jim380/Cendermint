@@ -31,8 +31,6 @@ func (b *Blocks) GetInfo() Blocks {
 	json.Unmarshal(res, &b)
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Fetch block info:", "success"))
 	}
 
 	return *b

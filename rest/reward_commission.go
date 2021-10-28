@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"go.uber.org/zap"
@@ -31,9 +30,6 @@ func (rd *RESTData) getRewardsCommission() {
 	json.Unmarshal(res, &rc)
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards:", fmt.Sprint(rc.Result.Selfbond_Rewards)))
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission:", fmt.Sprint(rc.Result.Commission.Commission)))
 	}
 
 	rd.Rewards = rc.Result.Selfbond_Rewards

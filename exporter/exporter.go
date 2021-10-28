@@ -71,10 +71,6 @@ func Start(chain string, log *zap.Logger) {
 
 				// fetch info from REST
 				restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
-				// fetch commit info from RPC
-				// consHexAddr := utils.Bech32AddrToHexAddr(restData.Validatorsets[restData.Validators.ConsPubKey][0])
-				// restData.Commit = rpc.GetData(currentBlockHeight, consHexAddr).Commit
-				// zap.L().Info("rpc.GetData was called")
 
 				SetMetric(currentBlockHeight, restData, log)
 				metricData := GetMetric()

@@ -16,10 +16,10 @@ type validatorsets struct {
 	Result struct {
 		Block_Height string `json:"block_height"`
 		Validators   []struct {
-			ConsAddr         string `json:"address"`
-			ConsPubKey       string `json:"pub_key"`
-			ProposerPriority string `json:"proposer_priority"`
-			VotingPower      string `json:"voting_power"`
+			ConsAddr         string     `json:"address"`
+			ConsPubKey       consPubKey `json:"pub_key"`
+			ProposerPriority string     `json:"proposer_priority"`
+			VotingPower      string     `json:"voting_power"`
 		}
 	}
 }
@@ -36,12 +36,12 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Number of loaded validators", fmt.Sprint(len(vSets.Result.Validators))))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators))))
 	}
 
 	for _, value := range vSets.Result.Validators {
-		// populate the validator set map
-		vSetsResult[value.ConsPubKey] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+		vSetsResult[value.ConsPubKey.Value] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 
 	rd.Validatorsets = Sort(vSetsResult)

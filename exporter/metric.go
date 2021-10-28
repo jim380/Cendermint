@@ -10,7 +10,7 @@ import (
 func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	operAddr := rest.OperAddr
 	consPubKey := restData.Validators.ConsPubKey
-	consAddr := restData.Validatorsets[consPubKey][0]
+	consAddr := restData.Validatorsets[consPubKey.Value][0]
 
 	// network
 	metricData.Network.ChainID = restData.Commit.ChainId
@@ -31,7 +31,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// validator info
 	metricData.Validator.Moniker = restData.Validators.Description.Moniker
-	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey][1])
+	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey.Value][1])
 	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validators.MinSelfDelegation)
 	metricData.Validator.JailStatus = utils.BoolToFloat64(restData.Validators.Jailed)
 
@@ -47,9 +47,9 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Delegation.Self = restData.Delegations.SelfDelegation
 
 	// validator commission
-	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validators.Commission.Commission_rates.Rate)
-	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validators.Commission.Commission_rates.Max_rate)
-	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validators.Commission.Commission_rates.Max_change_rate)
+	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validators.Commission.Commission.Rate)
+	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validators.Commission.Commission.Max_rate)
+	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validators.Commission.Commission.Max_change_rate)
 
 	//// validator account
 	metricData.Validator.Account.Balances = restData.Balances
