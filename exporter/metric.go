@@ -3,7 +3,7 @@ package exporter
 import (
 	"go.uber.org/zap"
 
-	rest "github.com/jim380/Cosmos-IE/rest/common"
+	"github.com/jim380/Cosmos-IE/rest"
 	utils "github.com/jim380/Cosmos-IE/utils"
 )
 

@@ -1,0 +1,71 @@
+package rest
+
+import (
+	"encoding/json"
+	"fmt"
+	"sort"
+	"strconv"
+	"strings"
+
+	"go.uber.org/zap"
+)
+
+type validatorsets struct {
+	Height string `json:"height"`
+
+	Result struct {
+		Block_Height string `json:"block_height"`
+		Validators   []struct {
+			ConsAddr         string `json:"address"`
+			ConsPubKey       string `json:"pub_key"`
+			ProposerPriority string `json:"proposer_priority"`
+			VotingPower      string `json:"voting_power"`
+		}
+	}
+}
+
+func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
+	var vSets validatorsets
+	var vSetsResult map[string][]string = make(map[string][]string)
+
+	res, err := runRESTCommand("/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?pagination.limit=1000")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+	}
+	json.Unmarshal(res, &vSets)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else {
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Number of loaded validators", fmt.Sprint(len(vSets.Result.Validators))))
+	}
+
+	for _, value := range vSets.Result.Validators {
+		// populate the validator set map
+		vSetsResult[value.ConsPubKey] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+	}
+
+	rd.Validatorsets = Sort(vSetsResult)
+}
+
+func Sort(mapValue map[string][]string) map[string][]string {
+
+	keys := []string{}
+	newMapValue := mapValue
+
+	for key := range mapValue {
+		keys = append(keys, key)
+	}
+
+	// Sort by proposer_priority
+	sort.Slice(keys, func(i, j int) bool {
+		a, _ := strconv.Atoi(mapValue[keys[i]][2])
+		b, _ := strconv.Atoi(mapValue[keys[j]][2])
+		return a > b
+	})
+
+	for i, key := range keys {
+		// proposer_ranking
+		newMapValue[key][3] = strconv.Itoa(i + 1)
+	}
+	return newMapValue
+}

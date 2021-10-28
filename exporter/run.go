@@ -8,7 +8,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/jim380/Cosmos-IE/logging"
-	"github.com/jim380/Cosmos-IE/rpc"
 	"github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -19,8 +18,8 @@ func Go(chain string, port string) {
 	logger := zap.L()
 	setConfig(chain)
 
-	rpc.Connect()
 	http.Handle("/metrics", promhttp.Handler())
+	// rpc.Connect()
 	go Start(chain, logger)
 
 	err := http.ListenAndServe(":"+port, nil)

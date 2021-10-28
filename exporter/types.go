@@ -1,8 +1,6 @@
 package exporter
 
-import (
-	rest "github.com/jim380/Cosmos-IE/rest/common"
-)
+import "github.com/jim380/Cosmos-IE/rest"
 
 var (
 	previousBlockHeight int64

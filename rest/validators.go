@@ -8,7 +8,8 @@ import (
 )
 
 type validators struct {
-	Validator validator
+	Height string `json:"height"`
+	Result validator
 }
 
 type validator struct {
@@ -40,7 +41,7 @@ type validator struct {
 func (rd *RESTData) getValidators() {
 	var v validators
 
-	res, err := runRESTCommand("/cosmos/staking/v1beta1/validators/" + OperAddr)
+	res, err := runRESTCommand("/staking/validators/" + OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
@@ -48,8 +49,8 @@ func (rd *RESTData) getValidators() {
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Validator Moniker", v.Validator.Description.Moniker))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Validator Moniker", v.Result.Description.Moniker))
 	}
 
-	rd.Validators = v.Validator
+	rd.Validators = v.Result
 }

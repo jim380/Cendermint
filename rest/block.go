@@ -11,14 +11,13 @@ type Blocks struct {
 	Block struct {
 		Header struct {
 			ChainID          string `json:"chain_id"`
-			Height           string
-			Proposer_address string
+			Height           string `json:"height"`
+			Proposer_address string `json:"proposer_address"`
 		}
 
 		Last_commit struct {
 			Signatures []struct {
-				Block_id_flag     string
-				Validator_address string
+				Validator_address string `json:"validator_address"`
 			}
 		}
 	}

@@ -7,8 +7,7 @@ import (
 
 	"go.uber.org/zap"
 
-	rest "github.com/jim380/Cosmos-IE/rest/common"
-	"github.com/jim380/Cosmos-IE/rpc"
+	"github.com/jim380/Cosmos-IE/rest"
 	utils "github.com/jim380/Cosmos-IE/utils"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -20,7 +19,6 @@ var (
 )
 
 func Start(chain string, log *zap.Logger) {
-
 	denomList := getDenomList(chain)
 
 	defaultGauges = make([]prometheus.Gauge, len(gaugesNamespaceList))
@@ -60,7 +58,7 @@ func Start(chain string, log *zap.Logger) {
 					//Error Log
 					//panic("oops...something bad happened")
 				}
-				time.Sleep(1000 * time.Millisecond)
+				time.Sleep(5000 * time.Millisecond)
 			}()
 
 			var block rest.Blocks
@@ -74,8 +72,9 @@ func Start(chain string, log *zap.Logger) {
 				// fetch info from REST
 				restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
 				// fetch commit info from RPC
-				consHexAddr := utils.Bech32AddrToHexAddr(restData.Validatorsets[restData.Validators.ConsPubKey][0])
-				restData.Commit = rpc.GetData(currentBlockHeight, consHexAddr).Commit
+				// consHexAddr := utils.Bech32AddrToHexAddr(restData.Validatorsets[restData.Validators.ConsPubKey][0])
+				// restData.Commit = rpc.GetData(currentBlockHeight, consHexAddr).Commit
+				// zap.L().Info("rpc.GetData was called")
 
 				SetMetric(currentBlockHeight, restData, log)
 				metricData := GetMetric()
