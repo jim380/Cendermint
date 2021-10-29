@@ -31,31 +31,39 @@ func SetSDKConfig(chain string) {
 	config.Seal()
 }
 
-func CheckInputs(chain, operAddr, restAddr, listenPort string, chainList []string) {
-	if chain == "" {
+func CheckInputs(inputs, chainList []string) {
+	if inputs[0] == "" {
 		log.Fatal("Chain was not provided.")
 	} else {
 		valid := false
 		for _, c := range chainList {
-			if chain == c {
+			if inputs[0] == c {
 				valid = true
 			}
 		}
 		if !valid {
-			log.Fatal(fmt.Sprintf("%s is not supported", chain) + fmt.Sprint("\nList of supported chains: ", chainList))
+			log.Fatal(fmt.Sprintf("%s is not supported", inputs[0]) + fmt.Sprint("\nList of supported chains: ", chainList))
 		}
 	}
 
 	// TODO add more robust checks
-	if operAddr == "" {
+	if inputs[1] == "" {
 		log.Fatal("Operator address was not provided.")
 	}
 
-	if restAddr == "" {
+	if inputs[2] == "" {
 		log.Fatal("REST address was not provided.")
 	}
 
-	if listenPort == "" {
+	if inputs[3] == "" {
 		log.Fatal("Listening port was not provided.")
+	}
+
+	if inputs[4] == "" {
+		log.Fatal("Logout was not provided.")
+	}
+
+	if inputs[5] == "" {
+		log.Fatal("Poll interval was not provided")
 	}
 }

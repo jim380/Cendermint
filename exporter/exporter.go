@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -58,7 +59,9 @@ func Run(chain string, log *zap.Logger) {
 					//Error Log
 					//panic("oops...something bad happened")
 				}
-				time.Sleep(5000 * time.Millisecond)
+				pollInterval, _ := strconv.Atoi(os.Getenv("POLL_INTERVAL"))
+				// zap.L().Info("", zap.Bool("Success", true), zap.String("pollInterval (sec):", strconv.Itoa(pollInterval)))
+				time.Sleep(time.Duration(pollInterval) * time.Second)
 			}()
 
 			var block rest.Blocks

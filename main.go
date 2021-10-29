@@ -39,16 +39,18 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	chain = os.Getenv("CHAIN")
-	operAddr = os.Getenv("OPERATOR_ADDR")
-	restAddr = os.Getenv("REST_ADDR")
-	listenPort = os.Getenv("LISTENING_PORT")
-	logOutput = os.Getenv("LOG_OUTPUT")
+	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL")}
+	cmd.CheckInputs(inputs, chainList)
+
+	chain = inputs[0]
+	operAddr = inputs[1]
+	restAddr = inputs[2]
+	listenPort = inputs[3]
+	logOutput = inputs[4]
 
 	logger = logging.InitLogger(logOutput)
 	zap.ReplaceGlobals(logger)
 
-	cmd.CheckInputs(chain, operAddr, restAddr, listenPort, chainList)
 	cmd.SetSDKConfig(chain)
 	rest.Addr = restAddr
 	rest.OperAddr = operAddr
