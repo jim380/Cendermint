@@ -39,7 +39,7 @@ jobs:
           context: ../../../
           # Note: tags has to be all lower-case
           tags: |
-            ghcr.io/jim380/Cendermint:latest
+            ghcr.io/jim380/cendermint:latest
           # build on feature branches, push only on master
           push: ${{ github.ref == 'refs/heads/master' }}
 
