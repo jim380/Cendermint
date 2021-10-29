@@ -18,7 +18,7 @@ var (
 	gaugesDenom   []prometheus.Gauge
 )
 
-func Start(chain string, log *zap.Logger) {
+func Run(chain string, log *zap.Logger) {
 	denomList := getDenomList(chain)
 
 	defaultGauges = make([]prometheus.Gauge, len(gaugesNamespaceList))

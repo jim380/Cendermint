@@ -39,14 +39,11 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-func InitLogger() {
-	var logger *zap.Logger
-	if true {
-		logger = logConsole()
-	} else {
-		logger = logFile()
+func InitLogger(logOutput string) *zap.Logger {
+	if logOutput == "file" {
+		return logFile()
 	}
-	zap.ReplaceGlobals(logger)
+	return logConsole()
 }
 
 func logConsole() *zap.Logger {

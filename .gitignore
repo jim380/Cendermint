@@ -1,1 +1,2 @@
-Cendermint
+*.env
+*.bin
