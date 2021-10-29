@@ -13,7 +13,6 @@ var (
 
 	chain      string = ""
 	restAddr   string = "localhost:1317"
-	rpcAddr    string = "localhost:26657"
 	listenPort string = "26661"
 
 	operAddr string = ""

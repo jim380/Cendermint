@@ -40,12 +40,55 @@ func getEncoder() zapcore.Encoder {
 }
 
 func InitLogger() {
+	var logger *zap.Logger
+	if true {
+		logger = logConsole()
+	} else {
+		logger = logFile()
+	}
+	zap.ReplaceGlobals(logger)
+}
+
+func logConsole() *zap.Logger {
+	// info level enabler
+	infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
+		return level == zapcore.InfoLevel
+	})
+
+	// error and fatal level enabler
+	errorFatalLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
+		return level == zapcore.ErrorLevel || level == zapcore.FatalLevel
+	})
+
+	// write syncers
+	stdoutSyncer := zapcore.Lock(os.Stdout)
+	stderrSyncer := zapcore.Lock(os.Stderr)
+
+	// tee core
+	core := zapcore.NewTee(
+		zapcore.NewCore(
+			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+			stdoutSyncer,
+			infoLevel,
+		),
+		zapcore.NewCore(
+			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+			stderrSyncer,
+			errorFatalLevel,
+		),
+	)
+
+	// finally construct the logger with the tee core
+	loggerConsole := zap.New(core, zap.AddCaller())
+	return loggerConsole
+}
+
+func logFile() *zap.Logger {
 	createDir()
 	writerSync := getLogWriter()
 	encoder := getEncoder()
 
 	core := zapcore.NewCore(encoder, writerSync, zapcore.InfoLevel) // tweak the log level as needed
-	logg := zap.New(core, zap.AddCaller())
-
-	zap.ReplaceGlobals(logg)
+	loggerFile := zap.New(core, zap.AddCaller())
+	return loggerFile
 }
