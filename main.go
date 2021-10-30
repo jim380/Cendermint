@@ -16,7 +16,6 @@ limitations under the License.
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/jim380/Cendermint/cmd"
@@ -34,10 +33,10 @@ var (
 )
 
 func main() {
-	err := godotenv.Load("config.env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	_ = godotenv.Load("config.env")
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL")}
 	cmd.CheckInputs(inputs, chainList)
