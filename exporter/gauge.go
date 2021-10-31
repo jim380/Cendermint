@@ -2,6 +2,7 @@ package exporter
 
 import (
 	utils "github.com/jim380/Cendermint/utils"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 func setDenomGauges(metricData *metric, denomList []string) {
@@ -26,7 +27,7 @@ func setDenomGauges(metricData *metric, denomList []string) {
 	}
 }
 
-func setNormalGauges(metricData *metric) {
+func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 	// set values for normal guages
 	gaugesValue := [...]float64{
 		float64(metricData.Network.BlockHeight),

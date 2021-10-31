@@ -80,7 +80,7 @@ func Run(chain string, log *zap.Logger) {
 
 				setDenomGauges(metricData, denomList)
 
-				setNormalGauges(metricData)
+				setNormalGauges(metricData, defaultGauges)
 
 				gaugesForLabel.WithLabelValues(metricData.Network.ChainID,
 					metricData.Validator.Moniker,
