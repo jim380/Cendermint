@@ -27,7 +27,7 @@ func Run(chain string, log *zap.Logger) {
 
 	// register nomal guages
 	for i := 0; i < len(gaugesNamespaceList); i++ {
-		defaultGauges[i] = utils.NewGauge("exporter", gaugesNamespaceList[i], "")
+		defaultGauges[i] = utils.NewGauge("cendermint", gaugesNamespaceList[i], "")
 		prometheus.MustRegister(defaultGauges[i])
 	}
 
@@ -35,9 +35,9 @@ func Run(chain string, log *zap.Logger) {
 	count := 0
 	for i := 0; i < len(denomList)*3; i += 3 {
 
-		gaugesDenom[i] = utils.NewGauge("exporter_balances", denomList[count], "")
-		gaugesDenom[i+1] = utils.NewGauge("exporter_commission", denomList[count], "")
-		gaugesDenom[i+2] = utils.NewGauge("exporter_rewards", denomList[count], "")
+		gaugesDenom[i] = utils.NewGauge("cendermint_validator_balances", denomList[count], "")
+		gaugesDenom[i+1] = utils.NewGauge("cendermint_validator_commission", denomList[count], "")
+		gaugesDenom[i+2] = utils.NewGauge("cendermint_validator_rewards", denomList[count], "")
 		prometheus.MustRegister(gaugesDenom[i])
 		prometheus.MustRegister(gaugesDenom[i+1])
 		prometheus.MustRegister(gaugesDenom[i+2])

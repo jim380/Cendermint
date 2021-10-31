@@ -16,13 +16,12 @@ var (
 )
 
 type RESTData struct {
-	BlockHeight int64
-	Commit      commitInfo
-	StakingPool stakingPool
-
+	BlockHeight   int64
+	Commit        commitInfo
+	StakingPool   stakingPool
+	Slashing      slashingInfo
 	Validatorsets map[string][]string
 	Validators    validator
-	Delegations   delegationInfo
 	Balances      []Coin
 	Rewards       []Coin
 	Commission    []Coin
@@ -43,6 +42,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 
 	rd := restData.new(blockHeight)
 	rd.getStakingPool(denom)
+	rd.getSlashingParams()
 	rd.getInflation(chain, denom)
 	rd.getGovInfo()
 	rd.getValidatorsets(blockHeight)

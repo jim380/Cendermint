@@ -5,26 +5,47 @@ import "github.com/jim380/Cendermint/rest"
 var (
 	previousBlockHeight int64
 
-	gaugesNamespaceList = [...]string{"blockHeight",
-		"notBondedTokens",
-		"bondedTokens",
-		"totalSupply",
-		"bondedRatio",
-		"totalProposalCount",
-		"votingProposalCount",
-		"votingPower",
-		"minSelfDelegation",
-		"jailStatus",
-		"delegationShares",
-		"delegationRatio",
-		"delegatorCount",
-		"delegationSelf",
-		"commissionRate",
-		"commissionMaxRate",
-		"commissionMaxChangeRate",
-		"precommitStatus",
-		"inflation",
-		"actualInflation",
+	gaugesNamespaceList = [...]string{
+
+		// chain
+		"chain_blockHeight",
+
+		// minting
+		"minting_inflation",
+		"minting_actual_inflation",
+
+		// staking
+		"staking_not_bonded_tokens",
+		"staking_bonded_tokens",
+		"staking_total_supply",
+		"staking_bonded_ratio",
+
+		// slashing
+		"slashing_signed_blocks_window",
+		"slashing_min_signed_per_window",
+		"slashing_downtime_jail_duration",
+		"slashing_slash_fraction_double_sign",
+		"slashing_slash_fraction_downtime",
+
+		// gov
+		"gov_total_proposal_count",
+		"gov_voting_proposal_count",
+
+		// validator
+		"validator_voting_power",
+		"validator_min_self_delegation",
+		"validator_jail_status",
+		// vadalidator_delegation
+		"validator_delegation_shares",
+		"validator_delegation_ratio",
+		// vadalidator_commission
+		"validator_commission_rate",
+		"validator_commission_max_rate",
+		"validator_commission_max_change_rate",
+		// vadalidator_signing
+		"validator_precommit_status",
+		"validator_proposer_ranking",
+		"validator_proposer_status",
 	}
 
 	metricData metric
@@ -41,6 +62,14 @@ type metric struct {
 			BondedTokens    float64
 			TotalSupply     float64
 			BondedRatio     float64
+		}
+
+		Slashing struct {
+			SignedBlocksWindow      float64
+			MinSignedPerWindow      float64
+			DowntimeJailDuration    float64
+			SlashFractionDoubleSign float64
+			SlashFractionDowntime   float64
 		}
 
 		Minting struct {

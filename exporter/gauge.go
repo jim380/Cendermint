@@ -30,36 +30,47 @@ func setDenomGauges(metricData *metric, denomList []string) {
 func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 	// set values for normal guages
 	gaugesValue := [...]float64{
+		// IMPORTANT!!! order needs to match with gaugesNamespaceList
+
+		// chain
 		float64(metricData.Network.BlockHeight),
 
+		// minting
+		metricData.Network.Minting.Inflation,
+		metricData.Network.Minting.ActualInflation,
+
+		// staking
 		metricData.Network.Staking.NotBondedTokens,
 		metricData.Network.Staking.BondedTokens,
 		metricData.Network.Staking.TotalSupply,
 		metricData.Network.Staking.BondedRatio,
 
+		// slashing
+		metricData.Network.Slashing.SignedBlocksWindow,
+		metricData.Network.Slashing.MinSignedPerWindow,
+		metricData.Network.Slashing.DowntimeJailDuration,
+		metricData.Network.Slashing.SlashFractionDoubleSign,
+		metricData.Network.Slashing.SlashFractionDowntime,
+
+		// gov
 		metricData.Network.Gov.TotalProposalCount,
 		metricData.Network.Gov.VotingProposalCount,
 
+		// validator
 		metricData.Validator.VotingPower,
 		metricData.Validator.MinSelfDelegation,
 		metricData.Validator.JailStatus,
-
-		metricData.Validator.Proposer.Ranking,
-		metricData.Validator.Proposer.Status,
-
+		// vadalidator_delegation
 		metricData.Validator.Delegation.Shares,
 		metricData.Validator.Delegation.Ratio,
-		metricData.Validator.Delegation.DelegatorCount,
-		metricData.Validator.Delegation.Self,
-
+		// vadalidator_commission
 		metricData.Validator.Commission.Rate,
 		metricData.Validator.Commission.MaxRate,
 		metricData.Validator.Commission.MaxChangeRate,
-		// metricData.Validator.Commit.VoteType,
+		// vadalidator_signing
 		metricData.Validator.Commit.PrecommitStatus,
-
-		metricData.Network.Minting.Inflation,
-		metricData.Network.Minting.ActualInflation,
+		metricData.Validator.Proposer.Ranking,
+		metricData.Validator.Proposer.Status,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

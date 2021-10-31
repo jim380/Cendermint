@@ -21,6 +21,13 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Network.Staking.TotalSupply = restData.StakingPool.Pool.Total_supply
 	metricData.Network.Staking.BondedRatio = metricData.Network.Staking.BondedTokens / metricData.Network.Staking.TotalSupply
 
+	// slashing
+	metricData.Network.Slashing.SignedBlocksWindow = utils.StringToFloat64(restData.Slashing.Params.SignedBlocksWindow)
+	metricData.Network.Slashing.MinSignedPerWindow = utils.StringToFloat64(restData.Slashing.Params.MinSignedPerWindow)
+	metricData.Network.Slashing.DowntimeJailDuration = utils.StringToFloat64(restData.Slashing.Params.DowntimeJailDuration)
+	metricData.Network.Slashing.SlashFractionDoubleSign = utils.StringToFloat64(restData.Slashing.Params.SlashFractionDoubleSign)
+	metricData.Network.Slashing.SlashFractionDowntime = utils.StringToFloat64(restData.Slashing.Params.SlashFractionDowntime)
+
 	// minting
 	metricData.Network.Minting.Inflation = restData.Inflation
 	metricData.Network.Minting.ActualInflation = metricData.Network.Minting.Inflation / metricData.Network.Staking.BondedRatio
@@ -43,8 +50,8 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// validator delegation
 	metricData.Validator.Delegation.Shares = utils.StringToFloat64(restData.Validators.DelegatorShares)
 	metricData.Validator.Delegation.Ratio = metricData.Validator.Delegation.Shares / metricData.Network.Staking.BondedTokens
-	metricData.Validator.Delegation.DelegatorCount = restData.Delegations.DelegationCount
-	metricData.Validator.Delegation.Self = restData.Delegations.SelfDelegation
+	// metricData.Validator.Delegation.DelegatorCount = restData.Delegations.DelegationCount
+	// metricData.Validator.Delegation.Self = restData.Delegations.SelfDelegation
 
 	// validator commission
 	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validators.Commission.Commission.Rate)
