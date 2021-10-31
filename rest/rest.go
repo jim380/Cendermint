@@ -54,7 +54,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	rd.getCommit(blockData, consHexAddr)
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker:", rd.Validators.Description.Moniker))
 	zap.L().Info("", zap.Bool("Success", true), zap.String("VP:", rd.Validatorsets[rd.Validators.ConsPubKey.Value][1]))
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit:", "signed"))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit:", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards:", fmt.Sprint(rd.Rewards)))
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission:", fmt.Sprint(rd.Commission)))
