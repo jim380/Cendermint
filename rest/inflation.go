@@ -28,7 +28,7 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 	case "iris":
 		var i inflation_iris
 
-		res, err := runRESTCommand("/irishub/mint/params")
+		res, err := RESTQuery("/irishub/mint/params")
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 		}
@@ -41,14 +41,15 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 		}
 	default:
 		var i inflation
-		// Does not work
-		// res, _ := runRESTCommand("/cosmos/mint/v1beta1/inflation")
-		res, err := runRESTCommand("/minting/inflation")
+
+		res, err := RESTQuery("/minting/inflation")
 		if err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 		json.Unmarshal(res, &i)
 		if strings.Contains(string(res), "not found") {
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+		} else if strings.Contains(string(res), "error") {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 		} else {
 			result = i.Result

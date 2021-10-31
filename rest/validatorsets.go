@@ -28,12 +28,14 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 	var vSets validatorsets
 	var vSetsResult map[string][]string = make(map[string][]string)
 
-	res, err := runRESTCommand("/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?pagination.limit=1000")
+	res, err := RESTQuery("/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?pagination.limit=1000")
 	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &vSets)
 	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators))))

@@ -2,7 +2,8 @@ package rest
 
 import (
 	"fmt"
-	"os/exec"
+	"io/ioutil"
+	"net/http"
 
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
@@ -61,9 +62,18 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	return rd
 }
 
-func runRESTCommand(str string) ([]uint8, error) {
-	cmd := "curl -s -XGET " + Addr + str + " -H \"accept:application/json\""
-	out, err := exec.Command("/bin/bash", "-c", cmd).Output()
+func RESTQuery(route string) ([]byte, error) {
+	req, err := http.NewRequest("GET", Addr+route, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/json")
 
-	return out, err
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	return body, err
 }

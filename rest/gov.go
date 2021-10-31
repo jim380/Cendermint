@@ -31,12 +31,14 @@ func (rd *RESTData) getGovInfo() {
 
 	votingCount := 0
 
-	res, err := runRESTCommand("/cosmos/gov/v1beta1/proposals")
+	res, err := RESTQuery("/cosmos/gov/v1beta1/proposals")
 	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &g)
 	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count", g.Pagination.Total))

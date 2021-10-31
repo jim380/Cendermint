@@ -66,10 +66,10 @@ type metric struct {
 			ConsensusHex string
 		}
 
-		// Proposer struct {
-		// 	Ranking float64
-		// 	Status  float64
-		// }
+		Proposer struct {
+			Ranking float64
+			Status  float64
+		}
 
 		Delegation struct {
 			Shares         float64

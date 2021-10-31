@@ -23,12 +23,14 @@ type Commission struct {
 func (rd *RESTData) getRewardsCommission() {
 	var rc rewardsAndCommisson
 
-	res, err := runRESTCommand("/distribution/validators/" + OperAddr)
+	res, err := RESTQuery("/distribution/validators/" + OperAddr)
 	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &rc)
 	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 

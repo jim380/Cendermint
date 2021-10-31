@@ -47,12 +47,14 @@ type Commission_rates struct {
 func (rd *RESTData) getValidator() {
 	var v validators
 
-	res, err := runRESTCommand("/staking/validators/" + OperAddr)
+	res, err := RESTQuery("/staking/validators/" + OperAddr)
 	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &v)
 	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 

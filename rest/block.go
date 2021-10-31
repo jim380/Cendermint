@@ -24,12 +24,14 @@ type Blocks struct {
 }
 
 func (b *Blocks) GetInfo() Blocks {
-	res, err := runRESTCommand("/blocks/latest")
+	res, err := RESTQuery("/blocks/latest")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &b)
 	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
