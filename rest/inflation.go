@@ -49,7 +49,7 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 		json.Unmarshal(res, &i)
 		if strings.Contains(string(res), "not found") {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else if strings.Contains(string(res), "error") {
+		} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 		} else {
 			result = i.Result
