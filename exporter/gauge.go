@@ -69,7 +69,6 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.Validator.Commission.MaxChangeRate,
 		// vadalidator_signing
 		metricData.Validator.Commit.PrecommitStatus,
-		metricData.Validator.Proposer.Ranking,
 		metricData.Validator.Proposer.Status,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {

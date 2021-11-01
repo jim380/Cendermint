@@ -15,7 +15,7 @@ func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
 	blockProposer := blockData.Block.Header.Proposer_address
 	cInfo.ChainId = blockData.Block.Header.ChainID
 	cInfo.ValidatorPrecommitStatus, cInfo.ValidatorProposingStatus = 0.0, 0.0
-	for _, v := range blockData.Block.Last_commit.Signatures {
+	for _, v := range blockData.Block.LastCommit.Signatures {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
@@ -29,6 +29,7 @@ func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
 				cInfo.ValidatorProposingStatus = 1.0
 				zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
 			}
+
 		}()
 
 	}

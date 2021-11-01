@@ -60,5 +60,4 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_validator_commission_uatom` | Gauge | - | Available commission of the validator |
 | `cendermint_validator_rewards_uatom` | Gauge | - | Available self-delegation rewards of the validator |
 | `cendermint_validator_precommit_status` | Gauge | - | Precommit status of the validator<br>[0] Missed - [1] Signed |
-| `cendermint_validator_proposer_ranking` | Gauge | - | The validator's current ranking until becoming the proposer of the next round |
 | `cendermint_validator_proposer_status` | Gauge | - | Proposer status of the validator<br>[0] Not the proposer - [1] Proposer |

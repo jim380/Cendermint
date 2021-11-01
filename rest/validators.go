@@ -15,7 +15,7 @@ type validators struct {
 type validator struct {
 	OperAddr        string     `json:"operator_address"`
 	ConsPubKey      consPubKey `json:"consensus_pubkey"`
-	Jailed          bool       `json:"jailed"`
+	Jailed          bool       `json:"jailed"` // no longer available
 	Status          int        `json:"status"`
 	Tokens          string     `json:"tokens"`
 	DelegatorShares string     `json:"delegator_shares"`
@@ -28,7 +28,7 @@ type validator struct {
 	UnbondingHeight string `json:"unbonding_height"`
 	UnbondingTime   string `json:"unbonding_time"`
 	Commission      struct {
-		Commission Commission_rates `json:"commission"`
+		Commission commission_rates `json:"commission_rates"`
 		UpdateTime string           `json:"update_time"`
 	}
 	MinSelfDelegation string `json:"min_self_delegation"`
@@ -38,7 +38,7 @@ type consPubKey struct {
 	Value string `json:"value"`
 }
 
-type Commission_rates struct {
+type commission_rates struct {
 	Rate            string `json:"rate"`
 	Max_rate        string `json:"max_rate"`
 	Max_change_rate string `json:"max_change_rate"`

@@ -9,17 +9,20 @@ import (
 
 type Blocks struct {
 	Block struct {
-		Header struct {
-			ChainID          string `json:"chain_id"`
-			Height           string `json:"height"`
-			Proposer_address string `json:"proposer_address"`
-		}
+		Header     header     `json:"header"`
+		LastCommit lastCommit `json:"last_commit"`
+	}
+}
 
-		Last_commit struct {
-			Signatures []struct {
-				Validator_address string `json:"validator_address"`
-			}
-		}
+type header struct {
+	ChainID          string `json:"chain_id"`
+	Height           string `json:"height"`
+	Proposer_address string `json:"proposer_address"`
+}
+
+type lastCommit struct {
+	Signatures []struct {
+		Validator_address string `json:"validator_address"`
 	}
 }
 

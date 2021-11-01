@@ -65,6 +65,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// validator commit
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
+	metricData.Validator.Proposer.Status = restData.Commit.ValidatorProposingStatus
 }
 
 func GetMetric() *metric {

@@ -44,7 +44,6 @@ var (
 		"validator_commission_max_change_rate",
 		// vadalidator_signing
 		"validator_precommit_status",
-		"validator_proposer_ranking",
 		"validator_proposer_status",
 	}
 
