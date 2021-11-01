@@ -27,6 +27,10 @@ type RESTData struct {
 	Commission    []Coin
 	Inflation     float64
 	Gov           govInfo
+	IBC           struct {
+		IBCChannels map[string][]string
+		IBCInfo     ibcChannelInfo
+	}
 }
 
 func (rd RESTData) new(blockHeight int64) *RESTData {
@@ -58,6 +62,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards:", fmt.Sprint(rd.Rewards)))
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission:", fmt.Sprint(rd.Commission)))
+	rd.getIBCChannels()
 
 	return rd
 }

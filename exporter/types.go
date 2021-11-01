@@ -45,6 +45,10 @@ var (
 		// vadalidator_signing
 		"validator_precommit_status",
 		"validator_proposer_status",
+
+		// ibc
+		"ibc_channels_total",
+		"ibc_channels_open",
 	}
 
 	metricData metric
@@ -121,6 +125,12 @@ type metric struct {
 		Commit struct {
 			// VoteType        float64
 			PrecommitStatus float64
+		}
+	}
+	IBC struct {
+		IBCChannels struct {
+			Total float64
+			Open  float64
 		}
 	}
 }

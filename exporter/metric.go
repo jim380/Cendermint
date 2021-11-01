@@ -66,6 +66,10 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// validator commit
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
 	metricData.Validator.Proposer.Status = restData.Commit.ValidatorProposingStatus
+
+	// ibc
+	metricData.IBC.IBCChannels.Total = float64(len(restData.IBC.IBCChannels))
+	metricData.IBC.IBCChannels.Open = float64(restData.IBC.IBCInfo.Open)
 }
 
 func GetMetric() *metric {

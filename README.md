@@ -61,3 +61,5 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_validator_rewards_uatom` | Gauge | - | Available self-delegation rewards of the validator |
 | `cendermint_validator_precommit_status` | Gauge | - | Precommit status of the validator<br>[0] Missed - [1] Signed |
 | `cendermint_validator_proposer_status` | Gauge | - | Proposer status of the validator<br>[0] Not the proposer - [1] Proposer |
+| `cendermint_ibc_channels_total` | Gauge | - | Total number of ibc channels in the network |
+| `cendermint_ibc_channels_open` | Gauge | - | Total number of open ibc channels in the network |
