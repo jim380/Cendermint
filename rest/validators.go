@@ -15,7 +15,7 @@ type validators struct {
 type validator struct {
 	OperAddr        string     `json:"operator_address"`
 	ConsPubKey      consPubKey `json:"consensus_pubkey"`
-	Jailed          bool       `json:"jailed"` // no longer available
+	Jailed          bool       `json:"jailed"`
 	Status          int        `json:"status"`
 	Tokens          string     `json:"tokens"`
 	DelegatorShares string     `json:"delegator_shares"`
@@ -35,7 +35,7 @@ type validator struct {
 }
 
 type consPubKey struct {
-	Value string `json:"value"`
+	Key string `json:"key"`
 }
 
 type commission_rates struct {
@@ -47,7 +47,7 @@ type commission_rates struct {
 func (rd *RESTData) getValidator() {
 	var v validators
 
-	res, err := RESTQuery("/staking/validators/" + OperAddr)
+	res, err := RESTQuery("/cosmos/staking/v1beta1/validators/" + OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

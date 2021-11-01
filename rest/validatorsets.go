@@ -43,14 +43,13 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 
 	for _, value := range vSets.Result.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-		vSetsResult[value.ConsPubKey.Value] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 
 	rd.Validatorsets = Sort(vSetsResult)
 }
 
 func Sort(mapValue map[string][]string) map[string][]string {
-
 	keys := []string{}
 	newMapValue := mapValue
 

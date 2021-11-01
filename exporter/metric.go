@@ -10,7 +10,7 @@ import (
 func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	operAddr := rest.OperAddr
 	consPubKey := restData.Validators.ConsPubKey
-	consAddr := restData.Validatorsets[consPubKey.Value][0]
+	consAddr := restData.Validatorsets[consPubKey.Key][0]
 
 	// network
 	metricData.Network.ChainID = restData.Commit.ChainId
@@ -38,7 +38,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// validator info
 	metricData.Validator.Moniker = restData.Validators.Description.Moniker
-	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey.Value][1])
+	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey.Key][1])
 	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validators.MinSelfDelegation)
 	metricData.Validator.JailStatus = utils.BoolToFloat64(restData.Validators.Jailed)
 
