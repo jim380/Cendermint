@@ -30,3 +30,35 @@ $ ./Cendermint run
 $ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:master /bin/sh -c "Cendermint run"
 ```
 Again, remember to create a `config.env` under `<your_dir>` and have it filled out.
+
+## Available metrics
+| Name | Type | Tags | Description |
+|------|------|------|-------------|
+| `cendermint_chain_blockHeight` | Gauge | - | Current blockchain height|
+| `cendermint_staking_bonded_ratio` | Gauge | - | Bonded stake ratio in the network |
+| `cendermint_staking_bonded_tokens` | Gauge | - | Bonded stake amount in the network |
+| `cendermint_staking_not_bonded_tokens` | Gauge | - | Unbonded stake amount in the network |
+| `cendermint_staking_total_supply` | Gauge | - | Total token supply in the network |
+| `cendermint_slashing_downtime_jail_duration` | Gauge | - | Downtime duration before getting jailed|
+| `cendermint_slashing_min_signed_per_window` | Gauge | - | Minimum number of blocks that need to be signed per signing window before getting jailed |
+| `cendermint_slashing_signed_blocks_window` | Gauge | - | Number of blocks in a signing window |
+| `cendermint_slashing_slash_fraction_double_sign` | Gauge | - | % of stake to be slashed in the event of a double sign |
+| `cendermint_slashing_slash_fraction_downtime` | Gauge | - | % of stake to be slashed in the event of downtime  |
+| `cendermint_minting_actual_inflation` | Gauge | - | Actual inflation in the network |
+| `cendermint_minting_inflation` | Gauge | - | Default inflation in the network |
+| `cendermint_gov_total_proposal_count` | Gauge | - | Total number of proposals ever submitted in the network |
+| `cendermint_gov_voting_proposal_count` | Gauge | - | Number of proposals currently in voting |
+| `cendermint_validator_voting_power` | Gauge | - | Voting power of the validator |
+| `cendermint_validator_min_self_delegation` | Gauge | - | Minimum self delegation amount of the validator |
+| `cendermint_validator_jail_status` | Gauge | - | Jail status of the validator<br>[0] Active - [1] Jailed |
+| `cendermint_validator_delegation_shares` | Gauge | - | Total number of delegated tokens of the validator |
+| `cendermint_validator_delegation_ratio` | Gauge | - | Ratio of the validator's bonded stake to the network's total bonded stake |
+| `cendermint_validator_commission_rate` | Gauge | - | Commission rate of the validator |
+| `cendermint_validator_commission_max_rate` | Gauge | - | Maximum commission rate of the validator |
+| `cendermint_validator_commission_max_change_rate` | Gauge | - | Maximum change rate of the validator's commission |
+| `cendermint_validator_balances_uatom` | Gauge | - | Available balance of the validator |
+| `cendermint_validator_commission_uatom` | Gauge | - | Available commission of the validator |
+| `cendermint_validator_rewards_uatom` | Gauge | - | Available self-delegation rewards of the validator |
+| `cendermint_validator_precommit_status` | Gauge | - | Precommit status of the validator<br>[0] Missed - [1] Signed |
+| `cendermint_validator_proposer_ranking` | Gauge | - | The validator's current ranking until becoming the proposer of the next round |
+| `cendermint_validator_proposer_status` | Gauge | - | Proposer status of the validator<br>[0] Not the proposer - [1] Proposer |
