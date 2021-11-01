@@ -16,12 +16,17 @@ type validatorsets struct {
 	Result struct {
 		Block_Height string `json:"block_height"`
 		Validators   []struct {
-			ConsAddr         string     `json:"address"`
-			ConsPubKey       consPubKey `json:"pub_key"`
-			ProposerPriority string     `json:"proposer_priority"`
-			VotingPower      string     `json:"voting_power"`
+			ConsAddr         string           `json:"address"`
+			ConsPubKey       consPubKeyValSet `json:"pub_key"`
+			ProposerPriority string           `json:"proposer_priority"`
+			VotingPower      string           `json:"voting_power"`
 		}
 	}
+}
+
+type consPubKeyValSet struct {
+	Type string `json:"type"`
+	Key  string `json:"value"`
 }
 
 func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {

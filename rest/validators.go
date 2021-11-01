@@ -8,17 +8,16 @@ import (
 )
 
 type validators struct {
-	Height string `json:"height"`
-	Result validator
+	Validator validator `json:"validator"`
 }
 
 type validator struct {
-	OperAddr        string     `json:"operator_address"`
-	ConsPubKey      consPubKey `json:"consensus_pubkey"`
-	Jailed          bool       `json:"jailed"`
-	Status          int        `json:"status"`
-	Tokens          string     `json:"tokens"`
-	DelegatorShares string     `json:"delegator_shares"`
+	OperAddr        string        `json:"operator_address"`
+	ConsPubKey      consPubKeyVal `json:"consensus_pubkey"`
+	Jailed          bool          `json:"jailed"`
+	Status          int           `json:"status"`
+	Tokens          string        `json:"tokens"`
+	DelegatorShares string        `json:"delegator_shares"`
 	Description     struct {
 		Moniker  string `json:"moniker"`
 		Identity string `json:"identity"`
@@ -34,8 +33,9 @@ type validator struct {
 	MinSelfDelegation string `json:"min_self_delegation"`
 }
 
-type consPubKey struct {
-	Key string `json:"key"`
+type consPubKeyVal struct {
+	Type string `json:"@type"`
+	Key  string `json:"key"`
 }
 
 type commission_rates struct {
@@ -58,5 +58,5 @@ func (rd *RESTData) getValidator() {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
-	rd.Validators = v.Result
+	rd.Validators = v.Validator
 }

@@ -54,7 +54,9 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	rd.getBalances()
 	rd.getRewardsCommission()
 
+	fmt.Println(rd.Validatorsets)
 	consHexAddr := utils.Bech32AddrToHexAddr(rd.Validatorsets[rd.Validators.ConsPubKey.Key][0])
+	fmt.Println("consHexAddr after")
 	rd.getCommit(blockData, consHexAddr)
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker:", rd.Validators.Description.Moniker))
 	zap.L().Info("", zap.Bool("Success", true), zap.String("VP:", rd.Validatorsets[rd.Validators.ConsPubKey.Key][1]))
