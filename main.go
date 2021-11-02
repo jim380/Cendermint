@@ -38,7 +38,7 @@ func main() {
 	// 	log.Fatal("Error loading .env file")
 	// }
 
-	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL")}
+	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL"), os.Getenv("MISS_THRESHOLD"), os.Getenv("MISS_CONSECUTIVE")}
 	cmd.CheckInputs(inputs, chainList)
 
 	chain = inputs[0]

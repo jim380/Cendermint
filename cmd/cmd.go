@@ -66,4 +66,12 @@ func CheckInputs(inputs, chainList []string) {
 	if inputs[5] == "" {
 		log.Fatal("Poll interval was not provided")
 	}
+
+	if inputs[6] == "" {
+		log.Fatal("Threshold to trigger missing block alerts was not provided")
+	}
+
+	if inputs[7] == "" {
+		log.Fatal("Threshold to trigger consecutively-missing block alerts was not provided")
+	}
 }

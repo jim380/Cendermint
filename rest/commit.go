@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"os"
 	"strconv"
 
 	"go.uber.org/zap"
@@ -43,11 +44,13 @@ func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
 				cInfo.LastSigned = currentHeight
 				cInfo.ValidatorPrecommitStatus = 1.0
 				// if missed more than threshold
-				if cInfo.MissedCount >= 2 {
+				threshold, _ := strconv.Atoi(os.Getenv("MISS_THRESHOLD"))
+				if cInfo.MissedCount >= threshold {
 					cInfo.MissThreshold = 1
 				}
 				// miss consecutively
-				if currentHeight-cInfo.LastSigned == 2 {
+				consecutive, _ := strconv.Atoi(os.Getenv("MISS_CONSECUTIVE"))
+				if currentHeight-cInfo.LastSigned == consecutive {
 					cInfo.MissConsecutive = 1
 				}
 				// MissedCount resets when the validator signs again
