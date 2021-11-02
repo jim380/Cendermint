@@ -45,6 +45,10 @@ var (
 		// vadalidator_signing
 		"validator_precommit_status",
 		"validator_proposer_status",
+		"validator_last_signed_height",
+		"validator_miss_consecutive",
+		"validator_miss_threshold",
+		"validator_miss_count",
 
 		// ibc
 		"ibc_channels_total",
@@ -123,10 +127,14 @@ type metric struct {
 		}
 
 		Commit struct {
-			// VoteType        float64
 			PrecommitStatus float64
+			MissedCount     float64
+			LastSigned      float64
+			MissThreshold   float64
+			MissConsecutive float64
 		}
 	}
+
 	IBC struct {
 		IBCChannels struct {
 			Total float64

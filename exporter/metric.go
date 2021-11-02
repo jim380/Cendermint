@@ -66,6 +66,10 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// validator commit
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
 	metricData.Validator.Proposer.Status = restData.Commit.ValidatorProposingStatus
+	metricData.Validator.Commit.LastSigned = float64(restData.Commit.LastSigned)
+	metricData.Validator.Commit.MissConsecutive = restData.Commit.MissConsecutive
+	metricData.Validator.Commit.MissThreshold = restData.Commit.MissThreshold
+	metricData.Validator.Commit.MissedCount = float64(restData.Commit.MissedCount)
 
 	// ibc
 	metricData.IBC.IBCChannels.Total = float64(len(restData.IBC.IBCChannels))

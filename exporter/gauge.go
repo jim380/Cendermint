@@ -70,6 +70,10 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		// vadalidator_signing
 		metricData.Validator.Commit.PrecommitStatus,
 		metricData.Validator.Proposer.Status,
+		metricData.Validator.Commit.LastSigned,
+		metricData.Validator.Commit.MissConsecutive,
+		metricData.Validator.Commit.MissThreshold,
+		metricData.Validator.Commit.MissedCount,
 
 		// ibc
 		metricData.IBC.IBCChannels.Total,

@@ -61,5 +61,9 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_validator_rewards_uatom` | Gauge | - | Available self-delegation rewards of the validator |
 | `cendermint_validator_precommit_status` | Gauge | - | Precommit status of the validator<br>[0] Missed - [1] Signed |
 | `cendermint_validator_proposer_status` | Gauge | - | Proposer status of the validator<br>[0] Not the proposer - [1] Proposer |
+| `cendermint_validator_last_signed_height` | Gauge | - | The last height the validator signed |
+| `cendermint_validator_miss_count` | Gauge | - | Number of blocks missed since the validator last signed |
+| `cendermint_validator_miss_consecutive` | Gauge | - | The validator has missed two blocks in a row |
+| `cendermint_validator_miss_threshold` | Gauge | - | The validator has missed `>= threshold` bloclk since s/he last signed |
 | `cendermint_ibc_channels_total` | Gauge | - | Total number of ibc channels in the network |
 | `cendermint_ibc_channels_open` | Gauge | - | Total number of open ibc channels in the network |
