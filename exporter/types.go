@@ -58,6 +58,8 @@ var (
 		// ibc
 		"ibc_channels_total",
 		"ibc_channels_open",
+		"ibc_connections_total",
+		"ibc_connections_open",
 	}
 
 	metricData metric
@@ -147,6 +149,10 @@ type metric struct {
 
 	IBC struct {
 		IBCChannels struct {
+			Total float64
+			Open  float64
+		}
+		IBCConnections struct {
 			Total float64
 			Open  float64
 		}

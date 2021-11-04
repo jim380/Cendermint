@@ -82,7 +82,9 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// ibc
 	metricData.IBC.IBCChannels.Total = float64(len(restData.IBC.IBCChannels))
-	metricData.IBC.IBCChannels.Open = float64(restData.IBC.IBCInfo.Open)
+	metricData.IBC.IBCChannels.Open = float64(restData.IBC.IBCInfo.OpenChannels)
+	metricData.IBC.IBCConnections.Total = float64(len(restData.IBC.IBCConnections))
+	metricData.IBC.IBCConnections.Open = float64(restData.IBC.IBCInfo.OpenConnections)
 }
 
 func GetMetric() *metric {
