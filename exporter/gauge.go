@@ -48,7 +48,7 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		// slashing
 		metricData.Network.Slashing.SignedBlocksWindow,
 		metricData.Network.Slashing.MinSignedPerWindow,
-		// metricData.Network.Slashing.DowntimeJailDuration,
+		metricData.Network.Slashing.DowntimeJailDuration,
 		metricData.Network.Slashing.SlashFractionDoubleSign,
 		metricData.Network.Slashing.SlashFractionDowntime,
 		metricData.Network.Slashing.StartHeight,

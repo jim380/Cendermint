@@ -44,6 +44,11 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_slashing_signed_blocks_window` | Gauge | - | Number of blocks in a signing window |
 | `cendermint_slashing_slash_fraction_double_sign` | Gauge | - | % of stake to be slashed in the event of a double sign |
 | `cendermint_slashing_slash_fraction_downtime` | Gauge | - | % of stake to be slashed in the event of downtime  |
+| `cendermint_slashing_start_Height` | Gauge | - | The first block the validator signed on the current chain |
+| `cendermint_slashing_index_offset` | Gauge | - | The index used to check if the validator has crossed below the liveness threshold over a sliding window |
+| `cendermint_slashing_jailed_until` | Gauge | - | Most recent `jailed_until` date/time of the validator recorded on chain |
+| `cendermint_slashing_tombstoned` | Gauge | - | Whether the validator is tombstoned (i.e. double sign) [0] False - [1] True |
+| `cendermint_slashing_missed_blocks_counter` | Gauge | - | Total number of blocks the validator missed since last unjail |
 | `cendermint_minting_actual_inflation` | Gauge | - | Actual inflation in the network |
 | `cendermint_minting_inflation` | Gauge | - | Default inflation in the network |
 | `cendermint_gov_total_proposal_count` | Gauge | - | Total number of proposals ever submitted in the network |
@@ -64,6 +69,6 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_validator_last_signed_height` | Gauge | - | The last height the validator signed |
 | `cendermint_validator_miss_count` | Gauge | - | Number of blocks missed since the validator last signed |
 | `cendermint_validator_miss_consecutive` | Gauge | - | The validator has missed two blocks in a row |
-| `cendermint_validator_miss_threshold` | Gauge | - | The validator has missed `>= threshold` bloclk since s/he last signed |
+| `cendermint_validator_miss_threshold` | Gauge | - | The validator has missed `>= threshold` block since s/he last signed |
 | `cendermint_ibc_channels_total` | Gauge | - | Total number of ibc channels in the network |
 | `cendermint_ibc_channels_open` | Gauge | - | Total number of open ibc channels in the network |

@@ -23,7 +23,7 @@ var (
 		// slashing
 		"slashing_signed_blocks_window",
 		"slashing_min_signed_per_window",
-		// "slashing_downtime_jail_duration",
+		"slashing_downtime_jail_duration",
 		"slashing_slash_fraction_double_sign",
 		"slashing_slash_fraction_downtime",
 		"slashing_start_Height",
