@@ -23,9 +23,14 @@ var (
 		// slashing
 		"slashing_signed_blocks_window",
 		"slashing_min_signed_per_window",
-		"slashing_downtime_jail_duration",
+		// "slashing_downtime_jail_duration",
 		"slashing_slash_fraction_double_sign",
 		"slashing_slash_fraction_downtime",
+		"slashing_start_Height",
+		"slashing_index_offset",
+		"slashing_jailed_until",
+		"slashing_tombstoned",
+		"slashing_missed_blocks_counter",
 
 		// gov
 		"gov_total_proposal_count",
@@ -77,6 +82,11 @@ type metric struct {
 			DowntimeJailDuration    float64
 			SlashFractionDoubleSign float64
 			SlashFractionDowntime   float64
+			StartHeight             float64
+			IndexOffset             float64
+			JailedUntil             float64
+			Tombstoned              float64
+			MissedBlocksCounter     float64
 		}
 
 		Minting struct {

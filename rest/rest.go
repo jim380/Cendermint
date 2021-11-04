@@ -53,6 +53,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	rd.getValidator()
 	rd.getBalances()
 	rd.getRewardsCommission()
+	rd.getSigningInfo(rd.Validatorsets[rd.Validators.ConsPubKey.Key][0])
 
 	consHexAddr := utils.Bech32AddrToHexAddr(rd.Validatorsets[rd.Validators.ConsPubKey.Key][0])
 	rd.getCommit(blockData, consHexAddr)

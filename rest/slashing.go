@@ -8,7 +8,8 @@ import (
 )
 
 type slashingInfo struct {
-	Params Params `json:"params"`
+	Params     Params      `json:"params"`
+	ValSigning SigningInfo `json:"val_signing_info"`
 }
 
 type Params struct {
@@ -17,6 +18,14 @@ type Params struct {
 	DowntimeJailDuration    string `json:"downtime_jail_duration"`
 	SlashFractionDoubleSign string `json:"slash_fraction_double_sign"`
 	SlashFractionDowntime   string `json:"slash_fraction_downtime"`
+}
+
+type SigningInfo struct {
+	StartHeight         string `json:"start_height"`
+	IndexOffset         string `json:"index_offset"`
+	JailedUntil         string `json:"jailed_until"`
+	Tombstoned          bool   `json:"tombstoned"`
+	MissedBlocksCounter string `json:"missed_blocks_counter"`
 }
 
 func (rd *RESTData) getSlashingParams() {
@@ -32,10 +41,22 @@ func (rd *RESTData) getSlashingParams() {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
+	rd.Slashing.Params = d.Params
+}
 
-	rd.Slashing.Params.SignedBlocksWindow = d.Params.SignedBlocksWindow
-	rd.Slashing.Params.MinSignedPerWindow = d.Params.MinSignedPerWindow
-	rd.Slashing.Params.DowntimeJailDuration = d.Params.DowntimeJailDuration
-	rd.Slashing.Params.SlashFractionDoubleSign = d.Params.SlashFractionDoubleSign
-	rd.Slashing.Params.SlashFractionDowntime = d.Params.SlashFractionDowntime
+func (rd *RESTData) getSigningInfo(consAddr string) {
+	var d slashingInfo
+
+	res, err := RESTQuery("/cosmos/slashing/v1beta1/signing_infos/" + consAddr)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &d)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+
+	rd.Slashing.ValSigning = d.ValSigning
 }

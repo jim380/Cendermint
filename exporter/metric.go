@@ -1,6 +1,8 @@
 package exporter
 
 import (
+	"time"
+
 	"go.uber.org/zap"
 
 	"github.com/jim380/Cendermint/rest"
@@ -24,9 +26,15 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// slashing
 	metricData.Network.Slashing.SignedBlocksWindow = utils.StringToFloat64(restData.Slashing.Params.SignedBlocksWindow)
 	metricData.Network.Slashing.MinSignedPerWindow = utils.StringToFloat64(restData.Slashing.Params.MinSignedPerWindow)
-	metricData.Network.Slashing.DowntimeJailDuration = utils.StringToFloat64(restData.Slashing.Params.DowntimeJailDuration)
+	// metricData.Network.Slashing.DowntimeJailDuration = utils.StringToFloat64(restData.Slashing.Params.DowntimeJailDuration)
 	metricData.Network.Slashing.SlashFractionDoubleSign = utils.StringToFloat64(restData.Slashing.Params.SlashFractionDoubleSign)
 	metricData.Network.Slashing.SlashFractionDowntime = utils.StringToFloat64(restData.Slashing.Params.SlashFractionDowntime)
+	metricData.Network.Slashing.StartHeight = utils.StringToFloat64(restData.Slashing.ValSigning.StartHeight)
+	metricData.Network.Slashing.IndexOffset = utils.StringToFloat64(restData.Slashing.ValSigning.IndexOffset)
+	jailedUntilTime, _ := time.Parse("2006-01-02T15:04:05Z", restData.Slashing.ValSigning.JailedUntil)
+	metricData.Network.Slashing.JailedUntil = float64(jailedUntilTime.Unix())
+	metricData.Network.Slashing.Tombstoned = utils.BoolToFloat64(restData.Slashing.ValSigning.Tombstoned)
+	metricData.Network.Slashing.MissedBlocksCounter = utils.StringToFloat64(restData.Slashing.ValSigning.MissedBlocksCounter)
 
 	// minting
 	metricData.Network.Minting.Inflation = restData.Inflation
