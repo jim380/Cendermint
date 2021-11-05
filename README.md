@@ -72,3 +72,5 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_validator_miss_threshold` | Gauge | - | The validator has missed `>= threshold` block since s/he last signed |
 | `cendermint_ibc_channels_total` | Gauge | - | Total number of ibc channels in the network |
 | `cendermint_ibc_channels_open` | Gauge | - | Total number of open ibc channels in the network |
+| `cendermint_ibc_connections_total` | Gauge | - | Total number of ibc connections in the network |
+| `cendermint_ibc_connections_open` | Gauge | - | Total number of open ibc connections in the network |
