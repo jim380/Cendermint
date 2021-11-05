@@ -110,7 +110,7 @@ func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Transfer Total:", fmt.Sprintf("%v", transferTotal)))
 
 	rd.TxInfo = txInfo
-	rd.TxInfo.Result.GasUsedTotal = float64(gasWantedTotal)
+	rd.TxInfo.Result.GasUsedTotal = float64(gasUsedTotal)
 	rd.TxInfo.Result.GasWantedTotal = float64(gasWantedTotal)
 	rd.TxInfo.Result.EventsTotal = float64(eventsTotal)
 	rd.TxInfo.Result.DelegateTotal = float64(delegateTotal)
