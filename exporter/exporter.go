@@ -52,18 +52,12 @@ func Run(chain string, log *zap.Logger) {
 
 	prometheus.MustRegister(gaugesForLabel)
 
-	for {
-		func() {
-			defer func() {
-				if r := recover(); r != nil {
-					//Error Log
-					//panic("oops...something bad happened")
-				}
-				pollInterval, _ := strconv.Atoi(os.Getenv("POLL_INTERVAL"))
-				// zap.L().Info("", zap.Bool("Success", true), zap.String("pollInterval (sec):", strconv.Itoa(pollInterval)))
-				time.Sleep(time.Duration(pollInterval) * time.Second)
-			}()
+	pollInterval, _ := strconv.Atoi(os.Getenv("POLL_INTERVAL"))
+	ticker := time.NewTicker(1 * time.Second).C
+	// ticker2 := time.NewTicker(40 * time.Second).C
 
+	go func() {
+		for {
 			var block rest.Blocks
 			block.GetInfo()
 
@@ -71,11 +65,18 @@ func Run(chain string, log *zap.Logger) {
 			if previousBlockHeight != currentBlockHeight {
 				fmt.Println("")
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block Height", fmt.Sprint(currentBlockHeight)))
+				select {
+				case <-ticker:
+					// fetch info from REST
+					restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
+					SetMetric(currentBlockHeight, restData, log)
+					// case <-ticker2:
+					// takes ~5-6 blocks to return results per request
+					// tends to halt the node too. Caution !!!
+					// restData := rest.GetDelegationsData(chain, currentBlockHeight, block, denomList[0])
+					// SetMetric(currentBlockHeight, restData, log)
+				}
 
-				// fetch info from REST
-				restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
-
-				SetMetric(currentBlockHeight, restData, log)
 				metricData := GetMetric()
 
 				setDenomGauges(metricData, denomList)
@@ -89,9 +90,9 @@ func Run(chain string, log *zap.Logger) {
 					metricData.Validator.Address.ConsensusHex,
 				).Add(0)
 
+				previousBlockHeight = currentBlockHeight
 			}
-
-			previousBlockHeight = currentBlockHeight
-		}()
-	}
+		}
+	}()
+	time.Sleep(time.Duration(pollInterval) * time.Second)
 }

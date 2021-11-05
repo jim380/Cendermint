@@ -71,12 +71,18 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission:", fmt.Sprint(rd.Commission)))
 		rd.getIBCChannels()
 		rd.getIBCConnections()
-		// takes ~5-6 blocks to return results per request
-		// might halt the node. Caution !!!
-		// rd.getDelegations()
 		wg.Done()
 	}()
 	wg.Wait()
+	return rd
+}
+
+func GetDelegationsData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+	var restData RESTData
+	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
+
+	rd := restData.new(blockHeight)
+	rd.getDelegations()
 	return rd
 }
 
