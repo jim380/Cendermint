@@ -19,6 +19,7 @@ var (
 type RESTData struct {
 	BlockHeight   int64
 	Commit        commitInfo
+	NodeInfo      nodeInfo
 	StakingPool   stakingPool
 	Slashing      slashingInfo
 	Validatorsets map[string][]string
@@ -71,6 +72,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission:", fmt.Sprint(rd.Commission)))
 		rd.getIBCChannels()
 		rd.getIBCConnections()
+		rd.getNodeInfo()
 		wg.Done()
 	}()
 	wg.Wait()

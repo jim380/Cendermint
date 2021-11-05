@@ -90,3 +90,27 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		defaultGauges[i].Set(gaugesValue[i])
 	}
 }
+
+// {"chain_id", "node_moniker", "node_id", "tm_version", "app_name", "binary_name", "app_version", "git_commit", "go_version", "sdk_version"}
+func setNodeLabels(metricData *metric, labels prometheus.CounterVec) {
+	labels.WithLabelValues(
+		metricData.Network.ChainID,
+		metricData.Network.NodeInfo.Moniker,
+		metricData.Network.NodeInfo.NodeID,
+		metricData.Network.NodeInfo.TMVersion,
+		metricData.Network.NodeInfo.AppName,
+		metricData.Network.NodeInfo.Name,
+		metricData.Network.NodeInfo.Version,
+		metricData.Network.NodeInfo.GitCommit,
+		metricData.Network.NodeInfo.GoVersion,
+		metricData.Network.NodeInfo.SDKVersion,
+	).Add(0)
+}
+
+func setAddrLabels(metricData *metric, labels prometheus.CounterVec) {
+	labels.WithLabelValues(
+		metricData.Validator.Address.Operator,
+		metricData.Validator.Address.Account,
+		metricData.Validator.Address.ConsensusHex,
+	).Add(0)
+}

@@ -74,3 +74,5 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_ibc_channels_open` | Gauge | - | Total number of open ibc channels in the network |
 | `cendermint_ibc_connections_total` | Gauge | - | Total number of ibc connections in the network |
 | `cendermint_ibc_connections_open` | Gauge | - | Total number of open ibc connections in the network |
+| `cendermint_labels_node_info` | Counter | - | The following labels are currently avaialble: `app_name`; `binary_name`; `chain_id`; `git_commit`; `go_version`; `node_id`; `node_moniker`; `sdk_version`; `tm_version` |
+| `cendermint_labels_addr` | Counter | - | The following labels are currently avaialble: `account_address`;`cons_address_hex`; `operator_address` |

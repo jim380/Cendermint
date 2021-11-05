@@ -85,6 +85,18 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.IBC.IBCChannels.Open = float64(restData.IBC.IBCInfo.OpenChannels)
 	metricData.IBC.IBCConnections.Total = float64(len(restData.IBC.IBCConnections))
 	metricData.IBC.IBCConnections.Open = float64(restData.IBC.IBCInfo.OpenConnections)
+
+	// node info
+	// {"chain_id", "node_moniker", "node_id", "tm_version", "app_name", "binary_name", "app_version", "git_commit", "go_version", "sdk_version"}
+	metricData.Network.NodeInfo.Moniker = restData.NodeInfo.Default.Moniker
+	metricData.Network.NodeInfo.NodeID = restData.NodeInfo.Default.NodeID
+	metricData.Network.NodeInfo.TMVersion = restData.NodeInfo.Default.TMVersion
+	metricData.Network.NodeInfo.AppName = restData.NodeInfo.Application.AppName
+	metricData.Network.NodeInfo.Name = restData.NodeInfo.Application.Name
+	metricData.Network.NodeInfo.Version = restData.NodeInfo.Application.Version
+	metricData.Network.NodeInfo.GitCommit = restData.NodeInfo.Application.GitCommit
+	metricData.Network.NodeInfo.GoVersion = restData.NodeInfo.Application.GoVersion
+	metricData.Network.NodeInfo.SDKVersion = restData.NodeInfo.Application.SDKVersion
 }
 
 func GetMetric() *metric {

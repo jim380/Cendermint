@@ -67,9 +67,20 @@ var (
 
 type metric struct {
 	Network struct {
-		ChainID       string
-		BlockHeight   int64
-		PrecommitRate float64
+		ChainID     string
+		BlockHeight int64
+
+		NodeInfo struct {
+			NodeID     string
+			TMVersion  string
+			Moniker    string
+			Name       string
+			AppName    string
+			Version    string
+			GitCommit  string
+			GoVersion  string
+			SDKVersion string
+		}
 
 		Staking struct {
 			NotBondedTokens float64

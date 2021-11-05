@@ -34,23 +34,20 @@ func Run(chain string, log *zap.Logger) {
 	// register denom guages
 	count := 0
 	for i := 0; i < len(denomList)*3; i += 3 {
-
 		gaugesDenom[i] = utils.NewGauge("cendermint_validator_balances", denomList[count], "")
 		gaugesDenom[i+1] = utils.NewGauge("cendermint_validator_commission", denomList[count], "")
 		gaugesDenom[i+2] = utils.NewGauge("cendermint_validator_rewards", denomList[count], "")
-		prometheus.MustRegister(gaugesDenom[i])
-		prometheus.MustRegister(gaugesDenom[i+1])
-		prometheus.MustRegister(gaugesDenom[i+2])
-
+		prometheus.MustRegister(gaugesDenom[i], gaugesDenom[i+1], gaugesDenom[i+2])
 		count++
 	}
 
-	// register label guages
-	labels := []string{"chainId", "moniker", "operatorAddress", "accountAddress", "consHexAddress"}
-	//	labels := []string{"chainId", "moniker", "operatorAddress", "accountAddress"}
-	gaugesForLabel := utils.NewCounterVec("exporter", "labels", "", labels)
+	// register labels
+	labelNode := []string{"chain_id", "node_moniker", "node_id", "tm_version", "app_name", "binary_name", "app_version", "git_commit", "go_version", "sdk_version"}
+	counterVecNode := utils.NewCounterVec("cendermint", "labels_node_info", "", labelNode)
+	labelAddr := []string{"operator_address", "account_address", "cons_address_hex"}
+	counterVecAddr := utils.NewCounterVec("cendermint", "labels_addr", "", labelAddr)
 
-	prometheus.MustRegister(gaugesForLabel)
+	prometheus.MustRegister(counterVecNode, counterVecAddr)
 
 	pollInterval, _ := strconv.Atoi(os.Getenv("POLL_INTERVAL"))
 	ticker := time.NewTicker(1 * time.Second).C
@@ -83,12 +80,8 @@ func Run(chain string, log *zap.Logger) {
 
 				setNormalGauges(metricData, defaultGauges)
 
-				gaugesForLabel.WithLabelValues(metricData.Network.ChainID,
-					metricData.Validator.Moniker,
-					metricData.Validator.Address.Operator,
-					metricData.Validator.Address.Account,
-					metricData.Validator.Address.ConsensusHex,
-				).Add(0)
+				setNodeLabels(metricData, counterVecNode)
+				setAddrLabels(metricData, counterVecAddr)
 
 				previousBlockHeight = currentBlockHeight
 			}
