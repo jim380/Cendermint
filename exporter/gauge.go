@@ -85,6 +85,17 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.IBC.IBCChannels.Open,
 		metricData.IBC.IBCConnections.Total,
 		metricData.IBC.IBCConnections.Open,
+
+		// tx
+		metricData.Tx.GasWantedTotal,
+		metricData.Tx.GasUsedTotal,
+		metricData.Tx.EventsTotal,
+		metricData.Tx.DelegateTotal,
+		metricData.Tx.MessageTotal,
+		metricData.Tx.TransferTotal,
+		metricData.Tx.UnbondTotal,
+		metricData.Tx.WithdrawRewardsTotal,
+		metricData.Tx.CreateValidatorTotal,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

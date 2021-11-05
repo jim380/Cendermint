@@ -20,6 +20,7 @@ type RESTData struct {
 	BlockHeight   int64
 	Commit        commitInfo
 	NodeInfo      nodeInfo
+	TxInfo        txInfo
 	StakingPool   stakingPool
 	Slashing      slashingInfo
 	Validatorsets map[string][]string
@@ -73,6 +74,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getIBCChannels()
 		rd.getIBCConnections()
 		rd.getNodeInfo()
+		rd.getTxInfo(blockHeight)
 		wg.Done()
 	}()
 	wg.Wait()

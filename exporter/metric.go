@@ -97,6 +97,17 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Network.NodeInfo.GitCommit = restData.NodeInfo.Application.GitCommit
 	metricData.Network.NodeInfo.GoVersion = restData.NodeInfo.Application.GoVersion
 	metricData.Network.NodeInfo.SDKVersion = restData.NodeInfo.Application.SDKVersion
+
+	// tx
+	metricData.Tx.GasWantedTotal = restData.TxInfo.Result.GasWantedTotal
+	metricData.Tx.GasUsedTotal = restData.TxInfo.Result.GasUsedTotal
+	metricData.Tx.EventsTotal = restData.TxInfo.Result.EventsTotal
+	metricData.Tx.DelegateTotal = restData.TxInfo.Result.DelegateTotal
+	metricData.Tx.MessageTotal = restData.TxInfo.Result.MessageTotal
+	metricData.Tx.TransferTotal = restData.TxInfo.Result.TransferTotal
+	metricData.Tx.UnbondTotal = restData.TxInfo.Result.UnbondTotal
+	metricData.Tx.WithdrawRewardsTotal = restData.TxInfo.Result.WithdrawRewardsTotal
+	metricData.Tx.CreateValidatorTotal = restData.TxInfo.Result.CreateValidatorTotal
 }
 
 func GetMetric() *metric {

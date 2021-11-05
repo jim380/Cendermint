@@ -60,6 +60,17 @@ var (
 		"ibc_channels_open",
 		"ibc_connections_total",
 		"ibc_connections_open",
+
+		// tx
+		"tx_gas_wanted_total",
+		"tx_gas_used_total",
+		"tx_events_total",
+		"tx_delegate_total",
+		"tx_message_total",
+		"tx_transfer_total",
+		"tx_unbond_total",
+		"tx_withdraw_rewards_total",
+		"tx_create_validator_total",
 	}
 
 	metricData metric
@@ -167,6 +178,18 @@ type metric struct {
 			Total float64
 			Open  float64
 		}
+	}
+
+	Tx struct {
+		GasWantedTotal       float64
+		GasUsedTotal         float64
+		EventsTotal          float64
+		DelegateTotal        float64
+		MessageTotal         float64
+		TransferTotal        float64
+		UnbondTotal          float64
+		WithdrawRewardsTotal float64
+		CreateValidatorTotal float64
 	}
 }
 

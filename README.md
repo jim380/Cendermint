@@ -76,3 +76,12 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_ibc_connections_open` | Gauge | - | Total number of open ibc connections in the network |
 | `cendermint_labels_node_info` | Counter | - | The following labels are currently avaialble: `app_name`; `binary_name`; `chain_id`; `git_commit`; `go_version`; `node_id`; `node_moniker`; `sdk_version`; `tm_version` |
 | `cendermint_labels_addr` | Counter | - | The following labels are currently avaialble: `account_address`;`cons_address_hex`; `operator_address` |
+| `cendermint_gas_wanted_total` | Gauge | - | Total gas wanted in a block |
+| `cendermint_gas_used_total` | Gauge | - | Total gas used in a block |
+| `cendermint_events_total` | Gauge | - | Total tx events in a block |
+| `cendermint_delegate_total` | Gauge | - | Total delegate events in a block |
+| `cendermint_message_total` | Gauge | - | Total message events in a block |
+| `cendermint_transfer_total` | Gauge | - | Total transfer events in a block |
+| `cendermint_unbond_total` | Gauge | - | Total unbond events in a block |
+| `cendermint_withdraw_rewards_total` | Gauge | - | Total withdraw rewards events in a block |
+| `cendermint_create_validator_total` | Gauge | - | Total create validator events in a block |
