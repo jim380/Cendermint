@@ -12,6 +12,11 @@ This project started out as a fork of [Cosmos-IE](https://github.com/node-a-team
 - Cosmos(`cosmoshub-4`)
 - NYM (`testnet-milhon`)
 - Umme (`umeevengers-1c`)
+- Osmosis (`osmosis-1`)
+- Juno (`juno-1`)
+- Akash (`akashnet-2`)
+- Regen (`regen-1`)
+- Microtick (`microtick-1`)
 
 ## Get Up and Running
 

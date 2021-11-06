@@ -18,6 +18,16 @@ func GetPrefix(chain string) string {
 		return "umee"
 	case "nym":
 		return "punk"
+	case "osmosis":
+		return "osmo"
+	case "juno":
+		return "juno"
+	case "akash":
+		return "akash"
+	case "regen":
+		return "regen"
+	case "microtick":
+		return "micro"
 	default:
 		return "cosmos"
 	}

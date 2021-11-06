@@ -238,6 +238,20 @@ func getDenomList(chain string) []string {
 		dList = []string{"uatom"}
 	case "umee":
 		dList = []string{"uumee"}
+	case "osmosis":
+		dList = []string{"uosmo"}
+	case "juno":
+		dList = []string{"ujuno"}
+
+	case "akash":
+		dList = []string{"uakt"}
+
+	case "regen":
+		dList = []string{"uregen"}
+
+	case "microtick":
+		dList = []string{"utick"}
+
 	case "nym":
 		dList = []string{"upunk"}
 	}
