@@ -61,18 +61,18 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.Network.Gov.TotalProposalCount,
 		metricData.Network.Gov.VotingProposalCount,
 
-		// validator
+		// validator info
 		metricData.Validator.VotingPower,
 		metricData.Validator.MinSelfDelegation,
 		metricData.Validator.JailStatus,
-		// vadalidator_delegation
+		// vadalidator delegation
 		metricData.Validator.Delegation.Shares,
 		metricData.Validator.Delegation.Ratio,
-		// vadalidator_commission
+		// vadalidator commission
 		metricData.Validator.Commission.Rate,
 		metricData.Validator.Commission.MaxRate,
 		metricData.Validator.Commission.MaxChangeRate,
-		// vadalidator_signing
+		// vadalidator signing
 		metricData.Validator.Commit.PrecommitStatus,
 		metricData.Validator.Proposer.Status,
 		metricData.Validator.Commit.LastSigned,
@@ -89,6 +89,7 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		// tx
 		metricData.Tx.GasWantedTotal,
 		metricData.Tx.GasUsedTotal,
+		// tx events default
 		metricData.Tx.EventsTotal,
 		metricData.Tx.DelegateTotal,
 		metricData.Tx.MessageTotal,
@@ -96,6 +97,24 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.Tx.UnbondTotal,
 		metricData.Tx.WithdrawRewardsTotal,
 		metricData.Tx.CreateValidatorTotal,
+		metricData.Tx.RedelegateTotal,
+		metricData.Tx.ProposalVote,
+		// tx events ibc
+		metricData.Tx.FungibleTokenPacketTotal,
+		metricData.Tx.IbcTransferTotal,
+		metricData.Tx.UpdateClientTotal,
+		metricData.Tx.AckPacketTotal,
+		metricData.Tx.SendPacketTotal,
+		metricData.Tx.RecvPacketTotal,
+		metricData.Tx.TimeoutTotal,
+		metricData.Tx.TimeoutPacketTotal,
+		metricData.Tx.DenomTraceTotal,
+		// tx events swap
+		metricData.Tx.SwapWithinBatchTotal,
+		metricData.Tx.WithdrawWithinBatchTotal,
+		metricData.Tx.DepositWithinBatchTotal,
+		// tx events others
+		metricData.Tx.OthersTotal,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

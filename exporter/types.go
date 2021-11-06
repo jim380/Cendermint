@@ -71,6 +71,21 @@ var (
 		"tx_unbond_total",
 		"tx_withdraw_rewards_total",
 		"tx_create_validator_total",
+		"tx_redelegate_total",
+		"tx_proposal_vote_total",
+		"tx_ibc_fungible_token_packet_total",
+		"tx_ibc_transfer_total",
+		"tx_ibc_update_client_total",
+		"tx_ibc_ack_packet_total",
+		"tx_ibc_send_packet_yotal",
+		"tx_ibc_recv_packet_total",
+		"tx_ibc_timeout_total",
+		"tx_ibc_timeout_packet_total",
+		"tx_ibc_denom_trace_total",
+		"tx_swap_swap_within_batch_total",
+		"tx_swap_withdraw_within_batch_total",
+		"tx_swap_deposit_within_batch_total",
+		"tx_others_total",
 	}
 
 	metricData metric
@@ -181,8 +196,9 @@ type metric struct {
 	}
 
 	Tx struct {
-		GasWantedTotal       float64
-		GasUsedTotal         float64
+		GasWantedTotal float64
+		GasUsedTotal   float64
+		// default
 		EventsTotal          float64
 		DelegateTotal        float64
 		MessageTotal         float64
@@ -190,6 +206,25 @@ type metric struct {
 		UnbondTotal          float64
 		WithdrawRewardsTotal float64
 		CreateValidatorTotal float64
+		RedelegateTotal      float64
+		ProposalVote         float64
+		// IBC
+		FungibleTokenPacketTotal float64
+		IbcTransferTotal         float64
+		UpdateClientTotal        float64
+		AckPacketTotal           float64
+		WriteAckTotal            float64
+		SendPacketTotal          float64
+		RecvPacketTotal          float64
+		TimeoutTotal             float64
+		TimeoutPacketTotal       float64
+		DenomTraceTotal          float64
+		// swap
+		SwapWithinBatchTotal     float64
+		WithdrawWithinBatchTotal float64
+		DepositWithinBatchTotal  float64
+
+		OthersTotal float64
 	}
 }
 

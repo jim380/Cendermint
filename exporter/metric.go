@@ -14,10 +14,14 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	consPubKey := restData.Validators.ConsPubKey
 	consAddr := restData.Validatorsets[consPubKey.Key][0]
 
-	// network
-	metricData.Network.ChainID = restData.Commit.ChainId
+	// chain
 	metricData.Network.BlockHeight = currentBlock
 
+	// minting
+	metricData.Network.Minting.Inflation = restData.Inflation
+	metricData.Network.Minting.ActualInflation = metricData.Network.Minting.Inflation / metricData.Network.Staking.BondedRatio
+
+	// staking
 	metricData.Network.Staking.NotBondedTokens = utils.StringToFloat64(restData.StakingPool.Pool.Not_bonded_tokens)
 	metricData.Network.Staking.BondedTokens = utils.StringToFloat64(restData.StakingPool.Pool.Bonded_tokens)
 	metricData.Network.Staking.TotalSupply = restData.StakingPool.Pool.Total_supply
@@ -37,42 +41,24 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Network.Slashing.Tombstoned = utils.BoolToFloat64(restData.Slashing.ValSigning.Tombstoned)
 	metricData.Network.Slashing.MissedBlocksCounter = utils.StringToFloat64(restData.Slashing.ValSigning.MissedBlocksCounter)
 
-	// minting
-	metricData.Network.Minting.Inflation = restData.Inflation
-	metricData.Network.Minting.ActualInflation = metricData.Network.Minting.Inflation / metricData.Network.Staking.BondedRatio
-
 	// gov
 	metricData.Network.Gov.TotalProposalCount = restData.Gov.TotalProposalCount
 	metricData.Network.Gov.VotingProposalCount = restData.Gov.VotingProposalCount
 
 	// validator info
-	metricData.Validator.Moniker = restData.Validators.Description.Moniker
 	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey.Key][1])
-	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validators.MinSelfDelegation)
 	metricData.Validator.JailStatus = utils.BoolToFloat64(restData.Validators.Jailed)
-
-	// validator addresses
-	metricData.Validator.Address.Operator = operAddr
-	metricData.Validator.Address.Account = utils.GetAccAddrFromOperAddr(operAddr)
-	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr)
-
+	metricData.Validator.MinSelfDelegation = utils.StringToFloat64(restData.Validators.MinSelfDelegation)
 	// validator delegation
 	metricData.Validator.Delegation.Shares = utils.StringToFloat64(restData.Validators.DelegatorShares)
 	metricData.Validator.Delegation.Ratio = metricData.Validator.Delegation.Shares / metricData.Network.Staking.BondedTokens
 	// metricData.Validator.Delegation.DelegatorCount = restData.Delegations.DelegationCount
 	// metricData.Validator.Delegation.Self = restData.Delegations.SelfDelegation
-
 	// validator commission
 	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validators.Commission.Commission.Rate)
 	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validators.Commission.Commission.Max_rate)
 	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validators.Commission.Commission.Max_change_rate)
-
-	//// validator account
-	metricData.Validator.Account.Balances = restData.Balances
-	metricData.Validator.Account.Commission = restData.Commission
-	metricData.Validator.Account.Rewards = restData.Rewards
-
-	// validator commit
+	// validator signing
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
 	metricData.Validator.Proposer.Status = restData.Commit.ValidatorProposingStatus
 	metricData.Validator.Commit.LastSigned = float64(restData.Commit.LastSigned)
@@ -86,8 +72,39 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.IBC.IBCConnections.Total = float64(len(restData.IBC.IBCConnections))
 	metricData.IBC.IBCConnections.Open = float64(restData.IBC.IBCInfo.OpenConnections)
 
-	// node info
-	// {"chain_id", "node_moniker", "node_id", "tm_version", "app_name", "binary_name", "app_version", "git_commit", "go_version", "sdk_version"}
+	// tx
+	metricData.Tx.GasWantedTotal = restData.TxInfo.Result.GasWantedTotal
+	metricData.Tx.GasUsedTotal = restData.TxInfo.Result.GasUsedTotal
+	// tx events default
+	metricData.Tx.EventsTotal = restData.TxInfo.Result.Default.EventsTotal
+	metricData.Tx.DelegateTotal = restData.TxInfo.Result.Default.DelegateTotal
+	metricData.Tx.MessageTotal = restData.TxInfo.Result.Default.MessageTotal
+	metricData.Tx.TransferTotal = restData.TxInfo.Result.Default.TransferTotal
+	metricData.Tx.UnbondTotal = restData.TxInfo.Result.Default.UnbondTotal
+	metricData.Tx.WithdrawRewardsTotal = restData.TxInfo.Result.Default.WithdrawRewardsTotal
+	metricData.Tx.CreateValidatorTotal = restData.TxInfo.Result.Default.CreateValidatorTotal
+	metricData.Tx.RedelegateTotal = restData.TxInfo.Result.Default.RedelegateTotal
+	metricData.Tx.ProposalVote = restData.TxInfo.Result.Default.ProposalVote
+	// tx events ibc
+	metricData.Tx.FungibleTokenPacketTotal = restData.TxInfo.Result.IBC.FungibleTokenPacketTotal
+	metricData.Tx.IbcTransferTotal = restData.TxInfo.Result.IBC.IbcTransferTotal
+	metricData.Tx.UpdateClientTotal = restData.TxInfo.Result.IBC.UpdateClientTotal
+	metricData.Tx.AckPacketTotal = restData.TxInfo.Result.IBC.AckPacketTotal
+	metricData.Tx.SendPacketTotal = restData.TxInfo.Result.IBC.SendPacketTotal
+	metricData.Tx.RecvPacketTotal = restData.TxInfo.Result.IBC.RecvPacketTotal
+	metricData.Tx.TimeoutTotal = restData.TxInfo.Result.IBC.TimeoutTotal
+	metricData.Tx.TimeoutPacketTotal = restData.TxInfo.Result.IBC.TimeoutPacketTotal
+	metricData.Tx.DenomTraceTotal = restData.TxInfo.Result.IBC.DenomTraceTotal
+	// tx events swap
+	metricData.Tx.SwapWithinBatchTotal = restData.TxInfo.Result.Swap.SwapWithinBatchTotal
+	metricData.Tx.WithdrawWithinBatchTotal = restData.TxInfo.Result.Swap.WithdrawWithinBatchTotal
+	metricData.Tx.DepositWithinBatchTotal = restData.TxInfo.Result.Swap.DepositWithinBatchTotal
+	// tx events others
+	metricData.Tx.OthersTotal = restData.TxInfo.Result.OthersTotal
+
+	// labels node
+	metricData.Network.ChainID = restData.Commit.ChainId
+	metricData.Validator.Moniker = restData.Validators.Description.Moniker
 	metricData.Network.NodeInfo.Moniker = restData.NodeInfo.Default.Moniker
 	metricData.Network.NodeInfo.NodeID = restData.NodeInfo.Default.NodeID
 	metricData.Network.NodeInfo.TMVersion = restData.NodeInfo.Default.TMVersion
@@ -97,17 +114,15 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Network.NodeInfo.GitCommit = restData.NodeInfo.Application.GitCommit
 	metricData.Network.NodeInfo.GoVersion = restData.NodeInfo.Application.GoVersion
 	metricData.Network.NodeInfo.SDKVersion = restData.NodeInfo.Application.SDKVersion
+	// labels addr
+	metricData.Validator.Address.Operator = operAddr
+	metricData.Validator.Address.Account = utils.GetAccAddrFromOperAddr(operAddr)
+	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr)
 
-	// tx
-	metricData.Tx.GasWantedTotal = restData.TxInfo.Result.GasWantedTotal
-	metricData.Tx.GasUsedTotal = restData.TxInfo.Result.GasUsedTotal
-	metricData.Tx.EventsTotal = restData.TxInfo.Result.EventsTotal
-	metricData.Tx.DelegateTotal = restData.TxInfo.Result.DelegateTotal
-	metricData.Tx.MessageTotal = restData.TxInfo.Result.MessageTotal
-	metricData.Tx.TransferTotal = restData.TxInfo.Result.TransferTotal
-	metricData.Tx.UnbondTotal = restData.TxInfo.Result.UnbondTotal
-	metricData.Tx.WithdrawRewardsTotal = restData.TxInfo.Result.WithdrawRewardsTotal
-	metricData.Tx.CreateValidatorTotal = restData.TxInfo.Result.CreateValidatorTotal
+	// denom gauges
+	metricData.Validator.Account.Balances = restData.Balances
+	metricData.Validator.Account.Commission = restData.Commission
+	metricData.Validator.Account.Rewards = restData.Rewards
 }
 
 func GetMetric() *metric {

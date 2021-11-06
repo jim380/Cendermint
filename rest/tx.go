@@ -16,17 +16,46 @@ type txInfo struct {
 		NextKey string `json:"next_key"`
 		Total   string `json:"total"`
 	}
-	Result struct {
-		GasWantedTotal       float64
-		GasUsedTotal         float64
+	Result txResult
+}
+
+type txResult struct {
+	GasWantedTotal float64
+	GasUsedTotal   float64
+	Default        struct {
 		EventsTotal          float64
 		DelegateTotal        float64
 		MessageTotal         float64
 		TransferTotal        float64
 		UnbondTotal          float64
+		RedelegateTotal      float64
 		WithdrawRewardsTotal float64
 		CreateValidatorTotal float64
+		ProposalVote         float64
 	}
+	IBC struct {
+		FungibleTokenPacketTotal float64
+		IbcTransferTotal         float64
+		UpdateClientTotal        float64
+		AckPacketTotal           float64
+		WriteAckTotal            float64
+		SendPacketTotal          float64
+		RecvPacketTotal          float64
+		TimeoutTotal             float64
+		TimeoutPacketTotal       float64
+		DenomTraceTotal          float64
+	}
+	Swap struct {
+		SwapWithinBatchTotal     float64
+		WithdrawWithinBatchTotal float64
+		DepositWithinBatchTotal  float64
+	}
+	OthersTotal float64
+	// ActionsTotal                 float64
+	// SendTotal                    float64
+	// DelegateActionTotal          float64
+	// BeginUnbondingTotal          float64
+	// WithdrawDelegatorRewardTotal float64
 }
 
 type txs []struct {
@@ -58,8 +87,7 @@ type txResp []struct {
 
 func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 	var txInfo txInfo
-	var gasWantedTotal, gasUsedTotal, eventsTotal, delegateTotal, messageTotal, transferTotal, unbondTotal, withdrawRewardsTotal, createValidatorTotal int
-	// var txRespResult map[string][]string = make(map[string][]string)
+	var txRes txResult
 
 	res, err := RESTQuery("/cosmos/tx/v1beta1/txs?events=tx.height=" + fmt.Sprintf("%v", currentBlockHeight))
 	if err != nil {
@@ -74,49 +102,86 @@ func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block:", txInfo.Pagination.Total))
 	}
 
-	for i, v := range txInfo.TxResp {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Tx #:", fmt.Sprintf("%v", i)))
-		// txRespResult[v.Hash] = []string{v.GasWanted, v.GasUsd}
-		gasWantedRes, _ := strconv.Atoi(v.GasWanted)
-		gasWantedTotal = gasWantedTotal + gasWantedRes
-		gasUsedRes, _ := strconv.Atoi(v.GasUsd)
-		gasUsedTotal = gasUsedTotal + gasUsedRes
+	for _, v := range txInfo.TxResp {
+		// zap.L().Info("", zap.Bool("Success", true), zap.String("Tx #:", fmt.Sprintf("%v", i)))
+		gasWantedRes, _ := strconv.ParseFloat(v.GasWanted, 64)
+		txRes.GasWantedTotal = txRes.GasWantedTotal + gasWantedRes
+		gasUsedRes, _ := strconv.ParseFloat(v.GasUsd, 64)
+		txRes.GasUsedTotal = txRes.GasUsedTotal + gasUsedRes
 		for _, v := range v.Logs {
 			for _, v := range v.Events {
-				eventsTotal++
+				txRes.Default.EventsTotal++
 				switch v.Type {
 				case "delegate":
-					delegateTotal++
+					txRes.Default.DelegateTotal++
 				case "message":
-					messageTotal++
+					txRes.Default.MessageTotal++
 				case "transfer":
-					transferTotal++
+					txRes.Default.TransferTotal++
 				case "unbond":
-					unbondTotal++
+					txRes.Default.UnbondTotal++
 				case "withdraw_rewards":
-					withdrawRewardsTotal++
+					txRes.Default.WithdrawRewardsTotal++
 				case "create_validator":
-					createValidatorTotal++
+					txRes.Default.CreateValidatorTotal++
+				case "proposal_vote":
+					txRes.Default.ProposalVote++
+				case "fungible_token_packet":
+					txRes.IBC.FungibleTokenPacketTotal++
+				case "ibc_transfer":
+					txRes.IBC.IbcTransferTotal++
+				case "send_packet":
+					txRes.IBC.SendPacketTotal++
+				case "recv_packet":
+					txRes.IBC.RecvPacketTotal++
+				case "redelegate":
+					txRes.Default.RedelegateTotal++
+				case "update_client":
+					txRes.IBC.UpdateClientTotal++
+				case "acknowledge_packet":
+					txRes.IBC.AckPacketTotal++
+				case "write_acknowledgement":
+					txRes.IBC.WriteAckTotal++
+				case "timeout":
+					txRes.IBC.TimeoutTotal++
+				case "timeout_packet":
+					txRes.IBC.TimeoutPacketTotal++
+				case "denomination_trace":
+					txRes.IBC.DenomTraceTotal++
+				case "swap_within_batch":
+					txRes.Swap.SwapWithinBatchTotal++
+				case "withdraw_within_batch":
+					txRes.Swap.WithdrawWithinBatchTotal++
+				case "deposit_within_batch":
+					txRes.Swap.DepositWithinBatchTotal++
+				default:
+					txRes.OthersTotal++
 				}
-				// for _, v := range v.Attributes {
-				// 	attrKey = v.Key
-				// 	attrValue = v.Value
+				// if v.Type == "message" {
+				// 	for _, v := range v.Attributes {
+				// 		if v.Key == "action" {
+				// 			actionsTotal++
+				// 			switch v.Value {
+				// 			case "send":
+				// 				sendTotal++
+				// 			case "delegate":
+				// 				delegateActionTotal++
+				// 			case "begin_unbonding":
+				// 				beginUnbondingTotal++
+				// 			case "withdraw_delegator_reward":
+				// 				withdrawDelegatorRewardTotal++
+				// 			}
+				// 		}
+				// 	}
 				// }
 			}
 		}
 	}
-	zap.L().Info("", zap.Bool("Success", true), zap.String("GasUsed Total:", fmt.Sprintf("%v", gasWantedTotal)))
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Events Total:", fmt.Sprintf("%v", eventsTotal)))
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Transfer Total:", fmt.Sprintf("%v", transferTotal)))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Events Total:", fmt.Sprintf("%v", txRes.Default.EventsTotal)))
+	if txRes.OthersTotal != 0 {
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Others Total:", fmt.Sprintf("%v", txRes.OthersTotal)))
+	}
 
 	rd.TxInfo = txInfo
-	rd.TxInfo.Result.GasUsedTotal = float64(gasUsedTotal)
-	rd.TxInfo.Result.GasWantedTotal = float64(gasWantedTotal)
-	rd.TxInfo.Result.EventsTotal = float64(eventsTotal)
-	rd.TxInfo.Result.DelegateTotal = float64(delegateTotal)
-	rd.TxInfo.Result.MessageTotal = float64(messageTotal)
-	rd.TxInfo.Result.TransferTotal = float64(transferTotal)
-	rd.TxInfo.Result.UnbondTotal = float64(unbondTotal)
-	rd.TxInfo.Result.WithdrawRewardsTotal = float64(withdrawRewardsTotal)
-	rd.TxInfo.Result.CreateValidatorTotal = float64(createValidatorTotal)
+	rd.TxInfo.Result = txRes
 }
