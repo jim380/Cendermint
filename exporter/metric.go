@@ -66,6 +66,9 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Commit.MissThreshold = restData.Commit.MissThreshold
 	metricData.Validator.Commit.MissedCount = float64(restData.Commit.MissedCount)
 
+	// upgrade
+	metricData.Upgrade.Planned = utils.BoolToFloat64(restData.UpgradeInfo.Planned)
+
 	// ibc
 	metricData.IBC.IBCChannels.Total = float64(len(restData.IBC.IBCChannels))
 	metricData.IBC.IBCChannels.Open = float64(restData.IBC.IBCInfo.OpenChannels)
@@ -118,6 +121,11 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Address.Operator = operAddr
 	metricData.Validator.Address.Account = utils.GetAccAddrFromOperAddr(operAddr)
 	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr)
+	// labels upgrade
+	metricData.Upgrade.Name = restData.UpgradeInfo.Plan.Name
+	metricData.Upgrade.Time = restData.UpgradeInfo.Plan.Time
+	metricData.Upgrade.Height = restData.UpgradeInfo.Plan.Height
+	metricData.Upgrade.Info = restData.UpgradeInfo.Plan.Info
 
 	// denom gauges
 	metricData.Validator.Account.Balances = restData.Balances

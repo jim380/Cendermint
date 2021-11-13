@@ -46,8 +46,10 @@ func Run(chain string, log *zap.Logger) {
 	counterVecNode := utils.NewCounterVec("cendermint", "labels_node_info", "", labelNode)
 	labelAddr := []string{"operator_address", "account_address", "cons_address_hex"}
 	counterVecAddr := utils.NewCounterVec("cendermint", "labels_addr", "", labelAddr)
+	labelUpgrade := []string{"upgrade_name", "upgrade_time", "upgrade_height", "upgrade_info"}
+	counterVecUpgrade := utils.NewCounterVec("cendermint", "labels_upgrade", "", labelUpgrade)
 
-	prometheus.MustRegister(counterVecNode, counterVecAddr)
+	prometheus.MustRegister(counterVecNode, counterVecAddr, counterVecUpgrade)
 
 	pollInterval, _ := strconv.Atoi(os.Getenv("POLL_INTERVAL"))
 	ticker := time.NewTicker(1 * time.Second).C
@@ -82,6 +84,7 @@ func Run(chain string, log *zap.Logger) {
 
 				setNodeLabels(metricData, counterVecNode)
 				setAddrLabels(metricData, counterVecAddr)
+				setUpgradeLabels(metricData, counterVecUpgrade)
 
 				previousBlockHeight = currentBlockHeight
 			}

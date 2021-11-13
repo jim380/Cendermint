@@ -75,12 +75,14 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_validator_miss_count` | Gauge | - | Number of blocks missed since the validator last signed |
 | `cendermint_validator_miss_consecutive` | Gauge | - | The validator has missed two blocks in a row |
 | `cendermint_validator_miss_threshold` | Gauge | - | The validator has missed `>= threshold` block since s/he last signed |
+| `cendermint_upgrade_planned` | Gauge | - | If there is a chain upgrade planned |
 | `cendermint_ibc_channels_total` | Gauge | - | Total number of ibc channels in the network |
 | `cendermint_ibc_channels_open` | Gauge | - | Total number of open ibc channels in the network |
 | `cendermint_ibc_connections_total` | Gauge | - | Total number of ibc connections in the network |
 | `cendermint_ibc_connections_open` | Gauge | - | Total number of open ibc connections in the network |
 | `cendermint_labels_node_info` | Counter | - | The following labels are currently avaialble: `app_name`; `binary_name`; `chain_id`; `git_commit`; `go_version`; `node_id`; `node_moniker`; `sdk_version`; `tm_version` |
 | `cendermint_labels_addr` | Counter | - | The following labels are currently avaialble: `account_address`;`cons_address_hex`; `operator_address` |
+| `cendermint_labels_upgrade` | Counter | - | The following labels are currently avaialble: `upgrade_name`, `upgrade_time`, `upgrade_height`, `upgrade_info` |
 | `cendermint_tx_gas_wanted_total` | Gauge | - | Total gas wanted in a block |
 | `cendermint_tx_gas_used_total` | Gauge | - | Total gas used in a block |
 | `cendermint_tx_events_total` | Gauge | - | Total tx events in a block |

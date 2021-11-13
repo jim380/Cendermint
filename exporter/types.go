@@ -55,6 +55,9 @@ var (
 		"validator_miss_threshold",
 		"validator_miss_count",
 
+		// upgrade
+		"upgrade_planned",
+
 		// ibc
 		"ibc_channels_total",
 		"ibc_channels_open",
@@ -182,6 +185,14 @@ type metric struct {
 			MissThreshold   float64
 			MissConsecutive float64
 		}
+	}
+
+	Upgrade struct {
+		Planned float64
+		Name    string
+		Time    string
+		Height  string
+		Info    string
 	}
 
 	IBC struct {

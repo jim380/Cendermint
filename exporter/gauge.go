@@ -80,6 +80,9 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.Validator.Commit.MissThreshold,
 		metricData.Validator.Commit.MissedCount,
 
+		// upgrade
+		metricData.Upgrade.Planned,
+
 		// ibc
 		metricData.IBC.IBCChannels.Total,
 		metricData.IBC.IBCChannels.Open,
@@ -142,5 +145,14 @@ func setAddrLabels(metricData *metric, labels prometheus.CounterVec) {
 		metricData.Validator.Address.Operator,
 		metricData.Validator.Address.Account,
 		metricData.Validator.Address.ConsensusHex,
+	).Add(0)
+}
+
+func setUpgradeLabels(metricData *metric, labels prometheus.CounterVec) {
+	labels.WithLabelValues(
+		metricData.Upgrade.Name,
+		metricData.Upgrade.Time,
+		metricData.Upgrade.Height,
+		metricData.Upgrade.Info,
 	).Add(0)
 }
