@@ -28,6 +28,8 @@ func GetPrefix(chain string) string {
 		return "regen"
 	case "microtick":
 		return "micro"
+	case "evmos":
+		return "evmos"
 	default:
 		return "cosmos"
 	}

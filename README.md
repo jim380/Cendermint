@@ -17,6 +17,7 @@ This project started out as a fork of [Cosmos-IE](https://github.com/node-a-team
 - Akash (`akashnet-2`)
 - Regen (`regen-1`)
 - Microtick (`microtick-1`)
+- EVMOS (`evmos_9000-2`)
 
 ## Get Up and Running
 

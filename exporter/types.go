@@ -265,6 +265,8 @@ func getDenomList(chain string) []string {
 
 	case "nym":
 		dList = []string{"upunk"}
+	case "evmos":
+		dList = []string{"aphoton"}
 	}
 	return dList
 }
