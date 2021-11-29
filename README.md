@@ -41,6 +41,7 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | Name | Type | Tags | Description |
 |------|------|------|-------------|
 | `cendermint_chain_blockHeight` | Gauge | - | Current blockchain height|
+| `cendermint_chain_block_interval` | Gauge | - | Interval between blocks|
 | `cendermint_staking_bonded_ratio` | Gauge | - | Bonded stake ratio in the network |
 | `cendermint_staking_bonded_tokens` | Gauge | - | Bonded stake amount in the network |
 | `cendermint_staking_not_bonded_tokens` | Gauge | - | Unbonded stake amount in the network |
@@ -84,6 +85,7 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_labels_node_info` | Counter | - | The following labels are currently avaialble: `app_name`; `binary_name`; `chain_id`; `git_commit`; `go_version`; `node_id`; `node_moniker`; `sdk_version`; `tm_version` |
 | `cendermint_labels_addr` | Counter | - | The following labels are currently avaialble: `account_address`;`cons_address_hex`; `operator_address` |
 | `cendermint_labels_upgrade` | Counter | - | The following labels are currently avaialble: `upgrade_name`, `upgrade_time`, `upgrade_height`, `upgrade_info` |
+| `cendermint_tx_tps` | Gauge | - | Transactions processed per second per block |
 | `cendermint_tx_gas_wanted_total` | Gauge | - | Total gas wanted in a block |
 | `cendermint_tx_gas_used_total` | Gauge | - | Total gas used in a block |
 | `cendermint_tx_events_total` | Gauge | - | Total tx events in a block |

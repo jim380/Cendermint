@@ -9,6 +9,7 @@ var (
 
 		// chain
 		"chain_blockHeight",
+		"chain_block_interval",
 
 		// minting
 		"minting_inflation",
@@ -65,6 +66,7 @@ var (
 		"ibc_connections_open",
 
 		// tx
+		"tx_tps",
 		"tx_gas_wanted_total",
 		"tx_gas_used_total",
 		"tx_events_total",
@@ -96,8 +98,9 @@ var (
 
 type metric struct {
 	Network struct {
-		ChainID     string
-		BlockHeight int64
+		ChainID       string
+		BlockHeight   int64
+		BlockInterval int64
 
 		NodeInfo struct {
 			NodeID     string
@@ -207,6 +210,7 @@ type metric struct {
 	}
 
 	Tx struct {
+		TPS            float64
 		GasWantedTotal float64
 		GasUsedTotal   float64
 		// default

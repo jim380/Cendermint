@@ -34,6 +34,7 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 
 		// chain
 		float64(metricData.Network.BlockHeight),
+		float64(metricData.Network.BlockInterval),
 
 		// minting
 		metricData.Network.Minting.Inflation,
@@ -90,6 +91,7 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.IBC.IBCConnections.Open,
 
 		// tx
+		metricData.Tx.TPS,
 		metricData.Tx.GasWantedTotal,
 		metricData.Tx.GasUsedTotal,
 		// tx events default

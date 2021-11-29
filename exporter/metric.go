@@ -16,6 +16,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// chain
 	metricData.Network.BlockHeight = currentBlock
+	metricData.Network.BlockInterval = restData.BlockInterval
 
 	// minting
 	metricData.Network.Minting.Inflation = restData.Inflation
@@ -76,6 +77,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.IBC.IBCConnections.Open = float64(restData.IBC.IBCInfo.OpenConnections)
 
 	// tx
+	metricData.Tx.TPS = restData.TxInfo.TPS
 	metricData.Tx.GasWantedTotal = restData.TxInfo.Result.GasWantedTotal
 	metricData.Tx.GasUsedTotal = restData.TxInfo.Result.GasUsedTotal
 	// tx events default

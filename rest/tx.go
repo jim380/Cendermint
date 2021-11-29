@@ -17,6 +17,7 @@ type txInfo struct {
 		Total   string `json:"total"`
 	}
 	Result txResult
+	TPS    float64
 }
 
 type txResult struct {
