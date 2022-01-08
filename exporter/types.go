@@ -91,6 +91,10 @@ var (
 		"tx_swap_withdraw_within_batch_total",
 		"tx_swap_deposit_within_batch_total",
 		"tx_others_total",
+
+		// peggo
+		"peggo_erc20_price",
+		"peggo_batch_fees",
 	}
 
 	metricData metric
@@ -240,6 +244,11 @@ type metric struct {
 		DepositWithinBatchTotal  float64
 
 		OthersTotal float64
+	}
+
+	Peggo struct {
+		Erc20Price float64
+		BatchFees  float64
 	}
 }
 

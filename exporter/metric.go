@@ -107,6 +107,10 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// tx events others
 	metricData.Tx.OthersTotal = restData.TxInfo.Result.OthersTotal
 
+	// peggo
+	metricData.Peggo.Erc20Price = restData.PeggoInfo.ERC20Price
+	metricData.Peggo.BatchFees = restData.PeggoInfo.BatchFees
+
 	// labels node
 	metricData.Network.ChainID = restData.Commit.ChainId
 	metricData.Validator.Moniker = restData.Validators.Description.Moniker

@@ -120,6 +120,10 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		metricData.Tx.DepositWithinBatchTotal,
 		// tx events others
 		metricData.Tx.OthersTotal,
+
+		// peggo
+		metricData.Peggo.Erc20Price,
+		metricData.Peggo.BatchFees,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

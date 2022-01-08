@@ -40,6 +40,7 @@ type RESTData struct {
 		IBCInfo        ibcInfo
 	}
 	UpgradeInfo upgradeInfo
+	PeggoInfo   peggoInfo
 }
 
 func (rd RESTData) new(blockHeight int64) *RESTData {
@@ -85,6 +86,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getTxInfo(blockHeight)
 		rd.computerTPS(blockData)
 		rd.getUpgradeInfo()
+		rd.getBatchFees()
 		wg.Done()
 	}()
 	wg.Wait()
@@ -114,6 +116,22 @@ func GetDelegationsData(chain string, blockHeight int64, blockData Blocks, denom
 
 func RESTQuery(route string) ([]byte, error) {
 	req, err := http.NewRequest("GET", Addr+route, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	return body, err
+}
+
+func PeggoQuery(route string) ([]byte, error) {
+	req, err := http.NewRequest("GET", route, nil)
 	if err != nil {
 		return nil, err
 	}
