@@ -47,7 +47,7 @@ type transaction struct {
 	}
 }
 
-func (rd *RESTData) getPrice() float64 {
+func (rd *RESTData) getPrice() {
 	var p erc20Price
 
 	contractAddr := os.Getenv("CONTRACT_ADDR")
@@ -61,11 +61,10 @@ func (rd *RESTData) getPrice() float64 {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		// zap.L().Info("\t", zap.Bool("Success", true), zap.String("ETH Price:", fmt.Sprintf("%f", p.contractAddr.ETHPrice)))
+		// zap.L().Info("\t", zap.Bool("Success", true), zap.String("ETH Price:", fmt.Sprintf("%f", p.contractAddr.ERC20Price)))
 	}
 
-	// rd.PeggoInfo.ETHPrice = p.ETHPrice
-	return p.ERC20Price
+	rd.PeggoInfo.ERC20Price = p.ERC20Price
 }
 
 func (rd *RESTData) getBatchFees() {
@@ -90,6 +89,7 @@ func (rd *RESTData) getBatchFees() {
 	} else {
 		//zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total batch fees:", fmt.Sprintf("%f", b.Batches)))
 	}
-	feesTotal := rd.getPrice() * (b.Fees / 1000000)
+	rd.getPrice()
+	feesTotal := rd.PeggoInfo.ERC20Price * (b.Fees / 1000000)
 	rd.PeggoInfo.BatchFees = feesTotal
 }
