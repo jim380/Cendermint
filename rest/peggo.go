@@ -34,17 +34,21 @@ type batch struct {
 }
 
 type transaction struct {
-	ID         string `json:"id"`
-	Sender     string `json:"sender"`
-	DestAddr   string `json:"dest_address"`
-	ERC20Token struct {
-		Contract string `json:"contract"`
-		Amount   string `json:"amount"`
-	}
-	ERC20Fee struct {
-		Contract string `json:"contract"`
-		Amount   string `json:"amount"`
-	}
+	ID         string     `json:"id"`
+	Sender     string     `json:"sender"`
+	DestAddr   string     `json:"dest_address"`
+	ERC20Token erc20Token `json:"erc20_token"`
+	ERC20Fee   erc20Fee   `json:"erc20_fee"`
+}
+
+type erc20Token struct {
+	Contract string `json:"contract"`
+	Amount   string `json:"amount"`
+}
+
+type erc20Fee struct {
+	Contract string `json:"contract"`
+	Amount   string `json:"amount"`
 }
 
 func (rd *RESTData) getPrice() {
