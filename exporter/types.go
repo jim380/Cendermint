@@ -93,6 +93,10 @@ var (
 		"tx_others_total",
 
 		// peggo
+		"peggo_valset_count",
+		"peggo_valset_active",
+		"peggo_last_claim_nonce",
+		"peggo_last_claim_height",
 		"peggo_erc20_price",
 		"peggo_batch_fees",
 		"peggo_bridge_fees",
@@ -248,9 +252,13 @@ type metric struct {
 	}
 
 	Peggo struct {
-		Erc20Price float64
-		BatchFees  float64
-		BridgeFees float64
+		ValSetCount     float64
+		ValSetActive    float64
+		LastClaimNonce  float64
+		LastClaimHeight float64
+		Erc20Price      float64
+		BatchFees       float64
+		BridgeFees      float64
 	}
 }
 

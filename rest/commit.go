@@ -13,8 +13,8 @@ type commitInfo struct {
 	ValidatorProposingStatus float64 // [0]: false, [1]: true
 	MissedCount              int
 	LastSigned               int
-	MissThreshold            float64 // [0]: false, [1]: true
-	MissConsecutive          float64 // [0]: false, [1]: true
+	MissThreshold            float64
+	MissConsecutive          float64
 }
 
 func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {

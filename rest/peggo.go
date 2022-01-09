@@ -9,6 +9,9 @@ import (
 )
 
 type peggoInfo struct {
+	oracleEvent
+	ValSetCount int
+	ValActive   float64 // [0]: false, [1]: true
 	erc20Price
 	ethPrice
 	BatchFees  float64
@@ -60,6 +63,30 @@ type erc20Fee struct {
 	Amount   string `json:"amount"`
 }
 
+type oracleEvent struct {
+	LastClaimEvent lastClaimEvent `json:"last_claim_event"`
+}
+
+type lastClaimEvent struct {
+	EventNonce  string `json:"ethereum_event_nonce"`
+	EventHeight string `json:"ethereum_event_height"`
+}
+
+type valSetInfo struct {
+	ValSet   valSet `json:"valset"`
+	ValCount int
+}
+
+type valSet struct {
+	Nonce   string   `json:"nonce"`
+	Members []member `json:"members"`
+}
+
+type member struct {
+	Power   string `json:"power"`
+	ETHAddr string `json:"ethereum_address"`
+}
+
 func (rd *RESTData) getUmeePrice() {
 	var p erc20Price
 
@@ -107,4 +134,40 @@ func (rd *RESTData) getBridgeFees() {
 	rd.getUmeePrice()
 	bf = (0.00225 * rd.PeggoInfo.ETHPrice) / (100 * rd.PeggoInfo.ERC20Price)
 	rd.PeggoInfo.BridgeFees = bf
+}
+
+func (rd *RESTData) getOracleEvent() {
+	var evt oracleEvent
+
+	orchAddr := os.Getenv("ORCH_ADDR")
+	res, err := RESTQuery("/peggy/v1/oracle/event/" + orchAddr)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &evt)
+
+	rd.PeggoInfo.oracleEvent = evt
+}
+
+func (rd *RESTData) getValSet() {
+	var vs valSetInfo
+
+	var vsResult map[string]string = make(map[string]string)
+
+	res, err := RESTQuery("/peggy/v1/valset/current")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &vs)
+
+	for _, member := range vs.ValSet.Members {
+		vsResult[member.ETHAddr] = member.Power
+	}
+
+	rd.PeggoInfo.ValSetCount = len(vs.ValSet.Members)
+
+	_, found := vsResult[os.Getenv("ORCH_ADDR")]
+	if found {
+		rd.PeggoInfo.ValActive = 1.0
+	}
 }

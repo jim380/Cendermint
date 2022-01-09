@@ -86,6 +86,9 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getTxInfo(blockHeight)
 		rd.computerTPS(blockData)
 		rd.getUpgradeInfo()
+		// peggo
+		rd.getValSet()
+		rd.getOracleEvent()
 		rd.getBatchFees()
 		rd.getBridgeFees()
 		wg.Done()

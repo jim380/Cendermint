@@ -108,6 +108,10 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Tx.OthersTotal = restData.TxInfo.Result.OthersTotal
 
 	// peggo
+	metricData.Peggo.ValSetCount = float64(restData.PeggoInfo.ValSetCount)
+	metricData.Peggo.ValSetActive = restData.PeggoInfo.ValActive
+	metricData.Peggo.LastClaimNonce = utils.StringToFloat64(restData.PeggoInfo.LastClaimEvent.EventNonce)
+	metricData.Peggo.LastClaimHeight = utils.StringToFloat64(restData.PeggoInfo.LastClaimEvent.EventHeight)
 	metricData.Peggo.Erc20Price = restData.PeggoInfo.ERC20Price
 	metricData.Peggo.BatchFees = restData.PeggoInfo.BatchFees
 	metricData.Peggo.BridgeFees = restData.PeggoInfo.BridgeFees

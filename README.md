@@ -110,6 +110,10 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_tx_swap_withdraw_within_batch_total` | Gauge | - | Total withdraw within batch events in a block |
 | `cendermint_tx_swap_deposit_within_batch_total` | Gauge | - | Total deposit within batch events in a block |
 | `cendermint_tx_others_total` | Gauge | - | Total number of events yet to be supported by Cendermint in a block |
+| `cendermint_peggo_valset_count` | Gauge | - | The total number of validators at the current height in the bridge |
+| `cendermint_peggo_valset_active` | Gauge | - | The active status of the orchestrator run by the desired validator |
+| `cendermint_peggo_last_claim_nonce` | Gauge | - | The nounce in the last claim witnessed by peggo |
+| `cendermint_peggo_last_claim_height` | Gauge | - | The ethereum height in the last claim witnessed by peggo |
 | `cendermint_peggo_erc20_price` | Gauge | - | Price of the ERC20 token |
 | `cendermint_peggo_batch_fees` | Gauge | - | Total fees in all batches (default 100 batches per bundle, 100 txs per batch) |
 | `cendermint_peggo_bridge_fees` | Gauge | - | Bridge fees calculated in real time based on the prices of ETH and the ERC20 token |
