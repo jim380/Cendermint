@@ -139,7 +139,7 @@ func (rd *RESTData) getBridgeFees() {
 func (rd *RESTData) getOracleEvent() {
 	var evt oracleEvent
 
-	orchAddr := os.Getenv("ORCH_ADDR")
+	orchAddr := os.Getenv("UMEE_ORCH_ADDR")
 	res, err := RESTQuery("/peggy/v1/oracle/event/" + orchAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
@@ -166,7 +166,7 @@ func (rd *RESTData) getValSet() {
 
 	rd.PeggoInfo.ValSetCount = len(vs.ValSet.Members)
 
-	_, found := vsResult[os.Getenv("ORCH_ADDR")]
+	_, found := vsResult[os.Getenv("ETH_ORCH_ADDR")]
 	if found {
 		rd.PeggoInfo.ValActive = 1.0
 	}
