@@ -124,6 +124,7 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		// peggo
 		metricData.Peggo.Erc20Price,
 		metricData.Peggo.BatchFees,
+		metricData.Peggo.BridgeFees,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

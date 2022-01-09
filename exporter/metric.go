@@ -110,6 +110,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// peggo
 	metricData.Peggo.Erc20Price = restData.PeggoInfo.ERC20Price
 	metricData.Peggo.BatchFees = restData.PeggoInfo.BatchFees
+	metricData.Peggo.BridgeFees = restData.PeggoInfo.BridgeFees
 
 	// labels node
 	metricData.Network.ChainID = restData.Commit.ChainId

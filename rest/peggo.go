@@ -3,7 +3,6 @@ package rest
 import (
 	"encoding/json"
 	"os"
-	"strings"
 
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
@@ -11,7 +10,9 @@ import (
 
 type peggoInfo struct {
 	erc20Price
-	BatchFees float64
+	ethPrice
+	BatchFees  float64
+	BridgeFees float64
 }
 
 type erc20Price struct {
@@ -20,6 +21,14 @@ type erc20Price struct {
 
 type contractAddr struct {
 	ERC20Price float64 `json:"usd"`
+}
+
+type ethPrice struct {
+	ETHUSD `json:"ethereum"`
+}
+
+type ETHUSD struct {
+	ETHPrice float64 `json:"usd"`
 }
 
 type batches struct {
@@ -51,7 +60,7 @@ type erc20Fee struct {
 	Amount   string `json:"amount"`
 }
 
-func (rd *RESTData) getPrice() {
+func (rd *RESTData) getUmeePrice() {
 	var p erc20Price
 
 	contractAddr := os.Getenv("CONTRACT_ADDR")
@@ -60,13 +69,6 @@ func (rd *RESTData) getPrice() {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &p)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		// zap.L().Info("\t", zap.Bool("Success", true), zap.String("ETH Price:", fmt.Sprintf("%f", p.contractAddr.ERC20Price)))
-	}
 
 	rd.PeggoInfo.ERC20Price = p.ERC20Price
 }
@@ -86,14 +88,23 @@ func (rd *RESTData) getBatchFees() {
 		}
 	}
 
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		//zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total batch fees:", fmt.Sprintf("%f", b.Batches)))
-	}
-	rd.getPrice()
+	rd.getUmeePrice()
 	feesTotal := rd.PeggoInfo.ERC20Price * (b.Fees / 1000000)
 	rd.PeggoInfo.BatchFees = feesTotal
+}
+
+func (rd *RESTData) getBridgeFees() {
+	var p ethPrice
+	var bf float64
+
+	res, err := PeggoQuery("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &p)
+
+	rd.PeggoInfo.ETHPrice = p.ETHPrice
+	rd.getUmeePrice()
+	bf = (0.00225 * rd.PeggoInfo.ETHPrice) / (100 * rd.PeggoInfo.ERC20Price)
+	rd.PeggoInfo.BridgeFees = bf
 }

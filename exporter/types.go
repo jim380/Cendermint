@@ -95,6 +95,7 @@ var (
 		// peggo
 		"peggo_erc20_price",
 		"peggo_batch_fees",
+		"peggo_bridge_fees",
 	}
 
 	metricData metric
@@ -249,6 +250,7 @@ type metric struct {
 	Peggo struct {
 		Erc20Price float64
 		BatchFees  float64
+		BridgeFees float64
 	}
 }
 
