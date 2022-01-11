@@ -90,6 +90,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getValSet()
 		rd.getOracleEvent()
 		rd.getBatchFees()
+		rd.getBatchesFees()
 		rd.getBridgeFees()
 		wg.Done()
 	}()

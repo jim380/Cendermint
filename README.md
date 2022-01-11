@@ -115,5 +115,6 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_peggo_last_claim_nonce` | Gauge | - | The nounce in the last claim witnessed by peggo |
 | `cendermint_peggo_last_claim_height` | Gauge | - | The ethereum height in the last claim witnessed by peggo |
 | `cendermint_peggo_erc20_price` | Gauge | - | Price of the ERC20 token |
-| `cendermint_peggo_batch_fees` | Gauge | - | Total fees in all batches (default 100 batches per bundle, 100 txs per batch) |
+| `cendermint_peggo_batch_fees` | Gauge | - | Total fees in the latest batch processed |
+| `cendermint_peggo_batches_fees` | Gauge | - | Total fees in all batches (default 100 batches per bundle, 100 txs per batch) |
 | `cendermint_peggo_bridge_fees` | Gauge | - | Bridge fees calculated in real time based on the prices of ETH and the ERC20 token |

@@ -114,6 +114,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Peggo.LastClaimHeight = utils.StringToFloat64(restData.PeggoInfo.LastClaimEvent.EventHeight)
 	metricData.Peggo.Erc20Price = restData.PeggoInfo.ERC20Price
 	metricData.Peggo.BatchFees = restData.PeggoInfo.BatchFees
+	metricData.Peggo.BatchesFees = restData.PeggoInfo.BatchesFees
 	metricData.Peggo.BridgeFees = restData.PeggoInfo.BridgeFees
 
 	// labels node

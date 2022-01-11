@@ -99,6 +99,7 @@ var (
 		"peggo_last_claim_height",
 		"peggo_erc20_price",
 		"peggo_batch_fees",
+		"peggo_batches_fees",
 		"peggo_bridge_fees",
 	}
 
@@ -258,6 +259,7 @@ type metric struct {
 		LastClaimHeight float64
 		Erc20Price      float64
 		BatchFees       float64
+		BatchesFees     float64
 		BridgeFees      float64
 	}
 }

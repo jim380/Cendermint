@@ -14,8 +14,9 @@ type peggoInfo struct {
 	ValActive   float64 // [0]: false, [1]: true
 	erc20Price
 	ethPrice
-	BatchFees  float64
-	BridgeFees float64
+	BatchFees   float64
+	BatchesFees float64
+	BridgeFees  float64
 }
 
 type erc20Price struct {
@@ -63,6 +64,16 @@ type erc20Fee struct {
 	Amount   string `json:"amount"`
 }
 
+type batchFees struct {
+	BatchFees []batchFee `json:"batchFees"`
+	Fees      float64
+}
+
+type batchFee struct {
+	Token     string `json:"token"`
+	TotalFees string `json:"total_fees"`
+}
+
 type oracleEvent struct {
 	LastClaimEvent lastClaimEvent `json:"last_claim_event"`
 }
@@ -101,6 +112,24 @@ func (rd *RESTData) getUmeePrice() {
 }
 
 func (rd *RESTData) getBatchFees() {
+	var b batchFees
+
+	res, err := RESTQuery("/peggy/v1/batchfees")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &b)
+
+	for _, bf := range b.BatchFees {
+		b.Fees += utils.StringToFloat64(bf.TotalFees)
+	}
+
+	rd.getUmeePrice()
+	feesTotal := rd.PeggoInfo.ERC20Price * (b.Fees / 1000000)
+	rd.PeggoInfo.BatchFees = feesTotal
+}
+
+func (rd *RESTData) getBatchesFees() {
 	var b batches
 
 	res, err := RESTQuery("/peggy/v1/batch/outgoingtx")
@@ -117,7 +146,7 @@ func (rd *RESTData) getBatchFees() {
 
 	rd.getUmeePrice()
 	feesTotal := rd.PeggoInfo.ERC20Price * (b.Fees / 1000000)
-	rd.PeggoInfo.BatchFees = feesTotal
+	rd.PeggoInfo.BatchesFees = feesTotal
 }
 
 func (rd *RESTData) getBridgeFees() {
