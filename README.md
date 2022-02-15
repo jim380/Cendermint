@@ -110,11 +110,18 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_tx_swap_withdraw_within_batch_total` | Gauge | - | Total withdraw within batch events in a block |
 | `cendermint_tx_swap_deposit_within_batch_total` | Gauge | - | Total deposit within batch events in a block |
 | `cendermint_tx_others_total` | Gauge | - | Total number of events yet to be supported by Cendermint in a block |
-| `cendermint_peggo_valset_count` | Gauge | - | The total number of validators at the current height in the bridge |
-| `cendermint_peggo_valset_active` | Gauge | - | The active status of the orchestrator run by the desired validator |
-| `cendermint_peggo_last_claim_nonce` | Gauge | - | The nounce in the last claim witnessed by peggo |
-| `cendermint_peggo_last_claim_height` | Gauge | - | The ethereum height in the last claim witnessed by peggo |
-| `cendermint_peggo_erc20_price` | Gauge | - | Price of the ERC20 token |
-| `cendermint_peggo_batch_fees` | Gauge | - | Total fees in the latest batch processed |
-| `cendermint_peggo_batches_fees` | Gauge | - | Total fees in all batches (default 100 batches per bundle, 100 txs per batch) |
-| `cendermint_peggo_bridge_fees` | Gauge | - | Bridge fees calculated in real time based on the prices of ETH and the ERC20 token |
+| `cendermint_gravity_signed_valsets_window` | Gauge | - | Number of blocks per signing window for the validator set  |
+| `cendermint_gravity_signed_batches_window` | Gauge | - | Number of blocks per signing window for a batch |
+| `cendermint_gravity_target_batch_timeout` | Gauge | - | Target timeout period for a batch |
+| `cendermint_gravity_slash_fraction_valset` | Gauge | - | The fraction of stake to be slashed if the total number of failed validator set relays in any signing window exceeds a set limit  |
+| `cendermint_gravity_slash_fraction_batch` | Gauge | - | The fraction of stake to be slashed if the total number of failed batch relays in any signing window exceeds a set limit |
+| `cendermint_gravity_slash_fraction_bad_eth_sig` | Gauge | - | The fraction of stake to be slashed if the total number of bad eth signatures in any signing window exceeds a set limit |
+| `cendermint_gravity_valset_reward_amount` | Gauge | - | The total amount of bridge rewards for the validator set |
+| `cendermint_gravity_bridge_active` | Gauge | - | If the gravity bridge is active or not |
+| `cendermint_gravity_valset_count` | Gauge | - | The total number of validators at the current height in the bridge |
+| `cendermint_gravity_valset_active` | Gauge | - | The active status of the orchestrator run by the desired validator |
+| `cendermint_gravity_event_nonce` | Gauge | - | The latest event nonce witnessed by the orchestrator |
+| `cendermint_gravity_erc20_price` | Gauge | - | Price of the ERC20 token |
+| `cendermint_gravity_batch_fees` | Gauge | - | Total fees in the latest batch processed |
+| `cendermint_gravity_batches_fees` | Gauge | - | Total fees in all batches (default 100 batches per bundle, 100 txs per batch) |
+| `cendermint_gravity_bridge_fees` | Gauge | - | Bridge fees calculated in real time based on the prices of ETH and the ERC20 token |

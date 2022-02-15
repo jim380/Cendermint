@@ -92,15 +92,23 @@ var (
 		"tx_swap_deposit_within_batch_total",
 		"tx_others_total",
 
-		// peggo
-		"peggo_valset_count",
-		"peggo_valset_active",
-		"peggo_last_claim_nonce",
-		"peggo_last_claim_height",
-		"peggo_erc20_price",
-		"peggo_batch_fees",
-		"peggo_batches_fees",
-		"peggo_bridge_fees",
+		// gravity
+		"gravity_signed_valsets_window",
+		"gravity_signed_batches_window",
+		"gravity_target_batch_timeout",
+		"gravity_slash_fraction_valset",
+		"gravity_slash_fraction_batch",
+		"gravity_slash_fraction_bad_eth_sig",
+		"gravity_valset_reward_amount",
+		"gravity_bridge_active",
+		"gravity_valset_count",
+		"gravity_valset_active",
+		"gravity_event_nonce",
+		// "gravity_last_claim_height",
+		"gravity_erc20_price",
+		"gravity_batch_fees",
+		"gravity_batches_fees",
+		"gravity_bridge_fees",
 	}
 
 	metricData metric
@@ -252,15 +260,27 @@ type metric struct {
 		OthersTotal float64
 	}
 
-	Peggo struct {
-		ValSetCount     float64
-		ValSetActive    float64
-		LastClaimNonce  float64
-		LastClaimHeight float64
-		Erc20Price      float64
-		BatchFees       float64
-		BatchesFees     float64
-		BridgeFees      float64
+	Gravity struct {
+		gravityParams struct {
+			SignedValsetsWindow    float64
+			SignedBatchesWindow    float64
+			TargetBatchTimeout     float64
+			SlashFractionValset    float64
+			SlashFractionBatch     float64
+			SlashFractionBadEthSig float64
+			ValsetReward           struct {
+				Amount float64
+			}
+		}
+		ValSetCount   float64
+		ValSetActive  float64
+		GravityActive float64
+		EventNonce    float64
+		// LastClaimHeight float64
+		Erc20Price  float64
+		BatchFees   float64
+		BatchesFees float64
+		BridgeFees  float64
 	}
 }
 

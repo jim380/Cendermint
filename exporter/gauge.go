@@ -121,15 +121,23 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		// tx events others
 		metricData.Tx.OthersTotal,
 
-		// peggo
-		metricData.Peggo.ValSetCount,
-		metricData.Peggo.ValSetActive,
-		metricData.Peggo.LastClaimNonce,
-		metricData.Peggo.LastClaimHeight,
-		metricData.Peggo.Erc20Price,
-		metricData.Peggo.BatchFees,
-		metricData.Peggo.BatchesFees,
-		metricData.Peggo.BridgeFees,
+		// graivty
+		metricData.Gravity.gravityParams.SignedValsetsWindow,
+		metricData.Gravity.gravityParams.SignedBatchesWindow,
+		metricData.Gravity.gravityParams.TargetBatchTimeout,
+		metricData.Gravity.gravityParams.SlashFractionValset,
+		metricData.Gravity.gravityParams.SlashFractionBatch,
+		metricData.Gravity.gravityParams.SlashFractionBadEthSig,
+		metricData.Gravity.gravityParams.ValsetReward.Amount,
+		metricData.Gravity.GravityActive,
+		metricData.Gravity.ValSetCount,
+		metricData.Gravity.ValSetActive,
+		metricData.Gravity.EventNonce,
+		// metricData.GravityInfo.LastClaimHeight,
+		metricData.Gravity.Erc20Price,
+		metricData.Gravity.BatchFees,
+		metricData.Gravity.BatchesFees,
+		metricData.Gravity.BridgeFees,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

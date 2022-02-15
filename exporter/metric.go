@@ -107,15 +107,22 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// tx events others
 	metricData.Tx.OthersTotal = restData.TxInfo.Result.OthersTotal
 
-	// peggo
-	metricData.Peggo.ValSetCount = float64(restData.PeggoInfo.ValSetCount)
-	metricData.Peggo.ValSetActive = restData.PeggoInfo.ValActive
-	metricData.Peggo.LastClaimNonce = utils.StringToFloat64(restData.PeggoInfo.LastClaimEvent.EventNonce)
-	metricData.Peggo.LastClaimHeight = utils.StringToFloat64(restData.PeggoInfo.LastClaimEvent.EventHeight)
-	metricData.Peggo.Erc20Price = restData.PeggoInfo.ERC20Price
-	metricData.Peggo.BatchFees = restData.PeggoInfo.BatchFees
-	metricData.Peggo.BatchesFees = restData.PeggoInfo.BatchesFees
-	metricData.Peggo.BridgeFees = restData.PeggoInfo.BridgeFees
+	// gravity
+	metricData.Gravity.gravityParams.SignedValsetsWindow = utils.StringToFloat64(restData.GravityInfo.SignedValsetsWindow)
+	metricData.Gravity.gravityParams.SignedBatchesWindow = utils.StringToFloat64(restData.GravityInfo.SignedBatchesWindow)
+	metricData.Gravity.gravityParams.TargetBatchTimeout = utils.StringToFloat64(restData.GravityInfo.TargetBatchTimeout)
+	metricData.Gravity.gravityParams.SlashFractionValset = utils.StringToFloat64(restData.GravityInfo.SlashFractionValset)
+	metricData.Gravity.gravityParams.SlashFractionBatch = utils.StringToFloat64(restData.GravityInfo.SlashFractionBatch)
+	metricData.Gravity.gravityParams.SlashFractionBadEthSig = utils.StringToFloat64(restData.GravityInfo.SlashFractionBadEthSig)
+	metricData.Gravity.gravityParams.ValsetReward.Amount = utils.StringToFloat64(restData.GravityInfo.ValsetReward.Amount)
+	metricData.Gravity.GravityActive = restData.GravityInfo.GravityActive
+	metricData.Gravity.ValSetCount = float64(restData.GravityInfo.ValSetCount)
+	metricData.Gravity.ValSetActive = restData.GravityInfo.ValActive
+	metricData.Gravity.EventNonce = utils.StringToFloat64(restData.GravityInfo.EventNonce)
+	metricData.Gravity.Erc20Price = restData.GravityInfo.ERC20Price
+	metricData.Gravity.BatchFees = restData.GravityInfo.BatchFees
+	metricData.Gravity.BatchesFees = restData.GravityInfo.BatchesFees
+	metricData.Gravity.BridgeFees = restData.GravityInfo.BridgeFees
 
 	// labels node
 	metricData.Network.ChainID = restData.Commit.ChainId

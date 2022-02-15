@@ -40,7 +40,7 @@ type RESTData struct {
 		IBCInfo        ibcInfo
 	}
 	UpgradeInfo upgradeInfo
-	PeggoInfo   peggoInfo
+	GravityInfo gravityInfo
 }
 
 func (rd RESTData) new(blockHeight int64) *RESTData {
@@ -86,9 +86,10 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getTxInfo(blockHeight)
 		rd.computerTPS(blockData)
 		rd.getUpgradeInfo()
-		// peggo
+		// gravity
+		rd.getBridgeParams()
 		rd.getValSet()
-		rd.getOracleEvent()
+		rd.getOracleEventNonce()
 		rd.getBatchFees()
 		rd.getBatchesFees()
 		rd.getBridgeFees()
@@ -135,7 +136,7 @@ func RESTQuery(route string) ([]byte, error) {
 	return body, err
 }
 
-func PeggoQuery(route string) ([]byte, error) {
+func GravityQuery(route string) ([]byte, error) {
 	req, err := http.NewRequest("GET", route, nil)
 	if err != nil {
 		return nil, err
