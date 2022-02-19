@@ -14,7 +14,7 @@ type gravityInfo struct {
 	ValSetCount   int
 	ValActive     float64 // [0]: false, [1]: true
 	GravityActive float64 // [0]: false, [1]: true
-	erc20Price
+	umeePrice
 	ethPrice
 	BatchFees   float64
 	BatchesFees float64
@@ -40,13 +40,13 @@ type ValsetReward struct {
 	Amount string `json:"amount"`
 }
 
-type erc20Price struct {
-	contractAddr `json:"0xe54fbaecc50731afe54924c40dfd1274f718fe02"`
-}
+// type erc20Price struct {
+// 	contractAddr `json:"0xe54fbaecc50731afe54924c40dfd1274f718fe02"`
+// }
 
-type contractAddr struct {
-	ERC20Price float64 `json:"usd"`
-}
+// type contractAddr struct {
+// 	ERC20Price float64 `json:"usd"`
+// }
 
 type ethPrice struct {
 	ETHUSD `json:"ethereum"`
@@ -54,6 +54,14 @@ type ethPrice struct {
 
 type ETHUSD struct {
 	ETHPrice float64 `json:"usd"`
+}
+
+type umeePrice struct {
+	UMEEUSD `json:"umee"`
+}
+
+type UMEEUSD struct {
+	UMEEPrice float64 `json:"usd"`
 }
 
 type batches struct {
@@ -120,16 +128,18 @@ type member struct {
 }
 
 func (rd *RESTData) getUmeePrice() {
-	var p erc20Price
+	var p umeePrice
 
-	contractAddr := os.Getenv("CONTRACT_ADDR")
-	res, err := GravityQuery("https://peggo-fakex-qhcqt.ondigitalocean.app/api/v3/simple/token_price/ethereum?contract_addresses=" + contractAddr + "&vs_currencies=usd")
+	// contractAddr := os.Getenv("CONTRACT_ADDR")
+	// res, err := GravityQuery("https://peggo-fakex-qhcqt.ondigitalocean.app/api/v3/simple/token_price/ethereum?contract_addresses=" + contractAddr + "&vs_currencies=usd")
+	res, err := GravityQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
+
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &p)
 
-	rd.GravityInfo.ERC20Price = p.ERC20Price
+	rd.GravityInfo.UMEEPrice = p.UMEEPrice
 }
 
 func (rd *RESTData) getBatchFees() {
@@ -146,7 +156,7 @@ func (rd *RESTData) getBatchFees() {
 	}
 
 	rd.getUmeePrice()
-	feesTotal := rd.GravityInfo.ERC20Price * (b.Fees / 1000000)
+	feesTotal := rd.GravityInfo.umeePrice.UMEEPrice * (b.Fees / 1000000)
 	rd.GravityInfo.BatchFees = feesTotal
 }
 
@@ -166,7 +176,7 @@ func (rd *RESTData) getBatchesFees() {
 	}
 
 	rd.getUmeePrice()
-	feesTotal := rd.GravityInfo.ERC20Price * (b.Fees / 1000000)
+	feesTotal := rd.GravityInfo.umeePrice.UMEEPrice * (b.Fees / 1000000)
 	rd.GravityInfo.BatchesFees = feesTotal
 }
 
@@ -182,7 +192,7 @@ func (rd *RESTData) getBridgeFees() {
 
 	rd.GravityInfo.ETHPrice = p.ETHPrice
 	rd.getUmeePrice()
-	bf = (0.00225 * rd.GravityInfo.ETHPrice) / (100 * rd.GravityInfo.ERC20Price)
+	bf = (0.00225 * rd.GravityInfo.ETHPrice) / (100 * rd.GravityInfo.umeePrice.UMEEPrice)
 	rd.GravityInfo.BridgeFees = bf
 }
 

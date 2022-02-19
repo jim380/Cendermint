@@ -119,7 +119,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Gravity.ValSetCount = float64(restData.GravityInfo.ValSetCount)
 	metricData.Gravity.ValSetActive = restData.GravityInfo.ValActive
 	metricData.Gravity.EventNonce = utils.StringToFloat64(restData.GravityInfo.EventNonce)
-	metricData.Gravity.Erc20Price = restData.GravityInfo.ERC20Price
+	metricData.Gravity.Erc20Price = restData.GravityInfo.UMEEPrice
 	metricData.Gravity.BatchFees = restData.GravityInfo.BatchFees
 	metricData.Gravity.BatchesFees = restData.GravityInfo.BatchesFees
 	metricData.Gravity.BridgeFees = restData.GravityInfo.BridgeFees
