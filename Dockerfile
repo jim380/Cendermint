@@ -1,25 +1,10 @@
-# FROM golang:1.15
-FROM golang:alpine3.13 AS build-env
-
-# Set up dependencies
-ENV PACKAGES bash curl make git libc-dev gcc linux-headers eudev-dev python3
-
-# ADD . /cendermint
+FROM golang:1.18 AS build-env
+ENV CGO_ENABLED=0
 WORKDIR /cendermint
-
-COPY go.mod .
-COPY go.sum .
-
 COPY . .
+RUN go build
 
-RUN apk add --no-cache $PACKAGES && go build
-
-FROM alpine:edge
-
-RUN apk add --update ca-certificates
-
+FROM alpine:3.15
 WORKDIR /cendermint
-
-COPY --from=build-env /cendermint/Cendermint /usr/bin/Cendermint
-
-CMD ["Cendermint"]
+COPY --from=build-env /cendermint/Cendermint /usr/bin/cendermint
+CMD ["cendermint"]
