@@ -37,7 +37,7 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 
 	runPages(currentBlockHeight, &vSets, vSetsResult, 1)
 	runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
-	runPages(currentBlockHeight, &vSets2, vSetsResult2, 3)
+	runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
 
 	for _, value := range vSets.Result.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}

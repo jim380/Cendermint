@@ -3,8 +3,8 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
@@ -36,10 +36,23 @@ type RoundState struct {
 
 type rpcValidatorsets struct {
 	Validators []struct {
-		ConsAddr string `json:"address"`
-		//ConsPubKey       consPubKeyValSet `json:"pub_key"`
-		ProposerPriority string `json:"proposer_priority"`
-		VotingPower      string `json:"voting_power"`
+		ConsAddr         string           `json:"address"`
+		ConsPubKey       consPubKeyValSet `json:"pub_key"`
+		ProposerPriority string           `json:"proposer_priority"`
+		VotingPower      string           `json:"voting_power"`
+		Moniker          string
+	} `json:"validators"`
+}
+
+type rpcValidators struct {
+	Validators []struct {
+		ConsPubKey struct {
+			Type string `json:"@type"`
+			Key  string `json:"key"`
+		} `json:"consensus_pubkey"`
+		Description struct {
+			Moniker string `json:"moniker"`
+		} `json:"description"`
 	} `json:"validators"`
 }
 
@@ -53,24 +66,33 @@ func (rpc *RPCData) getConsensusDump() {
 	}
 	json.Unmarshal(res, &cs)
 
-	for _, validator := range cs.Result.Validatorset.Validators {
+	conspubMonikerMap := rpc.getConspubMonikerMap()
+	// cs.Result.Validatorset.Validators is already sorted based on voting power
+	for index, validator := range cs.Result.Validatorset.Validators {
+		var prevote, precommit string
+
+		// get moniker
+		validator.Moniker = conspubMonikerMap[validator.ConsPubKey.Key]
+		if cs.Result.RoundState.Votes[0].Prevotes[index] != "nil-Vote" {
+			prevote = "✅"
+		} else {
+			prevote = "❌"
+		}
+
+		if cs.Result.RoundState.Votes[0].Precommits[index] != "nil-Vote" {
+			precommit = "✅"
+		} else {
+			precommit = "❌"
+		}
+
 		// populate the map => [ConsAddr][]string{ConsAddr, VotingPower, ProposerPriority, prevote, precommit, commit}
-		fmt.Println("key(" + validator.ConsAddr + ") " + "value(" + validator.VotingPower + ")")
-		vSetsResult[validator.ConsAddr] = []string{validator.ConsAddr, validator.VotingPower, validator.ProposerPriority, "nil", "nil", "nil"}
-	}
-
-	// sort the map based on voting power
-	vSetsResultSorted := SortRPC(vSetsResult)
-
-	// temp check; remove after testing
-	_, found := vSetsResultSorted["AC2D56057CD84765E6FBE318979093E8E44AA18F"]
-	if !found {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Validator not found in the active set"))
+		vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit}
+		fmt.Println("key(" + validator.ConsAddr + ") " + "conspub(" + validator.ConsPubKey.Key + ") " + "moniker(" + validator.Moniker + ") " + "vp(" + validator.VotingPower + ")" + " prevote(" + prevote + ")" + " precommit(" + precommit + ")")
 	}
 
 	// TO-DO: update (prevote, precommit, commit} in the map
 	rpc.ConsensusState = cs
-	rpc.Validatorsets = vSetsResultSorted
+	rpc.Validatorsets = vSetsResult
 
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Consensus:", "height("+rpc.ConsensusState.Result.Height+") "+"round("+strconv.FormatInt(rpc.ConsensusState.Result.Round, 10)+") "+"step("+strconv.FormatInt(rpc.ConsensusState.Result.Step, 10)+")"))
 	prevoteParsed := utils.ParseConsensusOutput(rpc.ConsensusState.Result.Votes[0].PrevotesBitArray, "\\= (.*)", 1)
@@ -81,24 +103,26 @@ func (rpc *RPCData) getConsensusDump() {
 	// fmt.Println(rpc.Validatorsets)
 }
 
-func SortRPC(mapValue map[string][]string) map[string][]string {
-	keys := []string{}
-	newMapValue := mapValue
+// TO-DO: this only returns 1 page; need to add support for pagination
+func (rpc *RPCData) getConspubMonikerMap() map[string]string {
+	var v rpcValidators
+	var vResult map[string]string = make(map[string]string)
 
-	for key := range mapValue {
-		keys = append(keys, key)
+	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &v)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
-	// Sort by proposer_priority
-	sort.Slice(keys, func(i, j int) bool {
-		a, _ := strconv.Atoi(mapValue[keys[i]][2])
-		b, _ := strconv.Atoi(mapValue[keys[j]][2])
-		return a > b
-	})
-
-	for i, key := range keys {
-		// proposer_ranking
-		newMapValue[key][5] = strconv.Itoa(i + 1)
+	for _, validator := range v.Validators {
+		// populate the map => [conspub] -> (moniker)
+		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
+		fmt.Println("key(" + validator.ConsPubKey.Key + ") " + "moniker(" + validator.Description.Moniker + ") ")
 	}
-	return newMapValue
+	return vResult
 }
