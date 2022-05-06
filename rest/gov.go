@@ -31,7 +31,7 @@ func (rd *RESTData) getGovInfo() {
 
 	votingCount := 0
 
-	res, err := RESTQuery("/cosmos/gov/v1beta1/proposals")
+	res, err := HttpQuery(RESTAddr + "/cosmos/gov/v1beta1/proposals")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

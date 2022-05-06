@@ -31,7 +31,7 @@ type SigningInfo struct {
 func (rd *RESTData) getSlashingParams() {
 	var d slashingInfo
 
-	res, err := RESTQuery("/cosmos/slashing/v1beta1/params")
+	res, err := HttpQuery(RESTAddr + "/cosmos/slashing/v1beta1/params")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -47,7 +47,7 @@ func (rd *RESTData) getSlashingParams() {
 func (rd *RESTData) getSigningInfo(consAddr string) {
 	var d slashingInfo
 
-	res, err := RESTQuery("/cosmos/slashing/v1beta1/signing_infos/" + consAddr)
+	res, err := HttpQuery(RESTAddr + "/cosmos/slashing/v1beta1/signing_infos/" + consAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

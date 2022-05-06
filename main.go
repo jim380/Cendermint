@@ -27,9 +27,9 @@ import (
 )
 
 var (
-	chainList                                        = []string{"cosmos", "umee", "nym", "osmosis", "juno", "akash", "regen", "microtick", "evmos"}
-	chain, restAddr, listenPort, operAddr, logOutput string
-	logger                                           *zap.Logger
+	chainList                                                 = []string{"cosmos", "umee", "nym", "osmosis", "juno", "akash", "regen", "microtick", "evmos"}
+	chain, restAddr, rpcAddr, listenPort, operAddr, logOutput string
+	logger                                                    *zap.Logger
 )
 
 func main() {
@@ -38,20 +38,22 @@ func main() {
 	// 	log.Fatal("Error loading .env file")
 	// }
 
-	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL"), os.Getenv("MISS_THRESHOLD"), os.Getenv("MISS_CONSECUTIVE")}
+	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("RPC_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL"), os.Getenv("MISS_THRESHOLD"), os.Getenv("MISS_CONSECUTIVE")}
 	cmd.CheckInputs(inputs, chainList)
 
 	chain = inputs[0]
 	operAddr = inputs[1]
 	restAddr = inputs[2]
-	listenPort = inputs[3]
-	logOutput = inputs[4]
+	rpcAddr = inputs[3]
+	listenPort = inputs[4]
+	logOutput = inputs[5]
 
 	logger = logging.InitLogger(logOutput)
 	zap.ReplaceGlobals(logger)
 
 	cmd.SetSDKConfig(chain)
-	rest.Addr = restAddr
+	rest.RESTAddr = restAddr
+	rest.RPCAddr = rpcAddr
 	rest.OperAddr = operAddr
 	startExporter()
 }

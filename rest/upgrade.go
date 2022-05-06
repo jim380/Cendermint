@@ -20,7 +20,7 @@ type upgradeInfo struct {
 func (rd *RESTData) getUpgradeInfo() {
 	var upgradeInfo upgradeInfo
 
-	res, err := RESTQuery("/cosmos/upgrade/v1beta1/current_plan")
+	res, err := HttpQuery(RESTAddr + "/cosmos/upgrade/v1beta1/current_plan")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

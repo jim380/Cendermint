@@ -19,7 +19,7 @@ type Coin struct {
 func (rd *RESTData) getBalances() {
 	var b balances
 
-	res, err := RESTQuery("/cosmos/bank/v1beta1/balances/" + AccAddr)
+	res, err := HttpQuery(RESTAddr + "/cosmos/bank/v1beta1/balances/" + AccAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

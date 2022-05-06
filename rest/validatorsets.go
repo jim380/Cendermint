@@ -89,7 +89,7 @@ func mergeMap(a map[string][]string, b map[string][]string) map[string][]string 
 }
 
 func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[string][]string, pages int) {
-	res, err := RESTQuery("/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=100")
+	res, err := HttpQuery(RESTAddr + "/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=100")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

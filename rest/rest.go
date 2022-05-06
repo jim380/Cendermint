@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	Addr     string
+	RESTAddr string
+	RPCAddr  string
 	OperAddr string
 	AccAddr  string
 )
@@ -50,7 +51,16 @@ func (rd RESTData) new(blockHeight int64) *RESTData {
 	}
 }
 
+func (rpc RPCData) new() *RPCData {
+	return &RPCData{Validatorsets: make(map[string][]string)}
+}
+
 func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+	// rpc
+	var rpcData RPCData
+	rpc := rpcData.new()
+
+	// REST
 	var restData RESTData
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 
@@ -58,6 +68,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
+		rpc.getConsensusDump()
 		rd.getStakingPool(denom)
 		rd.getSlashingParams()
 		rd.getInflation(chain, denom)
@@ -120,23 +131,7 @@ func GetDelegationsData(chain string, blockHeight int64, blockData Blocks, denom
 	return rd
 }
 
-func RESTQuery(route string) ([]byte, error) {
-	req, err := http.NewRequest("GET", Addr+route, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Accept", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	return body, err
-}
-
-func GravityQuery(route string) ([]byte, error) {
+func HttpQuery(route string) ([]byte, error) {
 	req, err := http.NewRequest("GET", route, nil)
 	if err != nil {
 		return nil, err

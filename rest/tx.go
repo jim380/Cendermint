@@ -90,7 +90,7 @@ func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 	var txInfo txInfo
 	var txRes txResult
 
-	res, err := RESTQuery("/cosmos/tx/v1beta1/txs?events=tx.height=" + fmt.Sprintf("%v", currentBlockHeight))
+	res, err := HttpQuery(RESTAddr + "/cosmos/tx/v1beta1/txs?events=tx.height=" + fmt.Sprintf("%v", currentBlockHeight))
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

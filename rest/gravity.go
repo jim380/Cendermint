@@ -131,8 +131,8 @@ func (rd *RESTData) getUmeePrice() {
 	var p umeePrice
 
 	// contractAddr := os.Getenv("CONTRACT_ADDR")
-	// res, err := GravityQuery("https://peggo-fakex-qhcqt.ondigitalocean.app/api/v3/simple/token_price/ethereum?contract_addresses=" + contractAddr + "&vs_currencies=usd")
-	res, err := GravityQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
+	// res, err := HttpQuery("https://peggo-fakex-qhcqt.ondigitalocean.app/api/v3/simple/token_price/ethereum?contract_addresses=" + contractAddr + "&vs_currencies=usd")
+	res, err := HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
 
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
@@ -145,7 +145,7 @@ func (rd *RESTData) getUmeePrice() {
 func (rd *RESTData) getBatchFees() {
 	var b batchFees
 
-	res, err := RESTQuery("/gravity/v1beta/batchfees")
+	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/batchfees")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -163,7 +163,7 @@ func (rd *RESTData) getBatchFees() {
 func (rd *RESTData) getBatchesFees() {
 	var b batches
 
-	res, err := RESTQuery("/gravity/v1beta1/batch/outgoingtx")
+	res, err := HttpQuery(RESTAddr + "/gravity/v1beta1/batch/outgoingtx")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -184,7 +184,7 @@ func (rd *RESTData) getBridgeFees() {
 	var p ethPrice
 	var bf float64
 
-	res, err := GravityQuery("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
+	res, err := HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -201,7 +201,7 @@ func (rd *RESTData) getBridgeParams() {
 
 	rd.GravityInfo.GravityActive = 0.0
 
-	res, err := RESTQuery("/gravity/v1beta/params")
+	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/params")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -221,7 +221,7 @@ func (rd *RESTData) getOracleEventNonce() {
 	var evt oracleEventNonce
 
 	orchAddr := os.Getenv("UMEE_ORCH_ADDR")
-	res, err := RESTQuery("/gravity/v1beta/oracle/eventnonce/" + orchAddr)
+	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/oracle/eventnonce/" + orchAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -235,7 +235,7 @@ func (rd *RESTData) getValSet() {
 
 	var vsResult map[string]string = make(map[string]string)
 
-	res, err := RESTQuery("/gravity/v1beta/valset/current")
+	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/valset/current")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

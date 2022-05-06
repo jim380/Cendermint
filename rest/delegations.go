@@ -32,7 +32,7 @@ func (rd *RESTData) getDelegations() {
 	var delInfo delegationsInfo
 	var delRes map[string][]string = make(map[string][]string)
 
-	res, err := RESTQuery("/cosmos/staking/v1beta1/validators/" + OperAddr + "/delegations" + "?pagination.limit=1000")
+	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators/" + OperAddr + "/delegations" + "?pagination.limit=1000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

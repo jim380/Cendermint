@@ -30,7 +30,7 @@ type appVersion struct {
 func (rd *RESTData) getNodeInfo() {
 	var nodeInfo nodeInfo
 
-	res, err := RESTQuery("/cosmos/base/tendermint/v1beta1/node_info")
+	res, err := HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/node_info")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

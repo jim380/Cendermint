@@ -23,7 +23,7 @@ type Commission struct {
 func (rd *RESTData) getRewardsCommission() {
 	var rc rewardsAndCommisson
 
-	res, err := RESTQuery("/distribution/validators/" + OperAddr)
+	res, err := HttpQuery(RESTAddr + "/distribution/validators/" + OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

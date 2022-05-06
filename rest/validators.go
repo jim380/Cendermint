@@ -47,7 +47,7 @@ type commission_rates struct {
 func (rd *RESTData) getValidator() {
 	var v validators
 
-	res, err := RESTQuery("/cosmos/staking/v1beta1/validators/" + OperAddr)
+	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators/" + OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

@@ -40,7 +40,7 @@ type lastCommit struct {
 }
 
 func (b *Blocks) GetInfo() Blocks {
-	res, err := RESTQuery("/blocks/latest")
+	res, err := HttpQuery(RESTAddr + "/blocks/latest")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -56,7 +56,7 @@ func (b *Blocks) GetInfo() Blocks {
 
 func (b *Blocks) GetLastBlockTimestamp(currentHeight int64) Blocks {
 	var lastBlock LastBlock
-	res, err := RESTQuery("/blocks/" + strconv.Itoa(int(currentHeight-1)))
+	res, err := HttpQuery(RESTAddr + "/blocks/" + strconv.Itoa(int(currentHeight-1)))
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
