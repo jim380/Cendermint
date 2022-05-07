@@ -61,6 +61,8 @@ func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
 		// gov
 		metricData.Network.Gov.TotalProposalCount,
 		metricData.Network.Gov.VotingProposalCount,
+		metricData.Network.Gov.InVotingVotedCount,
+		metricData.Network.Gov.InVotingDidNotVoteCount,
 
 		// validator info
 		metricData.Validator.VotingPower,

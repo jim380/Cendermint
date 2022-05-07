@@ -45,6 +45,8 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	// gov
 	metricData.Network.Gov.TotalProposalCount = restData.Gov.TotalProposalCount
 	metricData.Network.Gov.VotingProposalCount = restData.Gov.VotingProposalCount
+	metricData.Network.Gov.InVotingVotedCount = restData.Gov.InVotingVotedCount
+	metricData.Network.Gov.InVotingDidNotVoteCount = restData.Gov.InVotingDidNotVoteCount
 
 	// validator info
 	metricData.Validator.VotingPower = utils.StringToFloat64(restData.Validatorsets[consPubKey.Key][1])

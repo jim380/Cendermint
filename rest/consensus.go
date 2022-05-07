@@ -99,8 +99,7 @@ func (rpc *RPCData) getConsensusDump() {
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Prevote bit array:", fmt.Sprintf("%.2f", prevoteParsed)))
 	precommitParsed := utils.ParseConsensusOutput(rpc.ConsensusState.Result.Votes[0].PrecommitsBitArray, "\\= (.*)", 1)
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Precommit bit array:", fmt.Sprintf("%.2f", precommitParsed)))
-	zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC: ", fmt.Sprint(len(rpc.Validatorsets))))
-	// fmt.Println(rpc.Validatorsets)
+	// zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC: ", fmt.Sprint(len(rpc.Validatorsets))))
 }
 
 // TO-DO: this only returns 1 page; need to add support for pagination
@@ -108,7 +107,7 @@ func (rpc *RPCData) getConspubMonikerMap() map[string]string {
 	var v rpcValidators
 	var vResult map[string]string = make(map[string]string)
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators")
+	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -122,7 +121,7 @@ func (rpc *RPCData) getConspubMonikerMap() map[string]string {
 	for _, validator := range v.Validators {
 		// populate the map => [conspub] -> (moniker)
 		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
-		fmt.Println("key(" + validator.ConsPubKey.Key + ") " + "moniker(" + validator.Description.Moniker + ") ")
+		// fmt.Println("key(" + validator.ConsPubKey.Key + ") " + "moniker(" + validator.Description.Moniker + ") ")
 	}
 	return vResult
 }

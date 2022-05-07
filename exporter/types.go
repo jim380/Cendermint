@@ -36,6 +36,8 @@ var (
 		// gov
 		"gov_total_proposal_count",
 		"gov_voting_proposal_count",
+		"gov_voting_proposal_voted_count",
+		"gov_voting_proposal_did_not_vote_count",
 
 		// validator
 		"validator_voting_power",
@@ -158,8 +160,10 @@ type metric struct {
 		}
 
 		Gov struct {
-			TotalProposalCount  float64
-			VotingProposalCount float64
+			TotalProposalCount      float64
+			VotingProposalCount     float64
+			InVotingVotedCount      float64
+			InVotingDidNotVoteCount float64
 		}
 	}
 
