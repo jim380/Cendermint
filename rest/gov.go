@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -40,7 +39,7 @@ func (rd *RESTData) getGovInfo() {
 	var (
 		g                  gov
 		gi                 govInfo
-		voteInfo           voteInfo
+		totalProposals     []string
 		proposalsInVoting  []string
 		inVotingVoted      int
 		inVotingDidNotVote int
@@ -55,19 +54,19 @@ func (rd *RESTData) getGovInfo() {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count", g.Pagination.Total))
 	}
 
 	for _, value := range g.Proposals {
+		totalProposals = append(totalProposals, value.ProposalID)
 		if value.Status == "PROPOSAL_STATUS_VOTING_PERIOD" {
 			proposalsInVoting = append(proposalsInVoting, value.ProposalID)
 		}
 	}
-
-	fmt.Println("Proposals in voting: " + strconv.Itoa(len(proposalsInVoting)))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count: ", totalProposals[len(totalProposals)-1]))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Proposals in voting: ", strconv.Itoa(len(proposalsInVoting))))
 
 	for _, value := range proposalsInVoting {
+		var voteInfo voteInfo
 		res, err := HttpQuery(RESTAddr + "/cosmos/gov/v1beta1/proposals/" + value + "/votes/" + utils.GetAccAddrFromOperAddr(OperAddr))
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
@@ -81,8 +80,7 @@ func (rd *RESTData) getGovInfo() {
 			//fmt.Println(value + ":Voter didn't vote")
 		}
 	}
-
-	gi.TotalProposalCount = utils.StringToFloat64(g.Pagination.Total)
+	gi.TotalProposalCount = float64(len(totalProposals))
 	gi.VotingProposalCount = float64(len(proposalsInVoting))
 	gi.InVotingVotedCount = float64(inVotingVoted)
 	gi.InVotingDidNotVoteCount = float64(inVotingDidNotVote)

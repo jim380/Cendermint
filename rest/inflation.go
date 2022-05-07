@@ -42,7 +42,7 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 	default:
 		var i inflation
 
-		res, err := HttpQuery(RESTAddr + "/minting/inflation")
+		res, err := HttpQuery(RESTAddr + "/minting/inflation") // route does not existing in osmosis
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}

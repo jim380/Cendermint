@@ -84,7 +84,7 @@ func (rd *RESTData) getIBCChannels() {
 	var ibcInfo ibcChannelInfo
 	var ibcChannels map[string][]string = make(map[string][]string)
 	ibcInfo.OpenChannels = 0
-	res, err := HttpQuery(RESTAddr + "/ibc/core/channel/v1/channels?pagination.limit=1000")
+	res, err := HttpQuery(RESTAddr + "/ibc/core/channel/v1/channels?pagination.limit=1000000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -120,7 +120,7 @@ func (rd *RESTData) getIBCConnections() {
 	var ibcInfo ibcConnectionInfo
 	var ibcConnections map[string][]string = make(map[string][]string)
 	ibcInfo.OpenConnections = 0
-	res, err := HttpQuery(RESTAddr + "/ibc/core/connection/v1/connections?pagination.limit=1000")
+	res, err := HttpQuery(RESTAddr + "/ibc/core/connection/v1/connections?pagination.limit=100000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
