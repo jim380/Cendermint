@@ -15,3 +15,7 @@ require (
 replace google.golang.org/grpc => google.golang.org/grpc v1.33.2
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
+require github.com/opencontainers/runc v1.0.3 // indirect
+
+require github.com/opencontainers/image-spec v1.0.2 // indirect
