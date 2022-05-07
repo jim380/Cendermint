@@ -102,7 +102,6 @@ func (rpc *RPCData) getConsensusDump() {
 	// zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC: ", fmt.Sprint(len(rpc.Validatorsets))))
 }
 
-// TO-DO: this only returns 1 page; need to add support for pagination
 func (rpc *RPCData) getConspubMonikerMap() map[string]string {
 	var v rpcValidators
 	var vResult map[string]string = make(map[string]string)
