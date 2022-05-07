@@ -80,7 +80,8 @@ func (rd *RESTData) getGovInfo() {
 			//fmt.Println(value + ":Voter didn't vote")
 		}
 	}
-	gi.TotalProposalCount = float64(len(totalProposals))
+	totalProposalsCount, _ := strconv.ParseFloat(totalProposals[len(totalProposals)-1], 64)
+	gi.TotalProposalCount = totalProposalsCount
 	gi.VotingProposalCount = float64(len(proposalsInVoting))
 	gi.InVotingVotedCount = float64(inVotingVoted)
 	gi.InVotingDidNotVoteCount = float64(inVotingDidNotVote)
