@@ -75,10 +75,10 @@ func (rd *RESTData) getGovInfo() {
 		json.Unmarshal(res, &voteInfo)
 		if voteInfo.Votes.Option != "" {
 			inVotingVoted++
-			fmt.Println(value + ":Voter voted")
+			//fmt.Println(value + ":Voter voted")
 		} else {
 			inVotingDidNotVote++
-			fmt.Println(value + ":Voter didn't vote")
+			//fmt.Println(value + ":Voter didn't vote")
 		}
 	}
 

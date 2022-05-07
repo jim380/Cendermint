@@ -1,6 +1,9 @@
 package exporter
 
-import "github.com/jim380/Cendermint/rest"
+import (
+	"github.com/jim380/Cendermint/rest"
+	"go.uber.org/zap"
+)
 
 var (
 	previousBlockHeight int64
@@ -302,20 +305,19 @@ func getDenomList(chain string) []string {
 		dList = []string{"uosmo"}
 	case "juno":
 		dList = []string{"ujuno"}
-
 	case "akash":
 		dList = []string{"uakt"}
-
 	case "regen":
 		dList = []string{"uregen"}
-
 	case "microtick":
 		dList = []string{"utick"}
-
 	case "nym":
 		dList = []string{"upunk"}
 	case "evmos":
 		dList = []string{"aphoton"}
+	default:
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "denom not supported"))
 	}
+
 	return dList
 }
