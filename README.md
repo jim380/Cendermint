@@ -65,7 +65,7 @@ $ ./Cendermint run
 ### Docker
 
 ```bash
-$ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:master /bin/sh -c "Cendermint run"
+$ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:<tag> Cendermint run && docker logs cendermint -f --since 1m
 ```
 
 Again, remember to create a `config.env` under `<your_dir>` and have it filled out.
