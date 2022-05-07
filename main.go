@@ -27,7 +27,7 @@ import (
 )
 
 var (
-	chainList                                                 = []string{"cosmos", "umee", "nym", "osmosis", "juno", "akash", "regen", "microtick", "evmos"}
+	chainList                                                 = []string{"cosmos", "umee", "nyx", "osmosis", "juno", "akash", "regen", "microtick", "evmos", "assetMantle", "rizon", "stargaze", "chihuahua", "gravity", "lum", "provenance", "crescent", "sifchain"}
 	chain, restAddr, rpcAddr, listenPort, operAddr, logOutput string
 	logger                                                    *zap.Logger
 )

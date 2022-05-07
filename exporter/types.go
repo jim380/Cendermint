@@ -299,6 +299,8 @@ func getDenomList(chain string) []string {
 	switch chain {
 	case "cosmos":
 		dList = []string{"uatom"}
+	case "iris":
+		dList = []string{"uiris"}
 	case "umee":
 		dList = []string{"uumee"}
 	case "osmosis":
@@ -311,10 +313,28 @@ func getDenomList(chain string) []string {
 		dList = []string{"uregen"}
 	case "microtick":
 		dList = []string{"utick"}
-	case "nym":
-		dList = []string{"upunk"}
+	case "nyx":
+		dList = []string{"unyx"}
 	case "evmos":
+		dList = []string{"aevmos"}
+	case "assetMantle":
 		dList = []string{"aphoton"}
+	case "rizon":
+		dList = []string{"uatolo"}
+	case "stargaze":
+		dList = []string{"ustars"}
+	case "chihuahua":
+		dList = []string{"uhuahua"}
+	case "gravity":
+		dList = []string{"ugraviton"}
+	case "lum":
+		dList = []string{"ulum"}
+	case "provenance":
+		dList = []string{"nhash"}
+	case "crescent":
+		dList = []string{"ucre"}
+	case "sifchain":
+		dList = []string{"urowan"}
 	default:
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "denom not supported"))
 	}

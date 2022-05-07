@@ -9,24 +9,45 @@ This project started out as a fork of [Cosmos-IE](https://github.com/node-a-team
 
 ## Architecture
 
-![](assets/arch.png)
+<details><summary>Click to view</summary>
+
+![architecture](assets/arch.png)
+
+</details>
 
 ## Dashbord
 
-![](assets/cendermint.png)
+<details><summary>Click to view</summary>
+
+![dashboard](assets/cendermint.png)
+
+</details>
 
 ## Supported chains
 
+<details><summary>Click to view</summary>
+
 - Cosmos(`cosmoshub-4`)
-- NYM (`testnet-milhon`)
-- Umme (`umeevengers-1c`)
+- IRISnet(`irishub-1`)
+- Umme (`umee-1`)
 - Osmosis (`osmosis-1`)
 - Juno (`juno-1`)
 - Akash (`akashnet-2`)
 - Regen (`regen-1`)
 - Microtick (`microtick-1`)
-- EVMOS (`evmos_9000-2`)
+- NYM (`nyx`)
+- EVMOS (`evmos_9001-2`)
+- Rizon (`mantel-1`)
+- Stargaze (`stargaze-1`)
+- Chihuahua (`chihuahua-1`)
+- Gravity Bridge (`gravity-bridge-3`)
+- Lum (`lum-network-1`)
+- Provenance (`pio-mainnet-1`)
+- Crescent (`crescent-1`)
+- Sifchain (`sifchain-1`)
 - Any Tendermint chain really
+
+</details>
 
 ## Get Up and Running
 
@@ -50,6 +71,8 @@ $ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --ne
 Again, remember to create a `config.env` under `<your_dir>` and have it filled out.
 
 ## Available metrics
+
+<details><summary>Click to view</summary>
 
 | Name                                                | Type    | Tags | Description                                                                                                                                                             |
 | --------------------------------------------------- | ------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -125,3 +148,5 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_tx_swap_withdraw_within_batch_total`    | Gauge   | -    | Total withdraw within batch events in a block                                                                                                                           |
 | `cendermint_tx_swap_deposit_within_batch_total`     | Gauge   | -    | Total deposit within batch events in a block                                                                                                                            |
 | `cendermint_tx_others_total`                        | Gauge   | -    | Total number of events yet to be supported by Cendermint in a block                                                                                                     |
+
+</details>
