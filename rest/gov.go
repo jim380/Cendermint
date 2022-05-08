@@ -62,8 +62,8 @@ func (rd *RESTData) getGovInfo() {
 			proposalsInVoting = append(proposalsInVoting, value.ProposalID)
 		}
 	}
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total Proposal Count: ", totalProposals[len(totalProposals)-1]))
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Proposals in voting: ", strconv.Itoa(len(proposalsInVoting))))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total proposals count", totalProposals[len(totalProposals)-1]))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Proposals in voting", strconv.Itoa(len(proposalsInVoting))))
 
 	for _, value := range proposalsInVoting {
 		var voteInfo voteInfo

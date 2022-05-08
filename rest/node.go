@@ -39,9 +39,10 @@ func (rd *RESTData) getNodeInfo() {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		// zap.L().Info("", zap.Bool("Success", true), zap.String("SDK Version:", nodeInfo.Application.SDKVersion))
 	}
+
+	zap.L().Info("", zap.Bool("Success", true), zap.String("App version", nodeInfo.Application.Version))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("SDK version", nodeInfo.Application.SDKVersion))
 
 	rd.NodeInfo = nodeInfo
 }

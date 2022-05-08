@@ -214,7 +214,6 @@ func (rd *RESTData) getBridgeParams() {
 	} else {
 		rd.GravityInfo.GravityActive = 0.0
 	}
-	// zap.L().Info("\t", zap.Bool("Success", true), zap.String("BridgeActive: ", strconv.FormatBool(rd.PeggoInfo.BridgeActive)))
 }
 
 func (rd *RESTData) getOracleEventNonce() {

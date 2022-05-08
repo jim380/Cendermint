@@ -24,11 +24,13 @@ import (
 	"github.com/jim380/Cendermint/rest"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
 	chainList                                                 = []string{"cosmos", "umee", "nyx", "osmosis", "juno", "akash", "regen", "microtick", "evmos", "assetMantle", "rizon", "stargaze", "chihuahua", "gravity", "lum", "provenance", "crescent", "sifchain"}
 	chain, restAddr, rpcAddr, listenPort, operAddr, logOutput string
+	logLevel                                                  zapcore.Level
 	logger                                                    *zap.Logger
 )
 
@@ -38,7 +40,7 @@ func main() {
 	// 	log.Fatal("Error loading .env file")
 	// }
 
-	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("RPC_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("MISS_THRESHOLD"), os.Getenv("MISS_CONSECUTIVE"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL")}
+	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("RPC_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("MISS_THRESHOLD"), os.Getenv("MISS_CONSECUTIVE"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL"), os.Getenv("LOG_LEVEL")}
 	cmd.CheckInputs(inputs, chainList)
 
 	chain = inputs[0]
@@ -46,9 +48,9 @@ func main() {
 	restAddr = inputs[2]
 	rpcAddr = inputs[3]
 	listenPort = inputs[4]
-	logOutput = inputs[5]
-
-	logger = logging.InitLogger(logOutput)
+	logOutput = inputs[7]
+	logLevel = cmd.GetLogLevel(inputs[9])
+	logger = logging.InitLogger(logOutput, logLevel)
 	zap.ReplaceGlobals(logger)
 
 	cmd.SetSDKConfig(chain)

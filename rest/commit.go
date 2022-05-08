@@ -46,15 +46,15 @@ func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
 				// if missed more than threshold
 				threshold, _ := strconv.Atoi(os.Getenv("MISS_THRESHOLD"))
 				if cInfo.MissedCount >= threshold {
-					zap.L().Info("Missed >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(cInfo.MissedCount)))
-					zap.L().Info("Missed >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_THRESHOLD")))
+					zap.L().Warn("Missed >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(cInfo.MissedCount)))
+					zap.L().Warn("Missed >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_THRESHOLD")))
 					cInfo.MissThreshold = 1
 				}
 				// miss consecutively
 				consecutive, _ := strconv.Atoi(os.Getenv("MISS_CONSECUTIVE"))
 				if currentHeight-cInfo.LastSigned == consecutive {
-					zap.L().Info("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(currentHeight-cInfo.LastSigned)))
-					zap.L().Info("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_CONSECUTIVE")))
+					zap.L().Warn("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(currentHeight-cInfo.LastSigned)))
+					zap.L().Warn("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_CONSECUTIVE")))
 					cInfo.MissConsecutive = 1
 				}
 				// MissedCount resets when the validator signs again

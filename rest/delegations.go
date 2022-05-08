@@ -42,8 +42,8 @@ func (rd *RESTData) getDelegations() {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from range:", fmt.Sprint(len(delInfo.DelegationRes))))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from pagination:", delInfo.Pagination.Total))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from range", fmt.Sprint(len(delInfo.DelegationRes))))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from pagination", delInfo.Pagination.Total))
 	}
 
 	for _, value := range delInfo.DelegationRes {
@@ -56,7 +56,6 @@ func (rd *RESTData) getDelegations() {
 			delRes[value.Delegation.DelegatorAddr] = []string{value.balance.Amount}
 		}()
 	}
-	// zap.L().Info("", zap.Bool("Success", true), zap.String(":", fmt.Sprint()))
 
 	rd.Delegations = delInfo
 }

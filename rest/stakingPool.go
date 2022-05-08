@@ -52,7 +52,7 @@ func getTotalSupply(denom string, log *zap.Logger) float64 {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("", zap.Bool("Success", true), zap.String("Total Supply", ts.Amount.Amount))
+		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Amount.Amount))
 	}
 
 	return utils.StringToFloat64(ts.Amount.Amount)

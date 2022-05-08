@@ -85,12 +85,12 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 
 		consHexAddr := utils.Bech32AddrToHexAddr(valMap[0])
 		rd.getCommit(blockData, consHexAddr)
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker:", rd.Validators.Description.Moniker))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("VP:", valMap[1]))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit:", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validators.Description.Moniker))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valMap[1]))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards:", fmt.Sprint(rd.Rewards)))
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission:", fmt.Sprint(rd.Commission)))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
 		rd.getIBCChannels()
 		rd.getIBCConnections()
 		rd.getNodeInfo()
@@ -114,11 +114,11 @@ func (rd *RESTData) computerTPS(blockData Blocks) {
 	lastTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.LastTimestamp)
 	currentTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.Timestamp)
 	interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block interval:", strconv.Itoa(int(interval))))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block interval", strconv.Itoa(int(interval))))
 	rd.BlockInterval = interval
 	totalTxs, _ := strconv.Atoi(rd.TxInfo.Pagination.Total)
 	tps := float64(totalTxs) / float64(interval)
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("TPS:", fmt.Sprintf("%.2f", tps)))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("TPS", fmt.Sprintf("%.2f", tps)))
 	rd.TxInfo.TPS = tps
 }
 

@@ -6,6 +6,8 @@ import (
 
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/jim380/Cendermint/utils"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func SetSDKConfig(chain string) {
@@ -48,19 +50,19 @@ func CheckInputs(inputs, chainList []string) {
 
 	// TODO add more robust checks
 	if inputs[1] == "" {
-		log.Fatal("Operator address was not provided.")
+		log.Fatal("Operator address was not provided")
 	}
 
 	if inputs[2] == "" {
-		log.Fatal("REST address was not provided.")
+		log.Fatal("REST address was not provided")
 	}
 
 	if inputs[3] == "" {
-		log.Fatal("RPC address was not provided.")
+		log.Fatal("RPC address was not provided")
 	}
 
 	if inputs[4] == "" {
-		log.Fatal("Listening port was not provided.")
+		log.Fatal("Listening port was not provided")
 	}
 
 	if inputs[5] == "" {
@@ -72,10 +74,36 @@ func CheckInputs(inputs, chainList []string) {
 	}
 
 	if inputs[7] == "" {
-		log.Fatal("Log output was not provided.")
+		log.Fatal("Log output was not provided")
 	}
 
 	if inputs[8] == "" {
 		log.Fatal("Poll interval was not provided")
+	}
+
+	if inputs[9] == "" {
+		log.Fatal("Log level was not provided")
+	}
+}
+
+func GetLogLevel(lvl string) zapcore.Level {
+	switch lvl {
+	case "debug":
+		return zap.DebugLevel
+	case "info":
+		return zap.InfoLevel
+	case "warn":
+		return zap.WarnLevel
+	case "error":
+		return zap.ErrorLevel
+	case "dpanic":
+		return zap.DPanicLevel
+	case "panic":
+		return zap.PanicLevel
+	case "fatal":
+		return zap.FatalLevel
+	default:
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "log level not supported"))
+		return -2
 	}
 }

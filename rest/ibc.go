@@ -94,7 +94,7 @@ func (rd *RESTData) getIBCChannels() {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Active IBC Channels", fmt.Sprint(len(ibcInfo.IBCChannels))))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Active IBC channels", fmt.Sprint(len(ibcInfo.IBCChannels))))
 	}
 
 	for _, value := range ibcInfo.IBCChannels {
@@ -110,7 +110,7 @@ func (rd *RESTData) getIBCChannels() {
 			}
 		}()
 	}
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Open  IBC Channels", fmt.Sprint(ibcInfo.OpenChannels)))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Open IBC channels", fmt.Sprint(ibcInfo.OpenChannels)))
 
 	rd.IBC.IBCChannels = ibcChannels
 	rd.IBC.IBCInfo.ibcChannelInfo = ibcInfo
@@ -146,7 +146,7 @@ func (rd *RESTData) getIBCConnections() {
 			}
 		}()
 	}
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Open IBC Channels", fmt.Sprint(ibcInfo.OpenConnections)))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Open IBC connections", fmt.Sprint(ibcInfo.OpenConnections)))
 
 	rd.IBC.IBCConnections = ibcConnections
 	rd.IBC.IBCInfo.ibcConnectionInfo = ibcInfo

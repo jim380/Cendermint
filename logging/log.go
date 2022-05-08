@@ -39,53 +39,48 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-func InitLogger(logOutput string) *zap.Logger {
+func InitLogger(logOutput string, logLvl zapcore.Level) *zap.Logger {
+	atom := zap.NewAtomicLevel()
+
 	if logOutput == "file" {
-		return logFile()
+		return logFile(atom, logLvl)
 	}
-	return logConsole()
+	return logConsole(atom, logLvl)
 }
 
-func logConsole() *zap.Logger {
-	// info level enabler
-	infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-		return level == zapcore.InfoLevel
-	})
-
-	// error and fatal level enabler
-	errorFatalLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-		return level == zapcore.ErrorLevel || level == zapcore.FatalLevel
-	})
-
+func logConsole(atom zap.AtomicLevel, logLvl zapcore.Level) *zap.Logger {
 	// write syncers
 	stdoutSyncer := zapcore.Lock(os.Stdout)
-	stderrSyncer := zapcore.Lock(os.Stderr)
+	//stderrSyncer := zapcore.Lock(os.Stderr)
 
 	// tee core
 	core := zapcore.NewTee(
 		zapcore.NewCore(
 			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
 			stdoutSyncer,
-			infoLevel,
+			atom,
 		),
-		zapcore.NewCore(
-			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
-			stderrSyncer,
-			errorFatalLevel,
-		),
+		// zapcore.NewCore(
+		// 	zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+		// 	stderrSyncer,
+		// 	atom,
+		// ),
 	)
+
+	atom.SetLevel(logLvl)
 
 	// finally construct the logger with the tee core
 	loggerConsole := zap.New(core, zap.AddCaller())
 	return loggerConsole
 }
 
-func logFile() *zap.Logger {
+func logFile(atom zap.AtomicLevel, logLvl zapcore.Level) *zap.Logger {
 	createDir()
 	writerSync := getLogWriter()
 	encoder := getEncoder()
 
-	core := zapcore.NewCore(encoder, writerSync, zapcore.InfoLevel) // tweak the log level as needed
+	core := zapcore.NewCore(encoder, writerSync, atom)
+	atom.SetLevel(logLvl)
 	loggerFile := zap.New(core, zap.AddCaller())
 	return loggerFile
 }

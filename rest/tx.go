@@ -100,7 +100,7 @@ func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block:", txInfo.Pagination.Total))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Pagination.Total))
 	}
 
 	for _, v := range txInfo.TxResp {
@@ -178,9 +178,9 @@ func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 			}
 		}
 	}
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Events Total:", fmt.Sprintf("%v", txRes.Default.EventsTotal)))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Events Total", fmt.Sprintf("%v", txRes.Default.EventsTotal)))
 	if txRes.OthersTotal != 0 {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Others Total:", fmt.Sprintf("%v", txRes.OthersTotal)))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Others Total", fmt.Sprintf("%v", txRes.OthersTotal)))
 	}
 
 	rd.TxInfo = txInfo

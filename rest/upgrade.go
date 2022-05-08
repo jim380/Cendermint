@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"go.uber.org/zap"
@@ -34,6 +35,6 @@ func (rd *RESTData) getUpgradeInfo() {
 	if upgradeInfo.Plan.Name != "" {
 		upgradeInfo.Planned = true
 	}
-	// zap.L().Info("", zap.Bool("Success", true), zap.String("Upgrade plan name:", upgradeInfo.Plan.Name))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Upgrade planned", strconv.FormatBool(upgradeInfo.Planned)))
 	rd.UpgradeInfo = upgradeInfo
 }

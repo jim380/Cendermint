@@ -62,12 +62,11 @@ func Run(chain string, log *zap.Logger) {
 
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
 			if previousBlockHeight != currentBlockHeight {
-				fmt.Println("---------------------------")
+				fmt.Println("--------------------------- Start ---------------------------")
 				block.GetLastBlockTimestamp(currentBlockHeight)
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp:", block.Block.Header.LastTimestamp))
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp:", block.Block.Header.Timestamp))
-				fmt.Println("")
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block Height", fmt.Sprint(currentBlockHeight)))
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))
 				select {
 				case <-ticker:
 					// fetch info from REST
@@ -91,6 +90,10 @@ func Run(chain string, log *zap.Logger) {
 				setUpgradeLabels(metricData, counterVecUpgrade)
 
 				previousBlockHeight = currentBlockHeight
+				fmt.Println("--------------------------- End ---------------------------")
+				fmt.Println("")
+				fmt.Println("")
+				fmt.Println("")
 			}
 		}
 	}()

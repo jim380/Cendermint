@@ -17,7 +17,6 @@ func Start(chain string, port string, logger *zap.Logger) {
 	if err != nil {
 		logger.Fatal("HTTP Handle", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	} else {
-		logger.Info("HTTP Handle", zap.Bool("Success", true), zap.String("err", "nil"), zap.String("Listen&Serve", "Prometheus Handler(Port: "+port+")"))
+		logger.Info("HTTP Handle", zap.Bool("Success", true), zap.String("Listen&Serve", "Prometheus Handler(Port: "+port+")"))
 	}
-
 }
