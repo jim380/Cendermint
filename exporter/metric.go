@@ -9,6 +9,7 @@ import (
 	utils "github.com/jim380/Cendermint/utils"
 )
 
+// gauges/labels <-> value
 func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	operAddr := rest.OperAddr
 	consPubKey := restData.Validators.ConsPubKey

@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -10,14 +11,21 @@ import (
 
 	"github.com/jim380/Cendermint/rest"
 	utils "github.com/jim380/Cendermint/utils"
-
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var (
-	defaultGauges []prometheus.Gauge
-	gaugesDenom   []prometheus.Gauge
-)
+func Start(chain string, port string, logger *zap.Logger) {
+	http.Handle("/metrics", promhttp.Handler())
+	go Run(chain, logger)
+
+	err := http.ListenAndServe(":"+port, nil)
+	if err != nil {
+		logger.Fatal("HTTP Handle", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
+	} else {
+		logger.Info("HTTP Handle", zap.Bool("Success", true), zap.String("Listen&Serve", "Prometheus Handler(Port: "+port+")"))
+	}
+}
 
 func Run(chain string, log *zap.Logger) {
 	denomList := getDenomList(chain)
