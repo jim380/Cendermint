@@ -5,7 +5,28 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-func setDenomGauges(metricData *metric, denomList []string) {
+func registerGauges(denomList []string) {
+	defaultGauges = make([]prometheus.Gauge, len(gaugesNamespaceList))
+	gaugesDenom = make([]prometheus.Gauge, len(denomList)*3)
+
+	// register nomal guages
+	for i := 0; i < len(gaugesNamespaceList); i++ {
+		defaultGauges[i] = utils.NewGauge("cendermint", gaugesNamespaceList[i], "")
+		prometheus.MustRegister(defaultGauges[i])
+	}
+
+	// register denom guages
+	count := 0
+	for i := 0; i < len(denomList)*3; i += 3 {
+		gaugesDenom[i] = utils.NewGauge("cendermint_validator_balances", denomList[count], "")
+		gaugesDenom[i+1] = utils.NewGauge("cendermint_validator_commission", denomList[count], "")
+		gaugesDenom[i+2] = utils.NewGauge("cendermint_validator_rewards", denomList[count], "")
+		prometheus.MustRegister(gaugesDenom[i], gaugesDenom[i+1], gaugesDenom[i+2])
+		count++
+	}
+}
+
+func (metricData *metric) setDenomGauges(denomList []string) {
 	count := 0
 	for i := 0; i < len(denomList)*3; i += 3 {
 		for _, value := range metricData.Validator.Account.Balances {
@@ -27,7 +48,7 @@ func setDenomGauges(metricData *metric, denomList []string) {
 	}
 }
 
-func setNormalGauges(metricData *metric, defaultGauges []prometheus.Gauge) {
+func (metricData *metric) setNormalGauges(defaultGauges []prometheus.Gauge) {
 	// set values for normal guages
 	gaugesValue := [...]float64{
 		// IMPORTANT!!! order needs to match with gaugesNamespaceList

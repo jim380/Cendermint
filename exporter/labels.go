@@ -1,9 +1,52 @@
 package exporter
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"fmt"
+
+	utils "github.com/jim380/Cendermint/utils"
+	"github.com/prometheus/client_golang/prometheus"
+)
+
+type labelData struct {
+	name   string
+	labels []string
+}
+
+var counterVecs []prometheus.CounterVec
+
+func getLabels() []labelData {
+	labels := []labelData{
+		{
+			"labels_node_info",
+			[]string{"chain_id", "node_moniker", "node_id", "tm_version", "app_name", "binary_name", "app_version", "git_commit", "go_version", "sdk_version"},
+		},
+		{
+			"labels_addr",
+			[]string{"operator_address", "account_address", "cons_address_hex"},
+		},
+		{
+			"labels_upgrade",
+			[]string{"upgrade_name", "upgrade_time", "upgrade_height", "upgrade_info"},
+		},
+	}
+	return labels
+}
+
+func registerLabels() []prometheus.CounterVec {
+	labels := getLabels()
+
+	for _, v := range labels {
+		counterVec := utils.NewCounterVec("cendermint", v.name, "", v.labels)
+		counterVecs = append(counterVecs, counterVec)
+		prometheus.MustRegister(counterVec)
+		fmt.Println(v.name + "registered")
+	}
+
+	return counterVecs
+}
 
 // {"chain_id", "node_moniker", "node_id", "tm_version", "app_name", "binary_name", "app_version", "git_commit", "go_version", "sdk_version"}
-func setNodeLabels(metricData *metric, labels prometheus.CounterVec) {
+func (metricData *metric) setNodeLabels(labels prometheus.CounterVec) {
 	labels.WithLabelValues(
 		metricData.Network.ChainID,
 		metricData.Network.NodeInfo.Moniker,
@@ -18,7 +61,7 @@ func setNodeLabels(metricData *metric, labels prometheus.CounterVec) {
 	).Add(0)
 }
 
-func setAddrLabels(metricData *metric, labels prometheus.CounterVec) {
+func (metricData *metric) setAddrLabels(labels prometheus.CounterVec) {
 	labels.WithLabelValues(
 		metricData.Validator.Address.Operator,
 		metricData.Validator.Address.Account,
@@ -26,7 +69,7 @@ func setAddrLabels(metricData *metric, labels prometheus.CounterVec) {
 	).Add(0)
 }
 
-func setUpgradeLabels(metricData *metric, labels prometheus.CounterVec) {
+func (metricData *metric) setUpgradeLabels(labels prometheus.CounterVec) {
 	labels.WithLabelValues(
 		metricData.Upgrade.Name,
 		metricData.Upgrade.Time,
