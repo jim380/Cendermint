@@ -1,4 +1,4 @@
-package cmd
+package config
 
 import (
 	"fmt"
@@ -10,10 +10,22 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func SetSDKConfig(chain string) {
+type Config struct {
+	Chain           string
+	OperatorAddr    string
+	RestAddr        string
+	RpcAddr         string
+	ListeningPort   string
+	MissThreshold   string
+	MissConsecutive string
+	LogOutput       string
+	PollInterval    string
+	LogLevel        string
+}
 
+func (cfg Config) SetSDKConfig() {
 	// Bech32MainPrefix is the common prefix of all prefixes
-	Bech32MainPrefix := utils.GetPrefix(chain)
+	Bech32MainPrefix := utils.GetPrefix(cfg.Chain)
 	// Bech32PrefixAccAddr is the prefix of account addresses
 	Bech32PrefixAccAddr := Bech32MainPrefix
 	// Bech32PrefixAccPub is the prefix of account public keys
@@ -33,55 +45,53 @@ func SetSDKConfig(chain string) {
 	config.Seal()
 }
 
-func CheckInputs(inputs, chainList []string) {
-	if inputs[0] == "" {
+func (config Config) CheckInputs(chainList map[string][]string) {
+	if config.Chain == "" {
 		log.Fatal("Chain was not provided.")
 	} else {
 		valid := false
-		for _, c := range chainList {
-			if inputs[0] == c {
-				valid = true
-			}
+		if _, found := chainList[config.Chain]; found {
+			valid = true
 		}
 		if !valid {
-			log.Fatal(fmt.Sprintf("%s is not supported", inputs[0]) + fmt.Sprint("\nList of supported chains: ", chainList))
+			log.Fatal(fmt.Sprintf("%s is not supported", config.Chain) + fmt.Sprint("\nList of supported chains: ", chainList))
 		}
 	}
 
 	// TODO add more robust checks
-	if inputs[1] == "" {
+	if config.OperatorAddr == "" {
 		log.Fatal("Operator address was not provided")
 	}
 
-	if inputs[2] == "" {
+	if config.RestAddr == "" {
 		log.Fatal("REST address was not provided")
 	}
 
-	if inputs[3] == "" {
+	if config.RpcAddr == "" {
 		log.Fatal("RPC address was not provided")
 	}
 
-	if inputs[4] == "" {
+	if config.ListeningPort == "" {
 		log.Fatal("Listening port was not provided")
 	}
 
-	if inputs[5] == "" {
+	if config.MissThreshold == "" {
 		log.Fatal("Threshold to trigger missing block alerts was not provided")
 	}
 
-	if inputs[6] == "" {
+	if config.MissConsecutive == "" {
 		log.Fatal("Threshold to trigger consecutively-missing block alerts was not provided")
 	}
 
-	if inputs[7] == "" {
+	if config.LogOutput == "" {
 		log.Fatal("Log output was not provided")
 	}
 
-	if inputs[8] == "" {
+	if config.PollInterval == "" {
 		log.Fatal("Poll interval was not provided")
 	}
 
-	if inputs[9] == "" {
+	if config.LogLevel == "" {
 		log.Fatal("Log level was not provided")
 	}
 }
@@ -106,4 +116,45 @@ func GetLogLevel(lvl string) zapcore.Level {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "log level not supported"))
 		return -2
 	}
+}
+
+func GetDenomList(chain string, chainList map[string][]string) []string {
+	var found bool
+
+	for k, v := range chainList {
+		if k == chain {
+			found = true
+			return v
+		}
+	}
+	if !found {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "chain("+chain+") denom not supported"))
+	}
+	return []string{}
+}
+
+func GetChainList() map[string][]string {
+	var chainList = map[string][]string{}
+
+	chainList["cosmos"] = []string{"uatom"}
+	chainList["iris"] = []string{"uiris"}
+	chainList["umee"] = []string{"uumee"}
+	chainList["osmosis"] = []string{"uosmo"}
+	chainList["juno"] = []string{"ujuno"}
+	chainList["akash"] = []string{"uakt"}
+	chainList["regen"] = []string{"uregen"}
+	chainList["microtick"] = []string{"utick"}
+	chainList["nyx"] = []string{"unyx"}
+	chainList["evmos"] = []string{"aevmos"}
+	chainList["assetMantle"] = []string{"umntl"}
+	chainList["rizon"] = []string{"uatolo"}
+	chainList["stargaze"] = []string{"ustars"}
+	chainList["chihuahua"] = []string{"uhuahua"}
+	chainList["gravity"] = []string{"ugraviton"}
+	chainList["lum"] = []string{"ulum"}
+	chainList["provenance"] = []string{"nhash"}
+	chainList["crescent"] = []string{"ucre"}
+	chainList["sifchain"] = []string{"urowan"}
+
+	return chainList
 }

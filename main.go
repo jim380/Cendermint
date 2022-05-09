@@ -1,5 +1,5 @@
 /*
-Copyright © 2020 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 Jay Jie
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@ limitations under the License.
 package main
 
 import (
+	"log"
 	"os"
 
-	"github.com/jim380/Cendermint/cmd"
+	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/exporter"
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/rest"
@@ -28,38 +29,46 @@ import (
 )
 
 var (
-	chainList                                                 = []string{"cosmos", "umee", "nyx", "osmosis", "juno", "akash", "regen", "microtick", "evmos", "assetMantle", "rizon", "stargaze", "chihuahua", "gravity", "lum", "provenance", "crescent", "sifchain"}
-	chain, restAddr, rpcAddr, listenPort, operAddr, logOutput string
-	logLevel                                                  zapcore.Level
-	logger                                                    *zap.Logger
+	chain, restAddr, rpcAddr, listeningPort, operAddr, logOutput string
+	logLevel                                                     zapcore.Level
+	logger                                                       *zap.Logger
 )
 
 func main() {
-	_ = godotenv.Load("config.env")
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
+	err := godotenv.Load("config.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-	inputs := []string{os.Getenv("CHAIN"), os.Getenv("OPERATOR_ADDR"), os.Getenv("REST_ADDR"), os.Getenv("RPC_ADDR"), os.Getenv("LISTENING_PORT"), os.Getenv("MISS_THRESHOLD"), os.Getenv("MISS_CONSECUTIVE"), os.Getenv("LOG_OUTPUT"), os.Getenv("POLL_INTERVAL"), os.Getenv("LOG_LEVEL")}
-	cmd.CheckInputs(inputs, chainList)
+	cfg := config.Config{
+		Chain:           os.Getenv("CHAIN"),
+		OperatorAddr:    os.Getenv("OPERATOR_ADDR"),
+		RestAddr:        os.Getenv("REST_ADDR"),
+		RpcAddr:         os.Getenv("RPC_ADDR"),
+		ListeningPort:   os.Getenv("LISTENING_PORT"),
+		MissThreshold:   os.Getenv("MISS_THRESHOLD"),
+		MissConsecutive: os.Getenv("MISS_CONSECUTIVE"),
+		LogOutput:       os.Getenv("LOG_OUTPUT"),
+		PollInterval:    os.Getenv("POLL_INTERVAL"),
+		LogLevel:        os.Getenv("LOG_LEVEL"),
+	}
+	chainList := config.GetChainList()
+	cfg.CheckInputs(chainList)
 
-	chain = inputs[0]
-	operAddr = inputs[1]
-	restAddr = inputs[2]
-	rpcAddr = inputs[3]
-	listenPort = inputs[4]
-	logOutput = inputs[7]
-	logLevel = cmd.GetLogLevel(inputs[9])
+	chain = cfg.Chain
+	operAddr = cfg.OperatorAddr
+	restAddr = cfg.RestAddr
+	rpcAddr = cfg.RpcAddr
+	listeningPort = cfg.ListeningPort
+	logOutput = cfg.LogOutput
+	logLevel = config.GetLogLevel(cfg.LogLevel)
 	logger = logging.InitLogger(logOutput, logLevel)
 	zap.ReplaceGlobals(logger)
 
-	cmd.SetSDKConfig(chain)
+	cfg.SetSDKConfig()
 	rest.RESTAddr = restAddr
 	rest.RPCAddr = rpcAddr
 	rest.OperAddr = operAddr
-	startExporter()
-}
 
-func startExporter() {
-	exporter.Start(chain, listenPort, logger)
+	exporter.Start(chain, listeningPort, logger)
 }

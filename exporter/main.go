@@ -9,6 +9,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/rest"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -19,14 +20,15 @@ func Start(chain string, port string, logger *zap.Logger) {
 
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
-		logger.Fatal("HTTP Handle", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
-	} else {
-		logger.Info("HTTP Handle", zap.Bool("Success", true), zap.String("Listen&Serve", "Prometheus Handler(Port: "+port+")"))
+		zap.L().Fatal("\t", zap.Bool("Success", false), zap.String("HTTP error", fmt.Sprint(err)))
 	}
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Serving at port", port))
+
 }
 
 func Run(chain string, log *zap.Logger) {
-	denomList := getDenomList(chain)
+	cl := config.GetChainList()
+	denomList := config.GetDenomList(chain, cl)
 
 	registerGauges(denomList)
 	counterVecs := registerLabels()
