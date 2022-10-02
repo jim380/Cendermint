@@ -106,6 +106,8 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 
 		// oracle
 		rd.getOracleMissesCount()
+		rd.getOracleSubmitBlock()
+		rd.getOracleFeederDelegate()
 		wg.Done()
 	}()
 	wg.Wait()

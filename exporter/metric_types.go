@@ -185,7 +185,9 @@ type metric struct {
 
 	Oracle struct {
 		validators struct {
-			MissesCount float64
+			MissesCount    float64
+			SubmitBlock    float64
+			FeederDelegate string
 		}
 	}
 }

@@ -108,4 +108,5 @@ var gaugesNamespaceList = [...]string{
 
 	// oracle
 	"oracle_validators_misses",
+	"oracle_validators_submit_block",
 }

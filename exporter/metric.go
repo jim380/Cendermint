@@ -129,6 +129,7 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 
 	// oracle
 	metricData.Oracle.validators.MissesCount = utils.StringToFloat64(restData.OracleInfo.MissesCount)
+	metricData.Oracle.validators.SubmitBlock = utils.StringToFloat64(restData.OracleInfo.AggregatePrevote.SubmitBlock)
 
 	// labels node
 	metricData.Network.ChainID = restData.Commit.ChainId
@@ -151,6 +152,8 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Upgrade.Time = restData.UpgradeInfo.Plan.Time
 	metricData.Upgrade.Height = restData.UpgradeInfo.Plan.Height
 	metricData.Upgrade.Info = restData.UpgradeInfo.Plan.Info
+	// labels oracle
+	metricData.Oracle.validators.FeederDelegate = restData.OracleInfo.Address
 
 	// denom gauges
 	metricData.Validator.Account.Balances = restData.Balances

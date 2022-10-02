@@ -130,8 +130,6 @@ type member struct {
 func (rd *RESTData) getUmeePrice() {
 	var p umeePrice
 
-	// contractAddr := os.Getenv("CONTRACT_ADDR")
-	// res, err := HttpQuery("https://peggo-fakex-qhcqt.ondigitalocean.app/api/v3/simple/token_price/ethereum?contract_addresses=" + contractAddr + "&vs_currencies=usd")
 	res, err := HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
 
 	if err != nil {

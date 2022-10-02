@@ -77,7 +77,7 @@ $ docker compose --profile grafana down
 #### Deploy
 
 ```bash
-$ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:<tag> Cendermint run && docker logs cendermint -f --since 1m
+$ docker run --name cendermint -dt --restart unless-stopped -v <local_dir>:/cendermint --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:<tag> Cendermint run && docker logs cendermint -f --since 1m
 ```
 
 Again, remember to create a `config.env` under `<your_dir>` and have it filled out.
@@ -135,6 +135,7 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_labels_node_info`                       | Counter | -    | The following labels are currently avaialble: `app_name`; `binary_name`; `chain_id`; `git_commit`; `go_version`; `node_id`; `node_moniker`; `sdk_version`; `tm_version` |
 | `cendermint_labels_addr`                            | Counter | -    | The following labels are currently avaialble: `account_address`;`cons_address_hex`; `operator_address`                                                                  |
 | `cendermint_labels_upgrade`                         | Counter | -    | The following labels are currently avaialble: `upgrade_name`, `upgrade_time`, `upgrade_height`, `upgrade_info`                                                          |
+| `cendermint_labels_oracle`                          | Counter | -    | The following labels are currently avaialble: `feeder_delegate`                                                                                                         |
 | `cendermint_tx_tps`                                 | Gauge   | -    | Transactions processed per second per block                                                                                                                             |
 | `cendermint_tx_gas_wanted_total`                    | Gauge   | -    | Total gas wanted in a block                                                                                                                                             |
 | `cendermint_tx_gas_used_total`                      | Gauge   | -    | Total gas used in a block                                                                                                                                               |
@@ -160,5 +161,7 @@ Again, remember to create a `config.env` under `<your_dir>` and have it filled o
 | `cendermint_tx_swap_withdraw_within_batch_total`    | Gauge   | -    | Total withdraw within batch events in a block                                                                                                                           |
 | `cendermint_tx_swap_deposit_within_batch_total`     | Gauge   | -    | Total deposit within batch events in a block                                                                                                                            |
 | `cendermint_tx_others_total`                        | Gauge   | -    | Total number of events yet to be supported by Cendermint in a block                                                                                                     |
+| `cendermint_oracle_validators_misses`               | Gauge   | -    | Total number of oracle vote misses of a validator within each slashing window                                                                                           |
+| `cendermint_oracle_submit_block`                    | Gauge   | -    | The latest block a validator submitted feeder prevote at                                                                                                                |
 
 </details>

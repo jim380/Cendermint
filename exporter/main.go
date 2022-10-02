@@ -69,6 +69,7 @@ func Run(chain string, log *zap.Logger) {
 				metricData.setNodeLabels(counterVecs[0])
 				metricData.setAddrLabels(counterVecs[1])
 				metricData.setUpgradeLabels(counterVecs[2])
+				metricData.setOracleLabels(counterVecs[3])
 
 				previousBlockHeight = currentBlockHeight
 				fmt.Println("--------------------------- End ---------------------------")

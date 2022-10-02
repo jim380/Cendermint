@@ -54,3 +54,9 @@ func (metricData *metric) setUpgradeLabels(labels prometheus.CounterVec) {
 		metricData.Upgrade.Info,
 	).Add(0)
 }
+
+func (metricData *metric) setOracleLabels(labels prometheus.CounterVec) {
+	labels.WithLabelValues(
+		metricData.Oracle.validators.FeederDelegate,
+	).Add(0)
+}

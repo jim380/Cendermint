@@ -13,4 +13,8 @@ var labels []labelData = []labelData{
 		"labels_upgrade",
 		[]string{"upgrade_name", "upgrade_time", "upgrade_height", "upgrade_info"},
 	},
+	{
+		"labels_oracle",
+		[]string{"feeder_delegate"},
+	},
 }

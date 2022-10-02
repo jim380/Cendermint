@@ -164,6 +164,7 @@ func (metricData *metric) setNormalGauges(defaultGauges []prometheus.Gauge) {
 
 		// oracle
 		metricData.Oracle.validators.MissesCount,
+		metricData.Oracle.validators.SubmitBlock,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])
