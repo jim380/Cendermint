@@ -64,6 +64,16 @@ $ ./Cendermint run
 
 ### Docker
 
+#### Local Dev
+
+```bash
+$ DOCKER_BUILDKIT=1 docker compose build cendermint --no-cache
+$ docker compose up -d
+$ docker-compose down
+```
+
+#### Deploy
+
 ```bash
 $ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:<tag> Cendermint run && docker logs cendermint -f --since 1m
 ```
