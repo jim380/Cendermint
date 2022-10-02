@@ -14,8 +14,8 @@ type txInfo struct {
 	TxResp     txResp `json:"tx_responses"`
 	Pagination struct {
 		NextKey string `json:"next_key"`
-		Total   string `json:"total"`
 	}
+	Total  string `json:"total"`
 	Result txResult
 	TPS    float64
 }
@@ -67,8 +67,8 @@ type txs []struct {
 				Amount string `json:"amount"`
 			}
 			GasLimit string `json:"gas_limit"`
-		}
-	}
+		} `json:"fee"`
+	} `json:"auth_info"`
 }
 
 type txResp []struct {
@@ -100,7 +100,7 @@ func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Pagination.Total))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Total))
 	}
 
 	for _, v := range txInfo.TxResp {

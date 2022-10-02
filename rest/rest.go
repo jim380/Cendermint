@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"sync"
-	"time"
 
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
@@ -111,15 +109,15 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 }
 
 func (rd *RESTData) computerTPS(blockData Blocks) {
-	lastTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.LastTimestamp)
-	currentTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.Timestamp)
-	interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block interval", strconv.Itoa(int(interval))))
-	rd.BlockInterval = interval
-	totalTxs, _ := strconv.Atoi(rd.TxInfo.Pagination.Total)
-	tps := float64(totalTxs) / float64(interval)
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("TPS", fmt.Sprintf("%.2f", tps)))
-	rd.TxInfo.TPS = tps
+	// lastTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.LastTimestamp)
+	// currentTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.Timestamp)
+	// interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
+	// zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block interval", strconv.Itoa(int(interval))))
+	// rd.BlockInterval = interval
+	// totalTxs, _ := strconv.Atoi(rd.TxInfo.Pagination.Total)
+	// tps := float64(totalTxs) / float64(interval)
+	// zap.L().Info("\t", zap.Bool("Success", true), zap.String("TPS", fmt.Sprintf("%.2f", tps)))
+	// rd.TxInfo.TPS = tps
 }
 
 func GetDelegationsData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {

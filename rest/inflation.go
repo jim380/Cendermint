@@ -10,8 +10,7 @@ import (
 )
 
 type inflation struct {
-	Height string `json:"height"`
-	Result string `json:"result"`
+	Inflation string `json:"inflation"`
 }
 
 type inflation_iris struct {
@@ -42,7 +41,7 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 	default:
 		var i inflation
 
-		res, err := HttpQuery(RESTAddr + "/minting/inflation") // route does not existing in osmosis
+		res, err := HttpQuery(RESTAddr + "/cosmos/mint/v1beta1/inflation") // route does not existing in osmosis
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
@@ -52,7 +51,7 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 		} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 		} else {
-			result = i.Result
+			result = i.Inflation
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 		}
 	}

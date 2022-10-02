@@ -11,22 +11,20 @@ import (
 )
 
 type validatorsets struct {
-	Height string `json:"height"`
+	// Height string `json:"height"`
 
-	Result struct {
-		Block_Height string `json:"block_height"`
-		Validators   []struct {
-			ConsAddr         string           `json:"address"`
-			ConsPubKey       consPubKeyValSet `json:"pub_key"`
-			ProposerPriority string           `json:"proposer_priority"`
-			VotingPower      string           `json:"voting_power"`
-		}
+	Block_Height string `json:"block_height"`
+	Validators   []struct {
+		ConsAddr         string           `json:"address"`
+		ConsPubKey       consPubKeyValSet `json:"pub_key"`
+		ProposerPriority string           `json:"proposer_priority"`
+		VotingPower      string           `json:"voting_power"`
 	}
 }
 
 type consPubKeyValSet struct {
-	Type string `json:"type"`
-	Key  string `json:"value"`
+	Type string `json:"@type"`
+	Key  string `json:"key"`
 }
 
 func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
@@ -36,27 +34,27 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 	var vSetsResult3 map[string][]string = make(map[string][]string)
 
 	runPages(currentBlockHeight, &vSets, vSetsResult, 1)
-	runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
-	runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
+	// runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
+	// runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
 
-	for _, value := range vSets.Result.Validators {
+	for _, value := range vSets.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
 		vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 
-	for _, value := range vSets2.Result.Validators {
+	for _, value := range vSets2.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
 		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 
-	for _, value := range vSets3.Result.Validators {
+	for _, value := range vSets3.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
 		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 	vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
 	vSetsResultFinal := mergeMap(vSetsResultTemp, vSetsResult3)
 	rd.Validatorsets = Sort(vSetsResultFinal)
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators)+len(vSets2.Result.Validators)+len(vSets3.Result.Validators))))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Validators)+len(vSets2.Validators)+len(vSets3.Validators))))
 }
 
 func Sort(mapValue map[string][]string) map[string][]string {
@@ -89,7 +87,7 @@ func mergeMap(a map[string][]string, b map[string][]string) map[string][]string 
 }
 
 func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[string][]string, pages int) {
-	res, err := HttpQuery(RESTAddr + "/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=100")
+	res, err := HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -102,7 +100,7 @@ func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[st
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
-	for _, value := range vSets.Result.Validators {
+	for _, value := range vSets.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
 		vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}

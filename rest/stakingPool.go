@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"go.uber.org/zap"
@@ -17,8 +18,17 @@ type stakingPool struct {
 	}
 }
 
-type totalSupply struct {
-	Amount Coin
+type supplyResult struct {
+	Supply     `json:"supply"`
+	Pagination struct {
+		NextKey string `json:"next_key"`
+		Total   string `json:"total"`
+	} `json:"pagination"`
+}
+
+type Supply []struct {
+	Denom  string `json:"denom"`
+	Amount string `json:"amount"`
 }
 
 func (rd *RESTData) getStakingPool(denom string) {
@@ -40,20 +50,24 @@ func (rd *RESTData) getStakingPool(denom string) {
 }
 
 func getTotalSupply(denom string, log *zap.Logger) float64 {
-	var ts totalSupply
+	var ts supplyResult
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/bank/v1beta1/supply/" + denom)
+	res, err := HttpQuery(RESTAddr + "/cosmos/bank/v1beta1/supply")
 	if err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &ts)
+	length, err := strconv.Atoi(ts.Pagination.Total)
+	if err != nil {
+		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Amount.Amount))
+		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Supply[length-1].Amount))
 	}
 
-	return utils.StringToFloat64(ts.Amount.Amount)
+	return utils.StringToFloat64(ts.Supply[length-1].Amount)
 }
