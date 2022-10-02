@@ -40,6 +40,7 @@ type RESTData struct {
 	}
 	UpgradeInfo upgradeInfo
 	GravityInfo gravityInfo
+	OracleInfo  OracleInfo
 }
 
 func (rd RESTData) new(blockHeight int64) *RESTData {
@@ -102,6 +103,9 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getBatchFees()
 		rd.getBatchesFees()
 		rd.getBridgeFees()
+
+		// oracle
+		rd.getOracleMissesCount()
 		wg.Done()
 	}()
 	wg.Wait()

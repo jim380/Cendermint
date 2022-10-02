@@ -182,4 +182,10 @@ type metric struct {
 		BatchesFees float64
 		BridgeFees  float64
 	}
+
+	Oracle struct {
+		validators struct {
+			MissesCount float64
+		}
+	}
 }

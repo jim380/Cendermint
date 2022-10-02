@@ -105,4 +105,7 @@ var gaugesNamespaceList = [...]string{
 	"gravity_batch_fees",
 	"gravity_batches_fees",
 	"gravity_bridge_fees",
+
+	// oracle
+	"oracle_validators_misses",
 }

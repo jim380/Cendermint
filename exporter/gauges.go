@@ -161,6 +161,9 @@ func (metricData *metric) setNormalGauges(defaultGauges []prometheus.Gauge) {
 		metricData.Gravity.BatchFees,
 		metricData.Gravity.BatchesFees,
 		metricData.Gravity.BridgeFees,
+
+		// oracle
+		metricData.Oracle.validators.MissesCount,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])

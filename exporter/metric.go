@@ -127,6 +127,9 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Gravity.BatchesFees = restData.GravityInfo.BatchesFees
 	metricData.Gravity.BridgeFees = restData.GravityInfo.BridgeFees
 
+	// oracle
+	metricData.Oracle.validators.MissesCount = utils.StringToFloat64(restData.OracleInfo.MissesCount)
+
 	// labels node
 	metricData.Network.ChainID = restData.Commit.ChainId
 	metricData.Validator.Moniker = restData.Validators.Description.Moniker
