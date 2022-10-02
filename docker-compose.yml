@@ -40,6 +40,7 @@ services:
     restart: unless-stopped
 
   grafana:
+    profiles: ["grafana"]
     image: grafana/grafana:latest
     container_name: grafana
     volumes:

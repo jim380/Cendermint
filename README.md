@@ -69,7 +69,9 @@ $ ./Cendermint run
 ```bash
 $ DOCKER_BUILDKIT=1 docker compose build cendermint --no-cache
 $ docker compose up -d
-$ docker-compose down
+$ docker compose down
+$ docker compose --profile grafana up -d
+$ docker compose --profile grafana down
 ```
 
 #### Deploy
