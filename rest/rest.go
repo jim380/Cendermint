@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"sync"
 
 	utils "github.com/jim380/Cendermint/utils"
@@ -54,7 +55,7 @@ func (rpc RPCData) new() *RPCData {
 	return &RPCData{Validatorsets: make(map[string][]string)}
 }
 
-func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetData(chain string, blockHeight int64, blockData SDKBlook, denom string) *RESTData {
 	// rpc
 	var rpcData RPCData
 	rpc := rpcData.new()
@@ -83,7 +84,9 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getSigningInfo(valMap[0])
 
 		consHexAddr := utils.Bech32AddrToHexAddr(valMap[0])
-		rd.getCommit(blockData, consHexAddr)
+		valAddr := utils.HexToBase64(consHexAddr)
+		operatorAddr := os.Getenv("OPERATOR_ADDR")
+		rd.getCommit(blockData, operatorAddr, valAddr)
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validators.Description.Moniker))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valMap[1]))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
@@ -114,7 +117,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	return rd
 }
 
-func (rd *RESTData) computerTPS(blockData Blocks) {
+func (rd *RESTData) computerTPS(blockData SDKBlook) {
 	// lastTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.LastTimestamp)
 	// currentTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.Timestamp)
 	// interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
@@ -126,7 +129,7 @@ func (rd *RESTData) computerTPS(blockData Blocks) {
 	// rd.TxInfo.TPS = tps
 }
 
-func GetDelegationsData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetDelegationsData(chain string, blockHeight int64, blockData SDKBlook, denom string) *RESTData {
 	var restData RESTData
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 

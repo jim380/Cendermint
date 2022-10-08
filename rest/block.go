@@ -7,27 +7,27 @@ import (
 	"go.uber.org/zap"
 )
 
-type Blocks struct {
+type SDKBlook struct {
 	Block struct {
 		Header     header     `json:"header"`
 		LastCommit lastCommit `json:"last_commit"`
-	}
+	} `json:"sdk_block"`
 }
 
 type header struct {
-	ChainID          string `json:"chain_id"`
-	Height           string `json:"height"`
-	Proposer_address string `json:"proposer_address"`
-	Timestamp        string `json:"time"`
+	ChainID         string `json:"chain_id"`
+	Height          string `json:"height"`
+	ProposerAddress string `json:"proposer_address"`
+	Timestamp       string `json:"time"`
 }
 
 type lastCommit struct {
 	Signatures []struct {
-		Validator_address string `json:"validator_address"`
-	}
+		ValidatorAddress string `json:"validator_address"`
+	} `json:"signatures"`
 }
 
-func (b *Blocks) GetInfo() Blocks {
+func (b *SDKBlook) GetInfo() SDKBlook {
 	res, err := HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/blocks/latest")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))

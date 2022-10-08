@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 
 	"go.uber.org/zap"
@@ -72,4 +74,29 @@ func GetAccAddrFromOperAddr_localPrefixes(operAddr string, bech32Prefixes []stri
 	}
 
 	return accAddr
+}
+
+func HexToBase64(hexAddr string) string {
+	bytes, err := decodeHex([]byte(hexAddr))
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
+	}
+
+	return string(base64Encode(bytes))
+}
+
+func decodeHex(input []byte) ([]byte, error) {
+	db := make([]byte, hex.DecodedLen(len(input)))
+	_, err := hex.Decode(db, input)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func base64Encode(input []byte) []byte {
+	eb := make([]byte, base64.StdEncoding.EncodedLen(len(input)))
+	base64.StdEncoding.Encode(eb, input)
+
+	return eb
 }

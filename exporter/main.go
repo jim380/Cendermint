@@ -39,7 +39,7 @@ func Run(chain string, log *zap.Logger) {
 
 	go func() {
 		for {
-			var block rest.Blocks
+			var block rest.SDKBlook
 			block.GetInfo()
 
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)

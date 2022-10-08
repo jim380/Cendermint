@@ -17,11 +17,11 @@ type commitInfo struct {
 	MissConsecutive          float64
 }
 
-func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
+func (rd *RESTData) getCommit(blockData SDKBlook, operatorAddr, valAddr string) {
 	var cInfo commitInfo
 	missed := true
 
-	blockProposer := blockData.Block.Header.Proposer_address
+	blockProposer := blockData.Block.Header.ProposerAddress
 	cInfo.ChainId = blockData.Block.Header.ChainID
 	cInfo.ValidatorPrecommitStatus, cInfo.ValidatorProposingStatus, cInfo.MissThreshold, cInfo.MissConsecutive = 0.0, 0.0, 0.0, 0.0
 	currentHeight, _ := strconv.Atoi(blockData.Block.Header.Height)
@@ -34,12 +34,12 @@ func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
 				}
 			}()
 
-			if consHexAddr == blockProposer {
+			if operatorAddr == blockProposer {
 				cInfo.ValidatorProposingStatus = 1.0
 				zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
 			}
 
-			if consHexAddr == v.Validator_address {
+			if valAddr == v.ValidatorAddress {
 				missed = false
 				cInfo.LastSigned = currentHeight
 				cInfo.ValidatorPrecommitStatus = 1.0
