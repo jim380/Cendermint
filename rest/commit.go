@@ -17,7 +17,7 @@ type commitInfo struct {
 	MissConsecutive          float64
 }
 
-func (rd *RESTData) getCommit(blockData SDKBlook, operatorAddr, valAddr string) {
+func (rd *RESTData) getCommit(blockData RootBlook, valAddr string) {
 	var cInfo commitInfo
 	missed := true
 
@@ -34,7 +34,7 @@ func (rd *RESTData) getCommit(blockData SDKBlook, operatorAddr, valAddr string) 
 				}
 			}()
 
-			if operatorAddr == blockProposer {
+			if valAddr == blockProposer {
 				cInfo.ValidatorProposingStatus = 1.0
 				zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
 			}

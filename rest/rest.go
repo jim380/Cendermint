@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"sync"
 
 	utils "github.com/jim380/Cendermint/utils"
@@ -55,7 +54,7 @@ func (rpc RPCData) new() *RPCData {
 	return &RPCData{Validatorsets: make(map[string][]string)}
 }
 
-func GetData(chain string, blockHeight int64, blockData SDKBlook, denom string) *RESTData {
+func GetData(chain string, blockHeight int64, blockData RootBlook, denom string) *RESTData {
 	// rpc
 	var rpcData RPCData
 	rpc := rpcData.new()
@@ -85,11 +84,11 @@ func GetData(chain string, blockHeight int64, blockData SDKBlook, denom string) 
 
 		consHexAddr := utils.Bech32AddrToHexAddr(valMap[0])
 		valAddr := utils.HexToBase64(consHexAddr)
-		operatorAddr := os.Getenv("OPERATOR_ADDR")
-		rd.getCommit(blockData, operatorAddr, valAddr)
+		rd.getCommit(blockData, valAddr)
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validators.Description.Moniker))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valMap[1]))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer", fmt.Sprintf("%f", rd.Commit.ValidatorProposingStatus)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
@@ -117,7 +116,7 @@ func GetData(chain string, blockHeight int64, blockData SDKBlook, denom string) 
 	return rd
 }
 
-func (rd *RESTData) computerTPS(blockData SDKBlook) {
+func (rd *RESTData) computerTPS(blockData RootBlook) {
 	// lastTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.LastTimestamp)
 	// currentTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.Timestamp)
 	// interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
@@ -129,7 +128,7 @@ func (rd *RESTData) computerTPS(blockData SDKBlook) {
 	// rd.TxInfo.TPS = tps
 }
 
-func GetDelegationsData(chain string, blockHeight int64, blockData SDKBlook, denom string) *RESTData {
+func GetDelegationsData(chain string, blockHeight int64, blockData RootBlook, denom string) *RESTData {
 	var restData RESTData
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 

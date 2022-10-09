@@ -7,11 +7,11 @@ import (
 	"go.uber.org/zap"
 )
 
-type SDKBlook struct {
+type RootBlook struct {
 	Block struct {
 		Header     header     `json:"header"`
 		LastCommit lastCommit `json:"last_commit"`
-	} `json:"sdk_block"`
+	} `json:"block"`
 }
 
 type header struct {
@@ -27,7 +27,7 @@ type lastCommit struct {
 	} `json:"signatures"`
 }
 
-func (b *SDKBlook) GetInfo() SDKBlook {
+func (b *RootBlook) GetInfo() RootBlook {
 	res, err := HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/blocks/latest")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
