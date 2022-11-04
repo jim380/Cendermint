@@ -137,24 +137,25 @@ func GetChainList() map[string][]string {
 	var chainList = map[string][]string{}
 
 	chainList["cosmos"] = []string{"uatom"}
-	chainList["iris"] = []string{"uiris"}
 	chainList["umee"] = []string{"uumee"}
 	chainList["osmosis"] = []string{"uosmo"}
 	chainList["juno"] = []string{"ujuno"}
 	chainList["akash"] = []string{"uakt"}
 	chainList["regen"] = []string{"uregen"}
-	chainList["microtick"] = []string{"utick"}
-	chainList["nyx"] = []string{"unyx"}
-	chainList["evmos"] = []string{"aevmos"}
-	chainList["assetMantle"] = []string{"umntl"}
-	chainList["rizon"] = []string{"uatolo"}
 	chainList["stargaze"] = []string{"ustars"}
-	chainList["chihuahua"] = []string{"uhuahua"}
+	chainList["evmos"] = []string{"aevmos"}
+	chainList["rizon"] = []string{"uatolo"}
 	chainList["gravity"] = []string{"ugraviton"}
 	chainList["lum"] = []string{"ulum"}
 	chainList["provenance"] = []string{"nhash"}
 	chainList["crescent"] = []string{"ucre"}
+	chainList["assetMantle"] = []string{"umntl"}
 	chainList["sifchain"] = []string{"urowan"}
+	chainList["passage"] = []string{"upasg"}
+	chainList["stride"] = []string{"ustrd"}
+	chainList["canto"] = []string{"acanto"}
+	chainList["teritori"] = []string{"utori"}
+	chainList["nyx"] = []string{"unyx"}
 
 	return chainList
 }

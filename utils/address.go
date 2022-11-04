@@ -16,8 +16,6 @@ func GetPrefix(chain string) string {
 		return "cosmos"
 	case "umee":
 		return "umee"
-	case "nym":
-		return "punk"
 	case "osmosis":
 		return "osmo"
 	case "juno":
@@ -26,10 +24,34 @@ func GetPrefix(chain string) string {
 		return "akash"
 	case "regen":
 		return "regen"
-	case "microtick":
-		return "micro"
+	case "stargaze":
+		return "stars"
 	case "evmos":
 		return "evmos"
+	case "rizon":
+		return "rizon"
+	case "gravity":
+		return "gravity"
+	case "lum":
+		return "lum"
+	case "provenance":
+		return "pb"
+	case "crescent":
+		return "cre"
+	case "assetMantle":
+		return "mantle"
+	case "sifchain":
+		return "sif"
+	case "passage":
+		return "pas"
+	case "stride":
+		return "stride"
+	case "canto":
+		return "canto"
+	case "teritori":
+		return "tori"
+	case "nym":
+		return "n"
 	default:
 		return "cosmos"
 	}
