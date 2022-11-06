@@ -17,9 +17,19 @@ This project started out as a fork of [Cosmos-IE](https://github.com/node-a-team
 
 ## Dashbord
 
-<details><summary>Click to view</summary>
+<details close>
 
+<summary>General</summary>
+  
 ![dashboard](assets/cendermint.png)
+
+</details>
+
+<details close>
+
+<summary>Signing Status</summary>
+
+https://user-images.githubusercontent.com/31609693/200193555-2e5f6bc4-ecf4-4332-9999-a8db61b4fcda.mov
 
 </details>
 
