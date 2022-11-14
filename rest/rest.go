@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -83,11 +84,13 @@ func GetData(chain string, heightProvider, heightSputnik, heightApollo int64, bl
 		rd.getValidatorsets(heightProvider)
 		rdSputnik.getValidatorsets(heightSputnik)
 		rdApollo.getValidatorsets(heightApollo)
+		// hash valsets and check if there is a change
 		// compare validator sets in provider and sputnik
 		for kSputnik, valSputnik := range rdSputnik.Validatorsets {
 			if _, found := rd.Validatorsets[kSputnik]; !found {
 				sputnikValSetExistsInProvider = false
 				missingValsInSputnik = append(missingValsInSputnik, valSputnik[0])
+				sort.Strings(missingValsInSputnik)
 			}
 		}
 		if sputnikValSetExistsInProvider {
@@ -105,6 +108,7 @@ func GetData(chain string, heightProvider, heightSputnik, heightApollo int64, bl
 			if _, found := rd.Validatorsets[kApollo]; !found {
 				apolloValSetExistsInProvider = false
 				missingValsInApollo = append(missingValsInApollo, valApollo[0])
+				sort.Strings(missingValsInApollo)
 			}
 		}
 		if apolloValSetExistsInProvider {
