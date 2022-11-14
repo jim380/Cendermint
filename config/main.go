@@ -156,6 +156,9 @@ func GetChainList() map[string][]string {
 	chainList["canto"] = []string{"acanto"}
 	chainList["teritori"] = []string{"utori"}
 	chainList["nyx"] = []string{"unyx"}
+	chainList["provider"] = []string{"uprov"}
+	chainList["sputnik"] = []string{"unik"}
+	chainList["apollo"] = []string{"upol"}
 
 	return chainList
 }
