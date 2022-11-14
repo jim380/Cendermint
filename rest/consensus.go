@@ -66,6 +66,7 @@ func (rpc *RPCData) getConsensusDump() {
 	}
 	json.Unmarshal(res, &cs)
 
+	// fmt.Println(fmt.Sprint(len(cs.Result.Validatorset.Validators)) + " validators at consensus height: " + cs.Result.Height)
 	conspubMonikerMap := rpc.getConspubMonikerMap()
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
 	for index, validator := range cs.Result.Validatorset.Validators {
@@ -85,20 +86,21 @@ func (rpc *RPCData) getConsensusDump() {
 			precommit = "❌"
 		}
 
-		// populate the map => [ConsAddr][]string{ConsAddr, VotingPower, ProposerPriority, prevote, precommit, commit}
-		vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit}
+		// populate the map => [ConsAddr][]string{Moniker, ConsAddr, VotingPower, ProposerPriority, prevote, precommit}
+		vSetsResult[validator.ConsAddr] = []string{validator.Moniker, validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit}
+		// fmt.Println("Moniker(" + validator.Moniker + ") - Conspub(" + validator.ConsPubKey.Key + ") - VP(" + validator.VotingPower + ")")
 		zap.L().Debug("\t", zap.Bool("Success", true), zap.String("key("+validator.ConsAddr+") "+"conspub("+validator.ConsPubKey.Key+") "+"moniker("+validator.Moniker+") "+"vp("+validator.VotingPower+")"+" prevote("+prevote+")"+" precommit("+precommit+")", ""))
 	}
 
 	rpc.ConsensusState = cs
 	rpc.Validatorsets = vSetsResult
 
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Consensus", "height("+rpc.ConsensusState.Result.Height+") "+"round("+strconv.FormatInt(rpc.ConsensusState.Result.Round, 10)+") "+"step("+strconv.FormatInt(rpc.ConsensusState.Result.Step, 10)+")"))
+	zap.L().Debug("\t", zap.Bool("Success", true), zap.String("Consensus", "height("+rpc.ConsensusState.Result.Height+") "+"round("+strconv.FormatInt(rpc.ConsensusState.Result.Round, 10)+") "+"step("+strconv.FormatInt(rpc.ConsensusState.Result.Step, 10)+")"))
 	prevoteParsed := utils.ParseConsensusOutput(rpc.ConsensusState.Result.Votes[0].PrevotesBitArray, "\\= (.*)", 1)
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Prevote bit array", fmt.Sprintf("%.2f", prevoteParsed)))
+	zap.L().Debug("\t", zap.Bool("Success", true), zap.String("Prevote bit array", fmt.Sprintf("%.2f", prevoteParsed)))
 	precommitParsed := utils.ParseConsensusOutput(rpc.ConsensusState.Result.Votes[0].PrecommitsBitArray, "\\= (.*)", 1)
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Precommit bit array", fmt.Sprintf("%.2f", precommitParsed)))
-	zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC", fmt.Sprint(len(rpc.Validatorsets))))
+	zap.L().Debug("\t", zap.Bool("Success", true), zap.String("Precommit bit array", fmt.Sprintf("%.2f", precommitParsed)))
+	zap.L().Debug("", zap.Bool("Success", true), zap.String("# of validators from RPC", fmt.Sprint(len(rpc.Validatorsets))))
 }
 
 func (rpc *RPCData) getConspubMonikerMap() map[string]string {

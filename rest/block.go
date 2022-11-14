@@ -39,8 +39,8 @@ type lastCommit struct {
 	}
 }
 
-func (b *Blocks) GetInfo() Blocks {
-	res, err := HttpQuery(RESTAddr + "/blocks/latest")
+func (b *Blocks) GetInfo(restAddr string) Blocks {
+	res, err := HttpQuery(restAddr + "/blocks/latest")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

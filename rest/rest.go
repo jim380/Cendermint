@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -13,10 +14,10 @@ import (
 )
 
 var (
-	RESTAddr string
-	RPCAddr  string
-	OperAddr string
-	AccAddr  string
+	RESTAddr, RESTAddrSputnik, RESTAddrApollo string
+	RPCAddr, RPCAddrSputnik, RPCAddrApollo    string
+	OperAddr                                  string
+	AccAddr                                   string
 )
 
 type RESTData struct {
@@ -55,16 +56,22 @@ func (rpc RPCData) new() *RPCData {
 	return &RPCData{Validatorsets: make(map[string][]string)}
 }
 
-func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetData(chain string, heightProvider, heightSputnik, heightApollo int64, blockData Blocks, denom string) *RESTData {
+	// validator set comparison
+	var sputnikValSetExistsInProvider, apolloValSetExistsInProvider bool = true, true
+	var missingValsInSputnik, missingValsInApollo []string
+
 	// rpc
 	var rpcData RPCData
 	rpc := rpcData.new()
 
 	// REST
-	var restData RESTData
+	var restData, restDataSputnik, restDataApollo RESTData
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 
-	rd := restData.new(blockHeight)
+	rd := restData.new(heightProvider)
+	rdSputnik := restDataSputnik.new(heightSputnik)
+	rdApollo := restDataApollo.new(heightApollo)
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
@@ -73,7 +80,45 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getSlashingParams()
 		rd.getInflation(chain, denom)
 		rd.getGovInfo()
-		rd.getValidatorsets(blockHeight)
+		rd.getValidatorsets(heightProvider)
+		rdSputnik.getValidatorsets(heightSputnik)
+		rdApollo.getValidatorsets(heightApollo)
+		// compare validator sets in provider and sputnik
+		for kSputnik, valSputnik := range rdSputnik.Validatorsets {
+			if _, found := rd.Validatorsets[kSputnik]; !found {
+				sputnikValSetExistsInProvider = false
+				missingValsInSputnik = append(missingValsInSputnik, valSputnik[0])
+			}
+		}
+		if sputnikValSetExistsInProvider {
+			zap.L().Info("", zap.Bool("Success", false), zap.String("------ Validator set in Sputnik exists in Provider -----", ""))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Provider height: ", strconv.Itoa(int(heightProvider))))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Sputnik height: ", strconv.Itoa(int(heightSputnik))))
+		} else {
+			zap.L().Info("", zap.Bool("Success", false), zap.String("------ Validator set in Sputnik does NOT exist in Provider -----", ""))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Provider height: ", strconv.Itoa(int(heightProvider))))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Sputnik height: ", strconv.Itoa(int(heightSputnik))))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Validators not found in Provider: ", strings.Join(missingValsInSputnik, " ")))
+		}
+		// compare validator sets in provider and apollo
+		for kApollo, valApollo := range rdApollo.Validatorsets {
+			if _, found := rd.Validatorsets[kApollo]; !found {
+				apolloValSetExistsInProvider = false
+				missingValsInApollo = append(missingValsInApollo, valApollo[0])
+			}
+		}
+		if apolloValSetExistsInProvider {
+			zap.L().Info("", zap.Bool("Success", false), zap.String("------ Validator set in Apollo exists in Provider -----", ""))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Provider height: ", strconv.Itoa(int(heightProvider))))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Apollo height: ", strconv.Itoa(int(heightApollo))))
+		} else {
+			zap.L().Info("", zap.Bool("Success", false), zap.String("------ Validator set in Apollo does NOT exist in Provider -----", ""))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Provider height: ", strconv.Itoa(int(heightProvider))))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Apollo height: ", strconv.Itoa(int(heightApollo))))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("Validators not found in Provider: ", strings.Join(missingValsInApollo, " ")))
+		}
+
+		// ----------------------
 		rd.getValidator()
 		valMap, found := rd.Validatorsets[rd.Validators.ConsPubKey.Key]
 		if !found {
@@ -94,7 +139,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getIBCChannels()
 		rd.getIBCConnections()
 		rd.getNodeInfo()
-		rd.getTxInfo(blockHeight)
+		rd.getTxInfo(heightProvider)
 		rd.computerTPS(blockData)
 		rd.getUpgradeInfo()
 		// gravity

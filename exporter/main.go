@@ -39,21 +39,28 @@ func Run(chain string, log *zap.Logger) {
 
 	go func() {
 		for {
-			var block rest.Blocks
-			block.GetInfo()
+			var block, blockSputnik, blockApollo rest.Blocks
+			block.GetInfo(rest.RESTAddr)
+			blockSputnik.GetInfo(rest.RESTAddrSputnik)
+			blockApollo.GetInfo(rest.RESTAddrApollo)
 
-			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
-			if previousBlockHeight != currentBlockHeight {
+			currentHeightProvider, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
+			currentHeightSputnik, _ := strconv.ParseInt(blockSputnik.Block.Header.Height, 10, 64)
+			currentHeightApollo, _ := strconv.ParseInt(blockApollo.Block.Header.Height, 10, 64)
+
+			if previousBlockHeight != currentHeightProvider {
 				fmt.Println("--------------------------- Start ---------------------------")
-				block.GetLastBlockTimestamp(currentBlockHeight)
+				block.GetLastBlockTimestamp(currentHeightProvider)
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Provider block height", fmt.Sprint(currentHeightProvider)))
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Sputnik block height", fmt.Sprint(currentHeightSputnik)))
+				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Apollo block height", fmt.Sprint(currentHeightApollo)))
 				select {
 				case <-ticker:
 					// fetch info from REST
-					restData := rest.GetData(chain, currentBlockHeight, block, denomList[0])
-					SetMetric(currentBlockHeight, restData, log)
+					restData := rest.GetData(chain, currentHeightProvider, currentHeightSputnik, currentHeightApollo, block, denomList[0])
+					SetMetric(currentHeightProvider, restData, log)
 					// case <-ticker2:
 					// takes ~5-6 blocks to return results per request
 					// tends to halt the node too. Caution !!!
@@ -72,7 +79,7 @@ func Run(chain string, log *zap.Logger) {
 				metricData.setAddrLabels(counterVecs[1])
 				metricData.setUpgradeLabels(counterVecs[2])
 
-				previousBlockHeight = currentBlockHeight
+				previousBlockHeight = currentHeightProvider
 				fmt.Println("--------------------------- End ---------------------------")
 				fmt.Println("")
 				fmt.Println("")
