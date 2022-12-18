@@ -55,7 +55,7 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 
 		for _, value := range vSets3.Result.Validators {
 			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-			vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+			vSetsResult3[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 		}
 		vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
 		vSetsResultFinal = mergeMap(vSetsResultTemp, vSetsResult3)
