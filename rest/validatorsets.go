@@ -30,31 +30,45 @@ type consPubKeyValSet struct {
 }
 
 func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
-	var vSets, vSets2, vSets3 validatorsets
+	var vSets, vSets2, vSets3, vsetTest validatorsets
+	var vSetsResultFinal map[string][]string
 	var vSetsResult map[string][]string = make(map[string][]string)
 	var vSetsResult2 map[string][]string = make(map[string][]string)
 	var vSetsResult3 map[string][]string = make(map[string][]string)
 
-	runPages(currentBlockHeight, &vSets, vSetsResult, 1)
-	runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
-	runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
+	shouldRunPages := testPageLimit(currentBlockHeight, &vsetTest, 3)
 
-	for _, value := range vSets.Result.Validators {
-		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-		vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+	if shouldRunPages {
+		runPages(currentBlockHeight, &vSets, vSetsResult, 1)
+		runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
+		runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
+
+		for _, value := range vSets.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+
+		for _, value := range vSets2.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+
+		for _, value := range vSets3.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+		vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
+		vSetsResultFinal = mergeMap(vSetsResultTemp, vSetsResult3)
+
+	} else {
+		runPages(currentBlockHeight, &vSets, vSetsResult, 1)
+		for _, value := range vSets.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+		vSetsResultFinal = vSetsResult
 	}
 
-	for _, value := range vSets2.Result.Validators {
-		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-	}
-
-	for _, value := range vSets3.Result.Validators {
-		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-	}
-	vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
-	vSetsResultFinal := mergeMap(vSetsResultTemp, vSetsResult3)
 	rd.Validatorsets = Sort(vSetsResultFinal)
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators)+len(vSets2.Result.Validators)+len(vSets3.Result.Validators))))
 }
@@ -106,4 +120,22 @@ func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[st
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
 		vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
+}
+
+func testPageLimit(currentBlockHeight int64, vSets *validatorsets, maxPageNumber int64) bool {
+	multiPagesSupported := true
+
+	res, err := HttpQuery(RESTAddr + "/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=3")
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+
+	json.Unmarshal(res, &vSets)
+
+	if strings.Contains(string(res), "Internal error: page should be within") {
+		zap.L().Info("", zap.String("warn", string(res)))
+		multiPagesSupported = false
+	}
+
+	return multiPagesSupported
 }
