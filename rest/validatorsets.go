@@ -30,14 +30,12 @@ type consPubKeyValSet struct {
 }
 
 func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
-	var vSets, vSets2, vSets3 validatorsets
+	var vSets, vSets2 validatorsets
 	var vSetsResult map[string][]string = make(map[string][]string)
 	var vSetsResult2 map[string][]string = make(map[string][]string)
-	var vSetsResult3 map[string][]string = make(map[string][]string)
 
 	runPages(currentBlockHeight, &vSets, vSetsResult, 1)
 	runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
-	runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
 
 	for _, value := range vSets.Result.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
@@ -49,14 +47,9 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 
-	for _, value := range vSets3.Result.Validators {
-		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-	}
-	vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
-	vSetsResultFinal := mergeMap(vSetsResultTemp, vSetsResult3)
+	vSetsResultFinal := mergeMap(vSetsResult, vSetsResult2)
 	rd.Validatorsets = Sort(vSetsResultFinal)
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators)+len(vSets2.Result.Validators)+len(vSets3.Result.Validators))))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators)+len(vSets2.Result.Validators))))
 }
 
 func Sort(mapValue map[string][]string) map[string][]string {
@@ -89,7 +82,7 @@ func mergeMap(a map[string][]string, b map[string][]string) map[string][]string 
 }
 
 func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[string][]string, pages int) {
-	res, err := HttpQuery(RESTAddr + "/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=100")
+	res, err := HttpQuery(RESTAddr + "/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=200")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
