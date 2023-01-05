@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"strconv"
 	"strings"
 
 	"go.uber.org/zap"
@@ -57,17 +56,17 @@ func getTotalSupply(denom string, log *zap.Logger) float64 {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &ts)
-	length, err := strconv.Atoi(ts.Pagination.Total)
-	if err != nil {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
+	// length, err := strconv.Atoi(ts.Pagination.Total)
+	// if err != nil {
+	// 	log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	// }
 	if strings.Contains(string(res), "not found") {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Supply[length-1].Amount))
+		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Supply[0].Amount))
 	}
 
-	return utils.StringToFloat64(ts.Supply[length-1].Amount)
+	return utils.StringToFloat64(ts.Supply[0].Amount)
 }

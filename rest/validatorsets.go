@@ -31,11 +31,9 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 	var vSets, vSets2, vSets3 validatorsets
 	var vSetsResult map[string][]string = make(map[string][]string)
 	var vSetsResult2 map[string][]string = make(map[string][]string)
-	var vSetsResult3 map[string][]string = make(map[string][]string)
 
-	runPages(currentBlockHeight, &vSets, vSetsResult, 1)
-	// runPages(currentBlockHeight, &vSets2, vSetsResult2, 2)
-	// runPages(currentBlockHeight, &vSets3, vSetsResult3, 3)
+	runPages(currentBlockHeight, &vSets, vSetsResult, false)
+	runPages(currentBlockHeight, &vSets2, vSetsResult2, true)
 
 	for _, value := range vSets.Validators {
 		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
@@ -47,12 +45,7 @@ func (rd *RESTData) getValidatorsets(currentBlockHeight int64) {
 		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 	}
 
-	for _, value := range vSets3.Validators {
-		// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-		vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-	}
-	vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
-	vSetsResultFinal := mergeMap(vSetsResultTemp, vSetsResult3)
+	vSetsResultFinal := mergeMap(vSetsResult, vSetsResult2)
 	rd.Validatorsets = Sort(vSetsResultFinal)
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Validators)+len(vSets2.Validators)+len(vSets3.Validators))))
 }
@@ -86,8 +79,14 @@ func mergeMap(a map[string][]string, b map[string][]string) map[string][]string 
 	return a
 }
 
-func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[string][]string, pages int) {
-	res, err := HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=300")
+func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[string][]string, offset bool) {
+	var res []byte
+	var err error
+	if offset {
+		res, err = HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?pagination.offset=100&pagination.limit=50")
+	} else {
+		res, err = HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/validatorsets/" + fmt.Sprint(currentBlockHeight))
+	}
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

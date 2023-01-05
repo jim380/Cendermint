@@ -45,15 +45,13 @@ func (rd *RESTData) getGovInfo() {
 		inVotingDidNotVote int
 	)
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/gov/v1beta1/proposals?pagination.limit=1000")
+	res, err := HttpQuery(RESTAddr + "/cosmos/gov/v1beta1/proposals")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &g)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
 	for _, value := range g.Proposals {

@@ -3,7 +3,7 @@ name: Build and Publish
 on:
   # run it on push to the default repository branch
   push:
-    branches: [master, develop, umee]
+    branches: [master, develop, sdk-0.46]
   # run it during pull request
   pull_request:
   # Allows you to run this workflow manually from the Actions tab
@@ -13,7 +13,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-jobs: 
+jobs:
   docker:
     name: Build Docker image and push to repositories
     # run only when code is compiling and tests are passing
@@ -35,7 +35,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
-      
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v2
