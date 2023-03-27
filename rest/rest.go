@@ -42,6 +42,7 @@ type RESTData struct {
 	}
 	UpgradeInfo upgradeInfo
 	GravityInfo gravityInfo
+	AkashInfo   akashInfo
 }
 
 func (rd RESTData) new(blockHeight int64) *RESTData {
@@ -97,6 +98,7 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 		rd.getTxInfo(blockHeight)
 		rd.computerTPS(blockData)
 		rd.getUpgradeInfo()
+		rd.getAkashDeployments()
 		// gravity
 		rd.getBridgeParams()
 		rd.getValSet()
