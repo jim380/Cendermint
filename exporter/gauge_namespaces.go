@@ -105,4 +105,9 @@ var gaugesNamespaceList = [...]string{
 	"gravity_batch_fees",
 	"gravity_batches_fees",
 	"gravity_bridge_fees",
+
+	// akash
+	"akash_totalDeployments",
+	"akash_activeDeployments",
+	"akash_closedDeployments",
 }

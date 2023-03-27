@@ -182,4 +182,10 @@ type metric struct {
 		BatchesFees float64
 		BridgeFees  float64
 	}
+
+	Akash struct {
+		TotalDeployments  float64
+		ActiveDeployments float64
+		ClosedDeployments float64
+	}
 }

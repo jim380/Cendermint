@@ -153,6 +153,11 @@ func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
 	metricData.Validator.Account.Balances = restData.Balances
 	metricData.Validator.Account.Commission = restData.Commission
 	metricData.Validator.Account.Rewards = restData.Rewards
+
+	// akash
+	metricData.Akash.TotalDeployments = float64(restData.AkashInfo.TotalDeployments)
+	metricData.Akash.ActiveDeployments = float64(restData.AkashInfo.ActiveDeployments)
+	metricData.Akash.ClosedDeployments = float64(restData.AkashInfo.ClosedDeployments)
 }
 
 func GetMetric() *metric {

@@ -161,6 +161,11 @@ func (metricData *metric) setNormalGauges(defaultGauges []prometheus.Gauge) {
 		metricData.Gravity.BatchFees,
 		metricData.Gravity.BatchesFees,
 		metricData.Gravity.BridgeFees,
+
+		// akash
+		metricData.Akash.TotalDeployments,
+		metricData.Akash.ActiveDeployments,
+		metricData.Akash.ClosedDeployments,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])
