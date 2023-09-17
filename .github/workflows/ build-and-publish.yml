@@ -25,7 +25,7 @@ jobs:
     # steps to perform in job
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # setup Docker buld action
       - name: Set up Docker Buildx
@@ -37,7 +37,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ github.token }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
