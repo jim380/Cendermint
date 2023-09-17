@@ -81,7 +81,7 @@ func GetData(cfg *config.Config, blockHeight int64, blockData Blocks, denom stri
 		rd.getValidator(*cfg)
 		// TO-DO if consumer chain, use cosmoshub's ConsPubKey
 		valMap, found := rd.Validatorsets[rd.Validator.ConsPubKey.Key]
-		if !found {
+		if len(rd.Validatorsets) != 0 && !found {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Validator not found in the active set"))
 		}
 
