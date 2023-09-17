@@ -45,7 +45,7 @@ type consPubKeyValSet struct {
 	Key  string `json:"key"`
 }
 
-func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64) {
+func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64) []string {
 	var vSetsResultFinal map[string][]string
 
 	if cfg.IsLegacySDKVersion() {
@@ -118,6 +118,22 @@ func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64
 		zap.L().Debug("", zap.Bool("Success", true), zap.String(key, strings.Join(value, ", ")))
 	}
 
+	if len(rd.Validatorsets) == 0 {
+		zap.L().Warn("", zap.Bool("Success", false), zap.String("err", "Validator set is empty"))
+	}
+
+	rd.getValidator(cfg)
+	valInfo := rd.locateValidatorInActiveSet()
+	return valInfo
+}
+
+// TO-DO if consumer chain, use cosmoshub's ConsPubKey
+func (rd *RESTData) locateValidatorInActiveSet() []string {
+	valInfo, found := rd.Validatorsets[rd.Validator.ConsPubKey.Key]
+	if !found {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Validator not found in the active set"))
+	}
+	return valInfo
 }
 
 func Sort(mapValue map[string][]string) map[string][]string {

@@ -77,22 +77,15 @@ func GetData(cfg *config.Config, blockHeight int64, blockData Blocks, denom stri
 		rd.getSlashingParams(*cfg)
 		rd.getInflation(*cfg, denom)
 		rd.getGovInfo(*cfg)
-		rd.getValidatorsets(*cfg, blockHeight)
-		rd.getValidator(*cfg)
-		// TO-DO if consumer chain, use cosmoshub's ConsPubKey
-		valMap, found := rd.Validatorsets[rd.Validator.ConsPubKey.Key]
-		if len(rd.Validatorsets) != 0 && !found {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Validator not found in the active set"))
-		}
-
+		valInfo := rd.getValidatorsets(*cfg, blockHeight)
 		rd.getBalances(*cfg)
 		rd.getRewardsCommission(*cfg)
-		rd.getSigningInfo(*cfg, valMap[0])
+		rd.getSigningInfo(*cfg, valInfo[0])
 
-		consHexAddr := utils.Bech32AddrToHexAddr(valMap[0])
+		consHexAddr := utils.Bech32AddrToHexAddr(valInfo[0])
 		rd.getCommit(blockData, consHexAddr)
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validator.Description.Moniker))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valMap[1]))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valInfo[1]))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
