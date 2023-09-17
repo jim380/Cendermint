@@ -6,6 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/jim380/Cendermint/config"
 	utils "github.com/jim380/Cendermint/utils"
 )
 
@@ -21,14 +22,15 @@ type inflation_iris struct {
 	}
 }
 
-func (rd *RESTData) getInflation(chain string, denom string) {
+func (rd *RESTData) getInflation(cfg config.Config, denom string) {
 	var result string
 
-	switch chain {
+	route := getInflationRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route)
+
+	switch cfg.Chain {
 	case "iris":
 		var i inflation_iris
-
-		res, err := HttpQuery(RESTAddr + "/irishub/mint/params")
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 		}
@@ -42,7 +44,7 @@ func (rd *RESTData) getInflation(chain string, denom string) {
 	default:
 		var i inflation
 
-		res, err := HttpQuery(RESTAddr + "/minting/inflation") // route does not existing in osmosis
+		res, err := HttpQuery(RESTAddr + route) // route does not existing in osmosis
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}

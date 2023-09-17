@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -39,8 +40,9 @@ type lastCommit struct {
 	}
 }
 
-func (b *Blocks) GetInfo() Blocks {
-	res, err := HttpQuery(RESTAddr + "/blocks/latest")
+func (b *Blocks) GetInfo(cfg config.Config) Blocks {
+	route := getBlockInfoRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -54,9 +56,10 @@ func (b *Blocks) GetInfo() Blocks {
 	return *b
 }
 
-func (b *Blocks) GetLastBlockTimestamp(currentHeight int64) Blocks {
+func (b *Blocks) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) Blocks {
 	var lastBlock LastBlock
-	res, err := HttpQuery(RESTAddr + "/blocks/" + strconv.Itoa(int(currentHeight-1)))
+	route := getBlockByHeightRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + strconv.Itoa(int(currentHeight-1)))
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

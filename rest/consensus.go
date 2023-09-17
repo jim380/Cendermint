@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
@@ -56,7 +57,7 @@ type rpcValidators struct {
 	} `json:"validators"`
 }
 
-func (rpc *RPCData) getConsensusDump() {
+func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 	var cs ConsensusState
 	var vSetsResult map[string][]string = make(map[string][]string)
 
@@ -66,7 +67,7 @@ func (rpc *RPCData) getConsensusDump() {
 	}
 	json.Unmarshal(res, &cs)
 
-	conspubMonikerMap := rpc.getConspubMonikerMap()
+	conspubMonikerMap := rpc.getConspubMonikerMap(cfg)
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
 	for index, validator := range cs.Result.Validatorset.Validators {
 		var prevote, precommit string
@@ -101,11 +102,12 @@ func (rpc *RPCData) getConsensusDump() {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC", fmt.Sprint(len(rpc.Validatorsets))))
 }
 
-func (rpc *RPCData) getConspubMonikerMap() map[string]string {
+func (rpc *RPCData) getConspubMonikerMap(cfg config.Config) map[string]string {
 	var v rpcValidators
 	var vResult map[string]string = make(map[string]string)
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=300")
+	route := getValidatorsRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

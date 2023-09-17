@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,6 +42,7 @@ func main() {
 
 	cfg := config.Config{
 		Chain:           os.Getenv("CHAIN"),
+		SDKVersion:      os.Getenv("SDK_VERSION"),
 		OperatorAddr:    os.Getenv("OPERATOR_ADDR"),
 		RestAddr:        os.Getenv("REST_ADDR"),
 		RpcAddr:         os.Getenv("RPC_ADDR"),
@@ -70,5 +71,5 @@ func main() {
 	rest.RPCAddr = rpcAddr
 	rest.OperAddr = operAddr
 
-	exporter.Start(chain, listeningPort, logger)
+	exporter.Start(cfg, listeningPort, logger)
 }

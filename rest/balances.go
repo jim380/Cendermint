@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -16,10 +17,12 @@ type Coin struct {
 	Amount string
 }
 
-func (rd *RESTData) getBalances() {
+func (rd *RESTData) getBalances(cfg config.Config) {
 	var b balances
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/bank/v1beta1/balances/" + AccAddr)
+	route := getBalancesByAddressRoute(cfg)
+
+	res, err := HttpQuery(RESTAddr + route + AccAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -86,11 +87,12 @@ type txResp []struct {
 	GasUsd    string `json:"gas_used"`
 }
 
-func (rd *RESTData) getTxInfo(currentBlockHeight int64) {
+func (rd *RESTData) getTxInfo(cfg config.Config, currentBlockHeight int64) {
 	var txInfo txInfo
 	var txRes txResult
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/tx/v1beta1/txs?events=tx.height=" + fmt.Sprintf("%v", currentBlockHeight))
+	route := getTxByHeightRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + fmt.Sprintf("%v", currentBlockHeight))
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

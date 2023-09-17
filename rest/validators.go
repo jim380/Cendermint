@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -44,10 +45,11 @@ type commission_rates struct {
 	Max_change_rate string `json:"max_change_rate"`
 }
 
-func (rd *RESTData) getValidator() {
+func (rd *RESTData) getValidator(cfg config.Config) {
 	var v validators
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators/" + OperAddr)
+	route := getValidatorByAddressRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -58,5 +60,5 @@ func (rd *RESTData) getValidator() {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
-	rd.Validators = v.Validator
+	rd.Validator = v.Validator
 }

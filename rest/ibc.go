@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -80,11 +81,13 @@ type counterpartyConnection struct {
 	}
 }
 
-func (rd *RESTData) getIBCChannels() {
+func (rd *RESTData) getIBCChannels(cfg config.Config) {
 	var ibcInfo ibcChannelInfo
 	var ibcChannels map[string][]string = make(map[string][]string)
+
 	ibcInfo.OpenChannels = 0
-	res, err := HttpQuery(RESTAddr + "/ibc/core/channel/v1/channels?pagination.limit=1000000")
+	route := getIBCChannelsRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=1000000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -116,11 +119,13 @@ func (rd *RESTData) getIBCChannels() {
 	rd.IBC.IBCInfo.ibcChannelInfo = ibcInfo
 }
 
-func (rd *RESTData) getIBCConnections() {
+func (rd *RESTData) getIBCConnections(cfg config.Config) {
 	var ibcInfo ibcConnectionInfo
 	var ibcConnections map[string][]string = make(map[string][]string)
+
 	ibcInfo.OpenConnections = 0
-	res, err := HttpQuery(RESTAddr + "/ibc/core/connection/v1/connections?pagination.limit=100000")
+	route := getIBCConnectionsRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=100000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

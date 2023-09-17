@@ -6,6 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/jim380/Cendermint/config"
 	utils "github.com/jim380/Cendermint/utils"
 )
 
@@ -21,10 +22,11 @@ type totalSupply struct {
 	Amount Coin
 }
 
-func (rd *RESTData) getStakingPool(denom string) {
+func (rd *RESTData) getStakingPool(cfg config.Config, denom string) {
 	var sp stakingPool
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/pool")
+	route := getStakingPoolRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
@@ -35,14 +37,15 @@ func (rd *RESTData) getStakingPool(denom string) {
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.Bonded_tokens))
 	}
 
-	sp.Pool.Total_supply = getTotalSupply(denom, zap.L())
+	sp.Pool.Total_supply = getTotalSupply(cfg, denom, zap.L())
 	rd.StakingPool = sp
 }
 
-func getTotalSupply(denom string, log *zap.Logger) float64 {
+func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 	var ts totalSupply
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/bank/v1beta1/supply/" + denom)
+	route := getSupplyRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + denom)
 	if err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

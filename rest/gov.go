@@ -7,6 +7,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/jim380/Cendermint/config"
 	utils "github.com/jim380/Cendermint/utils"
 )
 
@@ -35,7 +36,7 @@ type voteInfo struct {
 	} `json:"vote"`
 }
 
-func (rd *RESTData) getGovInfo() {
+func (rd *RESTData) getGovInfo(cfg config.Config) {
 	var (
 		g                  gov
 		gi                 govInfo
@@ -45,7 +46,8 @@ func (rd *RESTData) getGovInfo() {
 		inVotingDidNotVote int
 	)
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/gov/v1beta1/proposals?pagination.limit=1000")
+	route := getProposalsRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=1000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -67,17 +69,15 @@ func (rd *RESTData) getGovInfo() {
 
 	for _, value := range proposalsInVoting {
 		var voteInfo voteInfo
-		res, err := HttpQuery(RESTAddr + "/cosmos/gov/v1beta1/proposals/" + value + "/votes/" + utils.GetAccAddrFromOperAddr(OperAddr))
+		res, err := HttpQuery(RESTAddr + route + value + "/votes/" + utils.GetAccAddrFromOperAddr(OperAddr))
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 		json.Unmarshal(res, &voteInfo)
 		if voteInfo.Votes.Option != "" {
 			inVotingVoted++
-			//fmt.Println(value + ":Voter voted")
 		} else {
 			inVotingDidNotVote++
-			//fmt.Println(value + ":Voter didn't vote")
 		}
 	}
 	totalProposalsCount, _ := strconv.ParseFloat(totalProposals[len(totalProposals)-1], 64)
