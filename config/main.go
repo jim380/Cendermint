@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/jim380/Cendermint/utils"
@@ -12,6 +13,7 @@ import (
 
 type Config struct {
 	Chain           string
+	SDKVersion      string
 	OperatorAddr    string
 	RestAddr        string
 	RpcAddr         string
@@ -58,7 +60,7 @@ func (config Config) CheckInputs(chainList map[string][]string) {
 		}
 	}
 
-	// TODO add more robust checks
+	// TO-DO add more robust checks
 	if config.OperatorAddr == "" {
 		log.Fatal("Operator address was not provided")
 	}
@@ -158,4 +160,24 @@ func GetChainList() map[string][]string {
 	chainList["nyx"] = []string{"unyx"}
 
 	return chainList
+}
+
+func (config Config) IsLegacySDKVersion() bool {
+	var legacy bool = false
+
+	if strings.Contains(config.SDKVersion, "0.45") {
+		legacy = true
+	}
+
+	return legacy
+}
+
+func (config Config) IsGravityBridgeEnabled() bool {
+	var enabled bool = false
+
+	if config.Chain == "gravity" || config.Chain == "umee" {
+		enabled = true
+	}
+
+	return enabled
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -28,10 +29,11 @@ type SigningInfo struct {
 	MissedBlocksCounter string `json:"missed_blocks_counter"`
 }
 
-func (rd *RESTData) getSlashingParams() {
+func (rd *RESTData) getSlashingParams(cfg config.Config) {
 	var d slashingInfo
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/slashing/v1beta1/params")
+	route := getSlashingParamsRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -44,10 +46,11 @@ func (rd *RESTData) getSlashingParams() {
 	rd.Slashing.Params = d.Params
 }
 
-func (rd *RESTData) getSigningInfo(consAddr string) {
+func (rd *RESTData) getSigningInfo(cfg config.Config, consAddr string) {
 	var d slashingInfo
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/slashing/v1beta1/signing_infos/" + consAddr)
+	route := getSigningInfoByAddressRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + consAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

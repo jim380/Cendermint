@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -18,10 +19,11 @@ type upgradeInfo struct {
 	}
 }
 
-func (rd *RESTData) getUpgradeInfo() {
+func (rd *RESTData) getUpgradeInfo(cfg config.Config) {
 	var upgradeInfo upgradeInfo
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/upgrade/v1beta1/current_plan")
+	route := getUpgradeCurrentPlanRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

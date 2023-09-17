@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -20,10 +21,11 @@ type Commission struct {
 	Commission []Coin `json:"commission"`
 }
 
-func (rd *RESTData) getRewardsCommission() {
+func (rd *RESTData) getRewardsCommission(cfg config.Config) {
 	var rc rewardsAndCommisson
 
-	res, err := HttpQuery(RESTAddr + "/distribution/validators/" + OperAddr)
+	route := getValidatorDistributionByAddressRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

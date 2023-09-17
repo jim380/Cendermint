@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -107,18 +108,18 @@ type GroupSpec struct {
 	} `json:"resources"`
 }
 
-func (rd *RESTData) getAkashDeployments() {
-	// var deployments akashDeployments
+func (rd *RESTData) getAkashDeployments(cfg config.Config) {
+	if cfg.Chain != "akash" {
+		return
+	}
 	var deployments, activeDeployments akashDeployments
 
-	// ?filters.state=active
-	res, err := HttpQuery(RESTAddr + "/akash/deployment/v1beta2/deployments/list")
+	route := getDeploymentsRoute()
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &deployments)
-
-	// rd.AkashInfo.Deployments = deployments
 
 	// get total deployments count
 	totalDeploymentsCount, err := strconv.Atoi(deployments.Pagination.Total)
@@ -128,7 +129,7 @@ func (rd *RESTData) getAkashDeployments() {
 	rd.AkashInfo.TotalDeployments = totalDeploymentsCount
 
 	// get active deployments count
-	resActive, err := HttpQuery(RESTAddr + "/akash/deployment/v1beta2/deployments/list?filters.state=active")
+	resActive, err := HttpQuery(RESTAddr + route + "?filters.state=active")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

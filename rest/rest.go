@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jim380/Cendermint/config"
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
@@ -28,7 +29,7 @@ type RESTData struct {
 	StakingPool   stakingPool
 	Slashing      slashingInfo
 	Validatorsets map[string][]string
-	Validators    validator
+	Validator     validator
 	Delegations   delegationsInfo
 	Balances      []Coin
 	Rewards       []Coin
@@ -56,7 +57,7 @@ func (rpc RPCData) new() *RPCData {
 	return &RPCData{Validatorsets: make(map[string][]string)}
 }
 
-func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetData(cfg *config.Config, blockHeight int64, blockData Blocks, denom string) *RESTData {
 	// rpc
 	var rpcData RPCData
 	rpc := rpcData.new()
@@ -66,46 +67,42 @@ func GetData(chain string, blockHeight int64, blockData Blocks, denom string) *R
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 
 	rd := restData.new(blockHeight)
+	rd.getNodeInfo(cfg) // get node info first
+
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		rpc.getConsensusDump()
-		rd.getStakingPool(denom)
-		rd.getSlashingParams()
-		rd.getInflation(chain, denom)
-		rd.getGovInfo()
-		rd.getValidatorsets(blockHeight)
-		rd.getValidator()
-		valMap, found := rd.Validatorsets[rd.Validators.ConsPubKey.Key]
-		if !found {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Validator not found in the active set"))
-		}
-		rd.getBalances()
-		rd.getRewardsCommission()
-		rd.getSigningInfo(valMap[0])
+		rpc.getConsensusDump(*cfg)
+		rd.getStakingPool(*cfg, denom)
+		rd.getSlashingParams(*cfg)
+		rd.getInflation(*cfg, denom)
+		rd.getGovInfo(*cfg)
+		valInfo := rd.getValidatorsets(*cfg, blockHeight)
+		rd.getBalances(*cfg)
+		rd.getRewardsCommission(*cfg)
+		rd.getSigningInfo(*cfg, valInfo[0])
 
-		consHexAddr := utils.Bech32AddrToHexAddr(valMap[0])
+		consHexAddr := utils.Bech32AddrToHexAddr(valInfo[0])
 		rd.getCommit(blockData, consHexAddr)
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validators.Description.Moniker))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valMap[1]))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validator.Description.Moniker))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valInfo[1]))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
-		rd.getIBCChannels()
-		rd.getIBCConnections()
-		rd.getNodeInfo()
-		rd.getTxInfo(blockHeight)
+		rd.getIBCChannels(*cfg)
+		rd.getIBCConnections(*cfg)
+		rd.getTxInfo(*cfg, blockHeight)
 		rd.computerTPS(blockData)
-		rd.getUpgradeInfo()
-		rd.getAkashDeployments()
+		rd.getUpgradeInfo(*cfg)
+		rd.getAkashDeployments(*cfg)
 		// gravity
-		rd.getBridgeParams()
-		rd.getValSet()
-		rd.getOracleEventNonce()
-		rd.getBatchFees()
-		rd.getBatchesFees()
-		rd.getBridgeFees()
+		rd.getBridgeParams(*cfg)
+		rd.getValSet(*cfg)
+		rd.getOracleEventNonce(*cfg)
+		rd.getBatchFees(*cfg)
+		rd.getBatchesFees(*cfg)
+		rd.getBridgeFees(*cfg)
 		wg.Done()
 	}()
 	wg.Wait()
@@ -124,12 +121,12 @@ func (rd *RESTData) computerTPS(blockData Blocks) {
 	rd.TxInfo.TPS = tps
 }
 
-func GetDelegationsData(chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetDelegationsData(cfg config.Config, chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
 	var restData RESTData
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 
 	rd := restData.new(blockHeight)
-	rd.getDelegations()
+	rd.getDelegations(cfg)
 	return rd
 }
 

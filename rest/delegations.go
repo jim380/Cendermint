@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -28,11 +29,12 @@ type delegationRes []struct {
 	}
 }
 
-func (rd *RESTData) getDelegations() {
+func (rd *RESTData) getDelegations(cfg config.Config) {
 	var delInfo delegationsInfo
 	var delRes map[string][]string = make(map[string][]string)
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/staking/v1beta1/validators/" + OperAddr + "/delegations" + "?pagination.limit=1000")
+	route := getValidatorByAddressRoute(cfg)
+	res, err := HttpQuery(RESTAddr + route + OperAddr + "/delegations" + "?pagination.limit=1000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

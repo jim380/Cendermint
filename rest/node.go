@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -27,10 +28,11 @@ type appVersion struct {
 	SDKVersion string `json:"cosmos_sdk_version"`
 }
 
-func (rd *RESTData) getNodeInfo() {
+func (rd *RESTData) getNodeInfo(cfg *config.Config) {
 	var nodeInfo nodeInfo
 
-	res, err := HttpQuery(RESTAddr + "/cosmos/base/tendermint/v1beta1/node_info")
+	route := getNodeInfoRoute()
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -45,4 +47,5 @@ func (rd *RESTData) getNodeInfo() {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("SDK version", nodeInfo.Application.SDKVersion))
 
 	rd.NodeInfo = nodeInfo
+	cfg.SDKVersion = nodeInfo.Application.SDKVersion
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
+	"github.com/jim380/Cendermint/config"
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
@@ -39,14 +40,6 @@ type BridgeParams struct {
 type ValsetReward struct {
 	Amount string `json:"amount"`
 }
-
-// type erc20Price struct {
-// 	contractAddr `json:"0xe54fbaecc50731afe54924c40dfd1274f718fe02"`
-// }
-
-// type contractAddr struct {
-// 	ERC20Price float64 `json:"usd"`
-// }
 
 type ethPrice struct {
 	ETHUSD `json:"ethereum"`
@@ -130,8 +123,6 @@ type member struct {
 func (rd *RESTData) getUmeePrice() {
 	var p umeePrice
 
-	// contractAddr := os.Getenv("CONTRACT_ADDR")
-	// res, err := HttpQuery("https://peggo-fakex-qhcqt.ondigitalocean.app/api/v3/simple/token_price/ethereum?contract_addresses=" + contractAddr + "&vs_currencies=usd")
 	res, err := HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
 
 	if err != nil {
@@ -142,10 +133,14 @@ func (rd *RESTData) getUmeePrice() {
 	rd.GravityInfo.UMEEPrice = p.UMEEPrice
 }
 
-func (rd *RESTData) getBatchFees() {
+func (rd *RESTData) getBatchFees(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var b batchFees
 
-	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/batchfees")
+	route := getBatchFeesRoute()
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -160,10 +155,14 @@ func (rd *RESTData) getBatchFees() {
 	rd.GravityInfo.BatchFees = feesTotal
 }
 
-func (rd *RESTData) getBatchesFees() {
+func (rd *RESTData) getBatchesFees(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var b batches
 
-	res, err := HttpQuery(RESTAddr + "/gravity/v1beta1/batch/outgoingtx")
+	route := getBatchesFeesRoute()
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -180,11 +179,15 @@ func (rd *RESTData) getBatchesFees() {
 	rd.GravityInfo.BatchesFees = feesTotal
 }
 
-func (rd *RESTData) getBridgeFees() {
+func (rd *RESTData) getBridgeFees(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var p ethPrice
 	var bf float64
 
-	res, err := HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
+	route := getBridgeFeesRoute()
+	res, err := HttpQuery(route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -196,12 +199,15 @@ func (rd *RESTData) getBridgeFees() {
 	rd.GravityInfo.BridgeFees = bf
 }
 
-func (rd *RESTData) getBridgeParams() {
+func (rd *RESTData) getBridgeParams(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var params gravityParams
 
 	rd.GravityInfo.GravityActive = 0.0
-
-	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/params")
+	route := getBridgeParamsRoute()
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -216,11 +222,15 @@ func (rd *RESTData) getBridgeParams() {
 	}
 }
 
-func (rd *RESTData) getOracleEventNonce() {
+func (rd *RESTData) getOracleEventNonce(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var evt oracleEventNonce
 
 	orchAddr := os.Getenv("UMEE_ORCH_ADDR")
-	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/oracle/eventnonce/" + orchAddr)
+	route := getOracleEventNonceByAddressRoute()
+	res, err := HttpQuery(RESTAddr + route + orchAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -229,12 +239,16 @@ func (rd *RESTData) getOracleEventNonce() {
 	rd.GravityInfo.EventNonce = evt.EventNonce
 }
 
-func (rd *RESTData) getValSet() {
+func (rd *RESTData) getValSet(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var vs valSetInfo
 
 	var vsResult map[string]string = make(map[string]string)
 
-	res, err := HttpQuery(RESTAddr + "/gravity/v1beta/valset/current")
+	route := getCurrentValidatorSetRoute()
+	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
