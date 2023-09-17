@@ -40,14 +40,13 @@ func (rd *RESTData) getGovInfo(cfg config.Config) {
 	var (
 		g                  gov
 		gi                 govInfo
-		totalProposals     []string
 		proposalsInVoting  []string
 		inVotingVoted      int
 		inVotingDidNotVote int
 	)
 
 	route := getProposalsRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=1000")
+	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=2000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -58,13 +57,14 @@ func (rd *RESTData) getGovInfo(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
-	for _, value := range g.Proposals {
-		totalProposals = append(totalProposals, value.ProposalID)
+	totalProposals := g.Proposals
+	for _, value := range totalProposals {
 		if value.Status == "PROPOSAL_STATUS_VOTING_PERIOD" {
 			proposalsInVoting = append(proposalsInVoting, value.ProposalID)
 		}
 	}
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total proposals count", totalProposals[len(totalProposals)-1]))
+
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Total proposals count", strconv.Itoa(len(totalProposals))))
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Proposals in voting", strconv.Itoa(len(proposalsInVoting))))
 
 	for _, value := range proposalsInVoting {
@@ -80,8 +80,7 @@ func (rd *RESTData) getGovInfo(cfg config.Config) {
 			inVotingDidNotVote++
 		}
 	}
-	totalProposalsCount, _ := strconv.ParseFloat(totalProposals[len(totalProposals)-1], 64)
-	gi.TotalProposalCount = totalProposalsCount
+	gi.TotalProposalCount = float64(len(totalProposals))
 	gi.VotingProposalCount = float64(len(proposalsInVoting))
 	gi.InVotingVotedCount = float64(inVotingVoted)
 	gi.InVotingDidNotVoteCount = float64(inVotingDidNotVote)

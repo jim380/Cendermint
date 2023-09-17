@@ -57,7 +57,7 @@ func (rpc RPCData) new() *RPCData {
 	return &RPCData{Validatorsets: make(map[string][]string)}
 }
 
-func GetData(cfg config.Config, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetData(cfg *config.Config, blockHeight int64, blockData Blocks, denom string) *RESTData {
 	// rpc
 	var rpcData RPCData
 	rpc := rpcData.new()
@@ -67,26 +67,27 @@ func GetData(cfg config.Config, blockHeight int64, blockData Blocks, denom strin
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 
 	rd := restData.new(blockHeight)
+	rd.getNodeInfo(cfg) // get node info first
+
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		rpc.getConsensusDump(cfg)
-		rd.getStakingPool(cfg, denom)
-		rd.getSlashingParams(cfg)
-		rd.getInflation(cfg, denom)
-		rd.getGovInfo(cfg)
-		// TO-DO fix finding validator in active set for sdk version >= v0.46
-		rd.getValidatorsets(cfg, blockHeight)
-		rd.getValidator(cfg)
-
+		rpc.getConsensusDump(*cfg)
+		rd.getStakingPool(*cfg, denom)
+		rd.getSlashingParams(*cfg)
+		rd.getInflation(*cfg, denom)
+		rd.getGovInfo(*cfg)
+		rd.getValidatorsets(*cfg, blockHeight)
+		rd.getValidator(*cfg)
+		// TO-DO if consumer chain, use cosmoshub's ConsPubKey
 		valMap, found := rd.Validatorsets[rd.Validator.ConsPubKey.Key]
 		if !found {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Validator not found in the active set"))
 		}
 
-		rd.getBalances(cfg)
-		rd.getRewardsCommission(cfg)
-		rd.getSigningInfo(cfg, valMap[0])
+		rd.getBalances(*cfg)
+		rd.getRewardsCommission(*cfg)
+		rd.getSigningInfo(*cfg, valMap[0])
 
 		consHexAddr := utils.Bech32AddrToHexAddr(valMap[0])
 		rd.getCommit(blockData, consHexAddr)
@@ -96,20 +97,19 @@ func GetData(cfg config.Config, blockHeight int64, blockData Blocks, denom strin
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
-		rd.getIBCChannels(cfg)
-		rd.getIBCConnections(cfg)
-		rd.getNodeInfo(cfg)
-		rd.getTxInfo(cfg, blockHeight)
+		rd.getIBCChannels(*cfg)
+		rd.getIBCConnections(*cfg)
+		rd.getTxInfo(*cfg, blockHeight)
 		rd.computerTPS(blockData)
-		rd.getUpgradeInfo(cfg)
-		rd.getAkashDeployments()
+		rd.getUpgradeInfo(*cfg)
+		rd.getAkashDeployments(*cfg)
 		// gravity
-		rd.getBridgeParams()
-		rd.getValSet()
-		rd.getOracleEventNonce()
-		rd.getBatchFees()
-		rd.getBatchesFees()
-		rd.getBridgeFees()
+		rd.getBridgeParams(*cfg)
+		rd.getValSet(*cfg)
+		rd.getOracleEventNonce(*cfg)
+		rd.getBatchFees(*cfg)
+		rd.getBatchesFees(*cfg)
+		rd.getBridgeFees(*cfg)
 		wg.Done()
 	}()
 	wg.Wait()

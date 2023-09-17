@@ -42,7 +42,6 @@ func main() {
 
 	cfg := config.Config{
 		Chain:           os.Getenv("CHAIN"),
-		SDKVersion:      os.Getenv("SDK_VERSION"),
 		OperatorAddr:    os.Getenv("OPERATOR_ADDR"),
 		RestAddr:        os.Getenv("REST_ADDR"),
 		RpcAddr:         os.Getenv("RPC_ADDR"),
@@ -71,5 +70,5 @@ func main() {
 	rest.RPCAddr = rpcAddr
 	rest.OperAddr = operAddr
 
-	exporter.Start(cfg, listeningPort, logger)
+	exporter.Start(&cfg, listeningPort, logger)
 }

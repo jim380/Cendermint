@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
+	"github.com/jim380/Cendermint/config"
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
@@ -132,7 +133,10 @@ func (rd *RESTData) getUmeePrice() {
 	rd.GravityInfo.UMEEPrice = p.UMEEPrice
 }
 
-func (rd *RESTData) getBatchFees() {
+func (rd *RESTData) getBatchFees(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var b batchFees
 
 	route := getBatchFeesRoute()
@@ -151,7 +155,10 @@ func (rd *RESTData) getBatchFees() {
 	rd.GravityInfo.BatchFees = feesTotal
 }
 
-func (rd *RESTData) getBatchesFees() {
+func (rd *RESTData) getBatchesFees(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var b batches
 
 	route := getBatchesFeesRoute()
@@ -172,7 +179,10 @@ func (rd *RESTData) getBatchesFees() {
 	rd.GravityInfo.BatchesFees = feesTotal
 }
 
-func (rd *RESTData) getBridgeFees() {
+func (rd *RESTData) getBridgeFees(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var p ethPrice
 	var bf float64
 
@@ -189,7 +199,10 @@ func (rd *RESTData) getBridgeFees() {
 	rd.GravityInfo.BridgeFees = bf
 }
 
-func (rd *RESTData) getBridgeParams() {
+func (rd *RESTData) getBridgeParams(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var params gravityParams
 
 	rd.GravityInfo.GravityActive = 0.0
@@ -209,7 +222,10 @@ func (rd *RESTData) getBridgeParams() {
 	}
 }
 
-func (rd *RESTData) getOracleEventNonce() {
+func (rd *RESTData) getOracleEventNonce(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var evt oracleEventNonce
 
 	orchAddr := os.Getenv("UMEE_ORCH_ADDR")
@@ -223,7 +239,10 @@ func (rd *RESTData) getOracleEventNonce() {
 	rd.GravityInfo.EventNonce = evt.EventNonce
 }
 
-func (rd *RESTData) getValSet() {
+func (rd *RESTData) getValSet(cfg config.Config) {
+	if !cfg.IsGravityBridgeEnabled() {
+		return
+	}
 	var vs valSetInfo
 
 	var vsResult map[string]string = make(map[string]string)

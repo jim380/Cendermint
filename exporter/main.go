@@ -14,7 +14,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start(config config.Config, port string, logger *zap.Logger) {
+func Start(config *config.Config, port string, logger *zap.Logger) {
 	http.Handle("/metrics", promhttp.Handler())
 	go Run(config, logger)
 
@@ -26,7 +26,7 @@ func Start(config config.Config, port string, logger *zap.Logger) {
 
 }
 
-func Run(cfg config.Config, log *zap.Logger) {
+func Run(cfg *config.Config, log *zap.Logger) {
 	cl := config.GetChainList()
 	denomList := config.GetDenomList(cfg.Chain, cl)
 
@@ -39,12 +39,12 @@ func Run(cfg config.Config, log *zap.Logger) {
 	go func() {
 		for {
 			var block rest.Blocks
-			block.GetInfo(cfg)
+			block.GetInfo(*cfg)
 
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
 			if previousBlockHeight != currentBlockHeight {
 				fmt.Println("--------------------------- Start ---------------------------")
-				block.GetLastBlockTimestamp(cfg, currentBlockHeight)
+				block.GetLastBlockTimestamp(*cfg, currentBlockHeight)
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
 				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))

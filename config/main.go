@@ -61,10 +61,6 @@ func (config Config) CheckInputs(chainList map[string][]string) {
 	}
 
 	// TO-DO add more robust checks
-	if config.SDKVersion == "" {
-		log.Fatal("SDK version was not provided")
-	}
-
 	if config.OperatorAddr == "" {
 		log.Fatal("Operator address was not provided")
 	}
@@ -166,10 +162,6 @@ func GetChainList() map[string][]string {
 	return chainList
 }
 
-func (config Config) GetSDKVersion() string {
-	return config.SDKVersion
-}
-
 func (config Config) IsLegacySDKVersion() bool {
 	var legacy bool = false
 
@@ -178,4 +170,14 @@ func (config Config) IsLegacySDKVersion() bool {
 	}
 
 	return legacy
+}
+
+func (config Config) IsGravityBridgeEnabled() bool {
+	var enabled bool = false
+
+	if config.Chain == "gravity" || config.Chain == "umee" {
+		enabled = true
+	}
+
+	return enabled
 }

@@ -28,10 +28,10 @@ type appVersion struct {
 	SDKVersion string `json:"cosmos_sdk_version"`
 }
 
-func (rd *RESTData) getNodeInfo(cfg config.Config) {
+func (rd *RESTData) getNodeInfo(cfg *config.Config) {
 	var nodeInfo nodeInfo
 
-	route := getNodeInfoRoute(cfg)
+	route := getNodeInfoRoute()
 	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
@@ -47,4 +47,5 @@ func (rd *RESTData) getNodeInfo(cfg config.Config) {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("SDK version", nodeInfo.Application.SDKVersion))
 
 	rd.NodeInfo = nodeInfo
+	cfg.SDKVersion = nodeInfo.Application.SDKVersion
 }

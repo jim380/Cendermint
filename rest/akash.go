@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/jim380/Cendermint/config"
 	"go.uber.org/zap"
 )
 
@@ -107,7 +108,10 @@ type GroupSpec struct {
 	} `json:"resources"`
 }
 
-func (rd *RESTData) getAkashDeployments() {
+func (rd *RESTData) getAkashDeployments(cfg config.Config) {
+	if cfg.Chain != "akash" {
+		return
+	}
 	var deployments, activeDeployments akashDeployments
 
 	route := getDeploymentsRoute()
