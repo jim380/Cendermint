@@ -165,16 +165,11 @@ func mergeMap(a map[string][]string, b map[string][]string) map[string][]string 
 	return a
 }
 
-<<<<<<< HEAD
-func runPages(currentBlockHeight int64, vSets *validatorsets, vSetsResult map[string][]string, pages int) {
-	res, err := HttpQuery(RESTAddr + "/validatorsets/" + fmt.Sprint(currentBlockHeight) + "?page=" + strconv.Itoa(pages) + "&limit=200")
-=======
 func runPages(cfg config.Config, currentBlockHeight int64, vSets *validatorsetsLegacy, vSetsResult map[string][]string, pages int) {
 	route := getValidatorSetByHeightRoute(cfg)
 
 	res, err := HttpQuery(RESTAddr + route + fmt.Sprint(currentBlockHeight))
 
->>>>>>> develop
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
