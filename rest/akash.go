@@ -109,7 +109,7 @@ type GroupSpec struct {
 }
 
 func (rd *RESTData) getAkashDeployments(cfg config.Config) {
-	if cfg.Chain != "akash" {
+	if cfg.Chain.Chain != "akash" {
 		return
 	}
 	var deployments, activeDeployments akashDeployments

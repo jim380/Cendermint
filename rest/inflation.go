@@ -28,8 +28,8 @@ func (rd *RESTData) getInflation(cfg config.Config, denom string) {
 	route := getInflationRoute(cfg)
 	res, err := HttpQuery(RESTAddr + route)
 
-	switch cfg.Chain {
-	case "iris":
+	switch cfg.Chain.Chain {
+	case "irisnet":
 		var i inflation_iris
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))

@@ -1,0 +1,200 @@
+[
+  {
+    "chain": "cosmos",
+    "assets": [
+      {
+        "denom": "uatom",
+        "symbol": "ATOM",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "cosmos"
+  },
+  {
+    "chain": "irisnet",
+    "assets": [
+      {
+        "denom": "uiris",
+        "symbol": "IRIS",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "ia"
+  },
+  {
+    "chain": "osmosis",
+    "assets": [
+      {
+        "denom": "uosmo",
+        "symbol": "OSMO",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "osmo"
+  },
+  {
+    "chain": "stride",
+    "assets": [
+      {
+        "denom": "ustrd",
+        "symbol": "STRD",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "stride"
+  },
+  {
+    "chain": "evmos",
+    "assets": [
+      {
+        "denom": "aevmos",
+        "symbol": "EVMOS",
+        "decimals": "18"
+      }
+    ],
+    "addr_prefix": "evmos"
+  },
+  {
+    "chain": "umee",
+    "assets": [
+      {
+        "denom": "uumee",
+        "symbol": "UMEE",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "umee"
+  },
+  {
+    "chain": "juno",
+    "assets": [
+      {
+        "denom": "ujuno",
+        "symbol": "JUNO",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "juno"
+  },
+  {
+    "chain": "akash",
+    "assets": [
+      {
+        "denom": "uakt",
+        "symbol": "AKT",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "akash"
+  },
+  {
+    "chain": "regen",
+    "assets": [
+      {
+        "denom": "uregen",
+        "symbol": "REGEN",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "regen"
+  },
+  {
+    "chain": "stargaze",
+    "assets": [
+      {
+        "denom": "ustars",
+        "symbol": "STARZ",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "starz"
+  },
+  {
+    "chain": "rizon",
+    "assets": [
+      {
+        "denom": "uatolo",
+        "symbol": "ATOLO",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "rizon"
+  },
+  {
+    "chain": "gravity-bridge",
+    "assets": [
+      {
+        "denom": "ugraviton",
+        "symbol": "GRAVITON",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "gravity"
+  },
+  {
+    "chain": "lum",
+    "assets": [
+      {
+        "denom": "ulum",
+        "symbol": "LUM",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "lum"
+  },
+  {
+    "chain": "provenance",
+    "assets": [
+      {
+        "denom": "nhash",
+        "symbol": "HASH",
+        "decimals": "9"
+      }
+    ],
+    "addr_prefix": "pb"
+  },
+  {
+    "chain": "crescent",
+    "assets": [
+      {
+        "denom": "ucre",
+        "symbol": "CRE",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "cre"
+  },
+  {
+    "chain": "assetMantle",
+    "assets": [
+      {
+        "denom": "umntl",
+        "symbol": "MNTL",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "mantle"
+  },
+  {
+    "chain": "passage",
+    "assets": [
+      {
+        "denom": "upasg",
+        "symbol": "PASG",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "pasg"
+  },
+  {
+    "chain": "teritori",
+    "assets": [
+      {
+        "denom": "utori",
+        "symbol": "TORI",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "tori"
+  }
+]

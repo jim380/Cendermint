@@ -1,8 +1,11 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +15,8 @@ import (
 )
 
 type Config struct {
-	Chain           string
+	Chain           Chain
+	ChainList       map[string][]string
 	SDKVersion      string
 	OperatorAddr    string
 	RestAddr        string
@@ -25,9 +29,16 @@ type Config struct {
 	LogLevel        string
 }
 
+type Chain struct {
+	Chain  string `json:"chain"`
+	Assets []struct {
+		Denom string `json:"denom"`
+	} `json:"assets"`
+}
+
 func (cfg Config) SetSDKConfig() {
 	// Bech32MainPrefix is the common prefix of all prefixes
-	Bech32MainPrefix := utils.GetPrefix(cfg.Chain)
+	Bech32MainPrefix := utils.GetPrefix(cfg.Chain.Chain)
 	// Bech32PrefixAccAddr is the prefix of account addresses
 	Bech32PrefixAccAddr := Bech32MainPrefix
 	// Bech32PrefixAccPub is the prefix of account public keys
@@ -48,18 +59,6 @@ func (cfg Config) SetSDKConfig() {
 }
 
 func (config Config) CheckInputs(chainList map[string][]string) {
-	if config.Chain == "" {
-		log.Fatal("Chain was not provided.")
-	} else {
-		valid := false
-		if _, found := chainList[config.Chain]; found {
-			valid = true
-		}
-		if !valid {
-			log.Fatal(fmt.Sprintf("%s is not supported", config.Chain) + fmt.Sprint("\nList of supported chains: ", chainList))
-		}
-	}
-
 	// TO-DO add more robust checks
 	if config.OperatorAddr == "" {
 		log.Fatal("Operator address was not provided")
@@ -136,28 +135,23 @@ func GetDenomList(chain string, chainList map[string][]string) []string {
 }
 
 func GetChainList() map[string][]string {
-	var chainList = map[string][]string{}
+	jsonFile, err := os.Open("chains.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
 
-	chainList["cosmos"] = []string{"uatom"}
-	chainList["umee"] = []string{"uumee"}
-	chainList["osmosis"] = []string{"uosmo"}
-	chainList["juno"] = []string{"ujuno"}
-	chainList["akash"] = []string{"uakt"}
-	chainList["regen"] = []string{"uregen"}
-	chainList["stargaze"] = []string{"ustars"}
-	chainList["evmos"] = []string{"aevmos"}
-	chainList["rizon"] = []string{"uatolo"}
-	chainList["gravity"] = []string{"ugraviton"}
-	chainList["lum"] = []string{"ulum"}
-	chainList["provenance"] = []string{"nhash"}
-	chainList["crescent"] = []string{"ucre"}
-	chainList["assetMantle"] = []string{"umntl"}
-	chainList["sifchain"] = []string{"urowan"}
-	chainList["passage"] = []string{"upasg"}
-	chainList["stride"] = []string{"ustrd"}
-	chainList["canto"] = []string{"acanto"}
-	chainList["teritori"] = []string{"utori"}
-	chainList["nyx"] = []string{"unyx"}
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var chains []Chain
+	json.Unmarshal(byteValue, &chains)
+
+	chainList := make(map[string][]string)
+	for _, chain := range chains {
+		for _, asset := range chain.Assets {
+			chainList[chain.Chain] = append(chainList[chain.Chain], asset.Denom)
+		}
+	}
 
 	return chainList
 }
@@ -175,7 +169,7 @@ func (config Config) IsLegacySDKVersion() bool {
 func (config Config) IsGravityBridgeEnabled() bool {
 	var enabled bool = false
 
-	if config.Chain == "gravity" || config.Chain == "umee" {
+	if config.Chain.Chain == "gravity" || config.Chain.Chain == "umee" {
 		enabled = true
 	}
 

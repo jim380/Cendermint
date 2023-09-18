@@ -27,8 +27,7 @@ func Start(config *config.Config, port string, logger *zap.Logger) {
 }
 
 func Run(cfg *config.Config, log *zap.Logger) {
-	cl := config.GetChainList()
-	denomList := config.GetDenomList(cfg.Chain, cl)
+	denomList := config.GetDenomList(cfg.Chain.Chain, cfg.ChainList)
 
 	registerGauges(denomList)
 	counterVecs := registerLabels()

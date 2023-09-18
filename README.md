@@ -37,25 +37,26 @@ https://user-images.githubusercontent.com/31609693/200193555-2e5f6bc4-ecf4-4332-
 
 <details><summary>Click to view</summary>
 
-- Cosmos(`cosmoshub-4`)
-- IRISnet(`irishub-1`)
-- Umme (`umee-1`)
-- Osmosis (`osmosis-1`)
-- Juno (`juno-1`)
-- Akash (`akashnet-2`)
-- Regen (`regen-1`)
-- Microtick (`microtick-1`)
-- NYM (`nyx`)
-- EVMOS (`evmos_9001-2`)
-- Rizon (`mantel-1`)
-- Stargaze (`stargaze-1`)
-- Chihuahua (`chihuahua-1`)
-- Gravity Bridge (`gravity-bridge-3`)
-- Lum (`lum-network-1`)
-- Provenance (`pio-mainnet-1`)
-- Crescent (`crescent-1`)
-- Sifchain (`sifchain-1`)
-- Any Tendermint chain really
+- Cosmos
+- IRISnet
+- Umme
+- Osmosis
+- Juno
+- Akash
+- Regen
+- EVMOS
+- Rizon
+- Stargaze
+- Gravity Bridge
+- Lum
+- Provenance
+- Crescent
+- Stride
+- AssetMantle
+- Passage
+- Teritori
+
+Additional chains can be simply added in `chains.json`.
 
 </details>
 

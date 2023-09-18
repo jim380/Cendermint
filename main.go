@@ -16,6 +16,7 @@ limitations under the License.
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -40,8 +41,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	if os.Getenv("CHAIN") == "" {
+		log.Fatal("Chain was not provided.")
+	}
+
+	providedChain := os.Getenv("CHAIN")
+
 	cfg := config.Config{
-		Chain:           os.Getenv("CHAIN"),
 		OperatorAddr:    os.Getenv("OPERATOR_ADDR"),
 		RestAddr:        os.Getenv("REST_ADDR"),
 		RpcAddr:         os.Getenv("RPC_ADDR"),
@@ -52,10 +58,24 @@ func main() {
 		PollInterval:    os.Getenv("POLL_INTERVAL"),
 		LogLevel:        os.Getenv("LOG_LEVEL"),
 	}
+
 	chainList := config.GetChainList()
+	cfg.ChainList = chainList
+	supportedChains := make([]string, 0, len(chainList))
+	for key := range chainList {
+		supportedChains = append(supportedChains, key)
+	}
+	var found bool
+	if _, found = chainList[providedChain]; found {
+		cfg.Chain = config.Chain{Chain: providedChain}
+	}
+	if !found {
+		log.Fatal(fmt.Sprintf("%s is not supported", providedChain) + fmt.Sprint("\nList of supported chains: ", supportedChains))
+	}
+
 	cfg.CheckInputs(chainList)
 
-	chain = cfg.Chain
+	chain = cfg.Chain.Chain
 	operAddr = cfg.OperatorAddr
 	restAddr = cfg.RestAddr
 	rpcAddr = cfg.RpcAddr
