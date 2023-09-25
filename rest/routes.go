@@ -7,7 +7,7 @@ import (
 /***********************
  * SDK Routes
 ************************/
-func getBlockInfoRoute(cfg config.Config) string {
+func GetBlockInfoRoute(cfg config.Config) string {
 	if cfg.IsLegacySDKVersion() {
 		return "/blocks/latest"
 	} else {
