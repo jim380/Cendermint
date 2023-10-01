@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/utils"
 	"github.com/kyoto-framework/kyoto/v2"
 	"go.uber.org/zap"
 )
@@ -31,6 +32,14 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 			zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return rest.Blocks{}
 		}
+
+		// convert block hash from base64 to hex
+		hashInHash, err := utils.Base64ToHex(state.BlockId.Hash)
+		if err != nil {
+			zap.L().Fatal("Failed to convert base64 to hex", zap.Bool("Success", false), zap.String("err:", err.Error()))
+			return rest.Blocks{}
+		}
+		state.BlockId.Hash = hashInHash
 
 		return state
 	}

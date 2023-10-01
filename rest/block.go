@@ -20,10 +20,13 @@ type lastBlockHeader struct {
 }
 
 type Blocks struct {
+	BlockId struct {
+		Hash string `json:"hash"`
+	} `json:"block_id"`
 	Block struct {
 		Header     header     `json:"header"`
 		LastCommit lastCommit `json:"last_commit"`
-	}
+	} `json:"block"`
 }
 
 type header struct {

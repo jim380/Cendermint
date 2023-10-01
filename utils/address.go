@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 
 	"go.uber.org/zap"
@@ -94,4 +96,12 @@ func GetAccAddrFromOperAddr_localPrefixes(operAddr string, bech32Prefixes []stri
 	}
 
 	return accAddr
+}
+
+func Base64ToHex(base64String string) (string, error) {
+	bytes, err := base64.StdEncoding.DecodeString(base64String)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }
