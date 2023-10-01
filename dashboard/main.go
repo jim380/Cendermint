@@ -15,6 +15,7 @@ func StartDashboard() {
 		kyoto.HandlePage("/", pages.PIndex)
 		// Client
 		kyoto.HandleAction(components.GetBlockInfo)
+		kyoto.HandleAction(components.GetNodeInfo)
 		// Serve
 		kyoto.Serve(":" + port)
 	}()

@@ -8,25 +8,9 @@
   ssa:poll="Action(this, 'Reload Block')"
   ssa:poll.interval="5" {{/* 5 seconds */}}
 >
-  <div>Chain Id: {{ .Block.Header.ChainID }}</div>
-  <div>Height: {{ .Block.Header.Height }}</div>
-  <div>Hash: {{ .BlockId.Hash }}</div>
-  <button
-    style="
-      background-color: #000000;
-      color: white;
-      padding: 5px 12px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 14px;
-      margin: 4px 2px;
-      cursor: pointer;
-      border-radius: 4px;
-    "
-    onclick="Action(this, 'Reload Block')"
-  >
-    Reload
-  </button>
+  <div><b>Chain Id</b>: {{ .Block.Header.ChainID }}</div>
+  <div><b>Height</b>: {{ .Block.Header.Height }}</div>
+  <div><b>Timestamp</b>: {{ .Block.Header.Timestamp }}</div>
+  <div><b>Hash</b>: {{ .BlockId.Hash }}</div>
 </div>
 {{ end }}

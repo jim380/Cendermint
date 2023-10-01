@@ -86,7 +86,7 @@ func getProposalsRoute(cfg config.Config) string {
 	return "/cosmos/gov/v1beta1/proposals"
 }
 
-func getNodeInfoRoute() string {
+func GetNodeInfoRoute() string {
 	return "/cosmos/base/tendermint/v1beta1/node_info"
 }
 
