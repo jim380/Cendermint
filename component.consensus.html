@@ -1,0 +1,31 @@
+{{ define "GetConsensusInfo" }}
+<div
+  {{
+  state
+  .
+  }}
+  name="GetConsensusInfo"
+  ssa:poll="Action(this, 'Reload Consensus')"
+  ssa:poll.interval="5" {{/* 5 seconds */}}
+>
+  <div><b>Height</b>: {{ .ConsensusState.Result.Height }}</div>
+  <div><b>Round</b>: {{ .ConsensusState.Result.Round }}</div>
+  <div><b>Step</b>: {{ .ConsensusState.Result.Step }}</div>
+  <table>
+  <tr>
+    <th>Moniker</th>
+    <th>Voting Power</th>
+    <th>Prevote</th>
+    <th>Precommit</th>
+  </tr>
+  {{ range $key, $value := .Validatorsets }}
+  <tr>
+    <td>{{ index $value 5 }}</td>
+    <td>{{ index $value 1 }}</td>
+    <td>{{ index $value 3 }}</td>
+    <td>{{ index $value 4 }}</td>
+  </tr>
+  {{ end }}
+</table>
+</div>
+{{ end }}

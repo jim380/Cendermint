@@ -113,7 +113,7 @@ func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Validators))))
 	}
 
-	rd.Validatorsets = Sort(vSetsResultFinal)
+	rd.Validatorsets = Sort(vSetsResultFinal, 2) // sort by ProposerPriority
 	for key, value := range rd.Validatorsets {
 		zap.L().Debug("", zap.Bool("Success", true), zap.String(key, strings.Join(value, ", ")))
 	}
@@ -136,26 +136,24 @@ func (rd *RESTData) locateValidatorInActiveSet() []string {
 	return valInfo
 }
 
-func Sort(mapValue map[string][]string) map[string][]string {
-	keys := []string{}
-	newMapValue := mapValue
-
-	for key := range mapValue {
-		keys = append(keys, key)
+func Sort(mapValue map[string][]string, index int) map[string][]string {
+	keys := make([]string, 0, len(mapValue))
+	for k := range mapValue {
+		keys = append(keys, k)
 	}
 
-	// Sort by proposer_priority
 	sort.Slice(keys, func(i, j int) bool {
-		a, _ := strconv.Atoi(mapValue[keys[i]][2])
-		b, _ := strconv.Atoi(mapValue[keys[j]][2])
-		return a > b
+		vi, _ := strconv.Atoi(mapValue[keys[i]][1])
+		vj, _ := strconv.Atoi(mapValue[keys[j]][1])
+		return vi > vj
 	})
 
-	for i, key := range keys {
-		// proposer_ranking
-		newMapValue[key][3] = strconv.Itoa(i + 1)
+	sortedVSetsResult := make(map[string][]string)
+	for _, k := range keys {
+		sortedVSetsResult[k] = mapValue[k]
 	}
-	return newMapValue
+
+	return sortedVSetsResult
 }
 
 func mergeMap(a map[string][]string, b map[string][]string) map[string][]string {

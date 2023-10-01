@@ -66,7 +66,7 @@ func getValidatorByAddressRoute(cfg config.Config) string {
 	return "/cosmos/staking/v1beta1/validators/"
 }
 
-func getValidatorsRoute(cfg config.Config) string {
+func GetValidatorsRoute() string {
 	return "/cosmos/staking/v1beta1/validators"
 }
 

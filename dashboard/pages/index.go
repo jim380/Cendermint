@@ -7,8 +7,9 @@ import (
 )
 
 type PIndexState struct {
-	Block *kyoto.ComponentF[rest.Blocks]
-	Node  *kyoto.ComponentF[rest.NodeInfo]
+	Block     *kyoto.ComponentF[rest.Blocks]
+	Node      *kyoto.ComponentF[rest.NodeInfo]
+	Consensus *kyoto.ComponentF[rest.RPCData]
 }
 
 /*
@@ -23,6 +24,7 @@ func PIndex(ctx *kyoto.Context) (state PIndexState) {
 	// Attach components
 	state.Block = kyoto.Use(ctx, components.GetBlockInfo)
 	state.Node = kyoto.Use(ctx, components.GetNodeInfo)
+	state.Consensus = kyoto.Use(ctx, components.GetConsensusInfo)
 
 	return
 }

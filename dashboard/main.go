@@ -16,6 +16,7 @@ func StartDashboard() {
 		// Client
 		kyoto.HandleAction(components.GetBlockInfo)
 		kyoto.HandleAction(components.GetNodeInfo)
+		kyoto.HandleAction(components.GetConsensusInfo)
 		// Serve
 		kyoto.Serve(":" + port)
 	}()

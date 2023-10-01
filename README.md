@@ -17,6 +17,8 @@ This project started out as a fork of [Cosmos-IE](https://github.com/node-a-team
 
 ## Dashbord
 
+### Grafana
+
 <details close>
 
 <summary>General</summary>
@@ -30,6 +32,16 @@ This project started out as a fork of [Cosmos-IE](https://github.com/node-a-team
 <summary>Signing Status</summary>
 
 https://user-images.githubusercontent.com/31609693/200193555-2e5f6bc4-ecf4-4332-9999-a8db61b4fcda.mov
+
+</details>
+
+### Local
+
+<details close>
+
+<summary>Consensus</summary>
+  
+![consensus](assets/consensus.jpg)
 
 </details>
 
