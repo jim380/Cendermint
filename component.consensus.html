@@ -11,6 +11,8 @@
   <div><b>Height</b>: {{ .ConsensusState.Result.Height }}</div>
   <div><b>Round</b>: {{ .ConsensusState.Result.Round }}</div>
   <div><b>Step</b>: {{ .ConsensusState.Result.Step }}</div>
+  <div><b>Prevotes Bit Array</b>: {{ (index .ConsensusState.Result.Votes 0).PrevotesBitArray}}</div>
+  <div><b>Precommits Bit Array</b>: {{ (index .ConsensusState.Result.Votes 0).PrecommitsBitArray}}</div>
   <table>
   <tr>
     <th>Moniker</th>

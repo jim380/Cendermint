@@ -2,8 +2,10 @@ package components
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/utils"
 	"github.com/kyoto-framework/kyoto/v2"
 	"go.uber.org/zap"
 )
@@ -49,6 +51,9 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 			vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
 		}
 
+		// cs.Result.RoundState.Votes[0].PrevotesBitArray = utils.ParseConsensusOutput(cs.Result.RoundState.Votes[0].PrevotesBitArray, "\\= (.*)", 1)
+		cs.Result.Votes[0].PrecommitsBitArray = fmt.Sprintf("%.2f", utils.ParseConsensusOutput(cs.Result.Votes[0].PrecommitsBitArray, "\\= (.*)", 1))
+		cs.Result.Votes[0].PrevotesBitArray = fmt.Sprintf("%.2f", utils.ParseConsensusOutput(cs.Result.Votes[0].PrevotesBitArray, "\\= (.*)", 1))
 		state.ConsensusState = cs
 		state.Validatorsets = rest.Sort(vSetsResult, 1) // sort by voting power
 		return state
