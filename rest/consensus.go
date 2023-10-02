@@ -89,7 +89,7 @@ func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 			precommit = "❌"
 		}
 
-		// populate the map => [ConsAddr][]string{ConsAddr, VotingPower, ProposerPriority, prevote, precommit, moniker}
+		// populate the map => [ConsAddr][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, moniker}
 		vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
 	}
 

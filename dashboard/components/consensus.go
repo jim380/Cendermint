@@ -28,7 +28,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 			return rest.RPCData{}
 		}
 
-		conspubMonikerMap := getConspubMonikerMap()
+		conspubMonikerMap := GetConspubMonikerMap()
 		// cs.Result.Validatorset.Validators is already sorted based on voting power
 		for index, validator := range cs.Result.Validatorset.Validators {
 			var prevote, precommit string
@@ -47,7 +47,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 				precommit = "❌"
 			}
 
-			// populate the map => [ConsAddr][]string{ConsAddr, VotingPower, ProposerPriority, prevote, precommit, Moniker}
+			// populate the map => [ConsAddr][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, Moniker}
 			vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
 		}
 
@@ -72,7 +72,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 	return
 }
 
-func getConspubMonikerMap() map[string]string {
+func GetConspubMonikerMap() map[string]string {
 	var v rest.RpcValidators
 	var vResult map[string]string = make(map[string]string)
 
@@ -89,7 +89,7 @@ func getConspubMonikerMap() map[string]string {
 	}
 
 	for _, validator := range v.Validators {
-		// populate the map => [conspub] -> (moniker)
+		// populate the map => [conspub]moniker
 		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
 	}
 	return vResult

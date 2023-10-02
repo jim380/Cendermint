@@ -34,12 +34,59 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 		}
 
 		// convert block hash from base64 to hex
-		hashInHash, err := utils.Base64ToHex(state.BlockId.Hash)
+		hashInHex, err := utils.Base64ToHex(state.BlockId.Hash)
 		if err != nil {
 			zap.L().Fatal("Failed to convert base64 to hex", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return rest.Blocks{}
 		}
-		state.BlockId.Hash = hashInHash
+		state.BlockId.Hash = hashInHex
+
+		/*
+			Find validators with missing signatures in the block
+		*/
+		var cs rest.ConsensusState
+		var activeSet map[string]string = make(map[string]string)
+
+		resp, err = rest.HttpQuery(rest.RPCAddr + "/dump_consensus_state")
+		if err != nil {
+			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
+			return rest.Blocks{}
+		}
+
+		err = json.Unmarshal(resp, &cs)
+		if err != nil {
+			zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
+			return rest.Blocks{}
+		}
+
+		conspubMonikerMap := GetConspubMonikerMap()
+		// range over all validators in the active set
+		for _, validator := range cs.Result.Validatorset.Validators {
+			// get moniker
+			validator.Moniker = conspubMonikerMap[validator.ConsPubKey.Key]
+			// populate the map => [ConsAddr]Moniker; ConsAddr is in hex coming back from rpc
+			activeSet[validator.ConsAddr] = validator.Moniker
+		}
+
+		/*
+			- Create a map validatorConsAddrInHexSignedMap using allSignaturesInBlock for quick lookup
+			- validatorConsAddrInHexSignedMap gives all validators who signed on this block
+		*/
+		allSignaturesInBlock := state.Block.LastCommit.Signatures
+		validatorConsAddrInHexSignedMap := make(map[string]bool)
+		for _, signature := range allSignaturesInBlock {
+			// Validator_address could be in hex or base64; hex is legacy so using base64 here
+			validatorConsAddrInHexSignedMap[signature.Validator_address] = true
+		}
+
+		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap
+		for consAddrInHex, moniker := range activeSet {
+			// convert consAddrInHex to base64
+			if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consAddrInHex)]; !exists {
+				// If the Validator_address does not exist in allSignaturesInBlock, add it to MissingValidators
+				state.MissingValidators = append(state.MissingValidators, moniker)
+			}
+		}
 
 		return state
 	}

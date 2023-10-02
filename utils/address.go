@@ -105,3 +105,27 @@ func Base64ToHex(base64String string) (string, error) {
 	}
 	return hex.EncodeToString(bytes), nil
 }
+
+func HexToBase64(hexAddr string) string {
+	bytes, err := decodeHex([]byte(hexAddr))
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(base64Encode(bytes))
+}
+
+func decodeHex(input []byte) ([]byte, error) {
+	db := make([]byte, hex.DecodedLen(len(input)))
+	_, err := hex.Decode(db, input)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func base64Encode(input []byte) []byte {
+	eb := make([]byte, base64.StdEncoding.EncodedLen(len(input)))
+	base64.StdEncoding.Encode(eb, input)
+
+	return eb
+}

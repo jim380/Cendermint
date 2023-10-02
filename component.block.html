@@ -13,5 +13,6 @@
   <div><b>Timestamp</b>: {{ .Block.Header.Timestamp }}</div>
   <div><b>Hash</b>: {{ .BlockId.Hash }}</div>
   <div><b>Validator Signatures</b>: {{ len .Block.LastCommit.Signatures }}</div>
+  <div><b>Missing Validators</b>: {{ .MissingValidators }}</div>
 </div>
 {{ end }}
