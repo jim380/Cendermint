@@ -39,6 +39,14 @@ https://user-images.githubusercontent.com/31609693/200193555-2e5f6bc4-ecf4-4332-
 
 <details close>
 
+<summary>Missing Validators per Block</summary>
+
+https://github.com/jim380/Cendermint/assets/31609693/1df264df-9c54-4a60-b3f0-5c9d0e98aa3c
+
+</details>
+
+<details close>
+
 <summary>Consensus</summary>
   
 ![consensus](assets/consensus.jpg)
