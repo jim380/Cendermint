@@ -37,15 +37,18 @@ type RoundState struct {
 
 type rpcValidatorsets struct {
 	Validators []struct {
-		ConsAddr         string           `json:"address"`
-		ConsPubKey       consPubKeyValSet `json:"pub_key"`
-		ProposerPriority string           `json:"proposer_priority"`
-		VotingPower      string           `json:"voting_power"`
+		ConsAddr   string `json:"address"`
+		ConsPubKey struct {
+			Type string `json:"type"`
+			Key  string `json:"value"`
+		} `json:"pub_key"`
+		ProposerPriority string `json:"proposer_priority"`
+		VotingPower      string `json:"voting_power"`
 		Moniker          string
 	} `json:"validators"`
 }
 
-type rpcValidators struct {
+type RpcValidators struct {
 	Validators []struct {
 		ConsPubKey struct {
 			Type string `json:"@type"`
@@ -86,9 +89,8 @@ func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 			precommit = "❌"
 		}
 
-		// populate the map => [ConsAddr][]string{ConsAddr, VotingPower, ProposerPriority, prevote, precommit, commit}
-		vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit}
-		zap.L().Debug("\t", zap.Bool("Success", true), zap.String("key("+validator.ConsAddr+") "+"conspub("+validator.ConsPubKey.Key+") "+"moniker("+validator.Moniker+") "+"vp("+validator.VotingPower+")"+" prevote("+prevote+")"+" precommit("+precommit+")", ""))
+		// populate the map => [ConsAddr][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, moniker}
+		vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
 	}
 
 	rpc.ConsensusState = cs
@@ -103,10 +105,10 @@ func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 }
 
 func (rpc *RPCData) getConspubMonikerMap(cfg config.Config) map[string]string {
-	var v rpcValidators
+	var v RpcValidators
 	var vResult map[string]string = make(map[string]string)
 
-	route := getValidatorsRoute(cfg)
+	route := GetValidatorsRoute()
 	res, err := HttpQuery(RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
@@ -121,7 +123,6 @@ func (rpc *RPCData) getConspubMonikerMap(cfg config.Config) map[string]string {
 	for _, validator := range v.Validators {
 		// populate the map => [conspub] -> (moniker)
 		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
-		// fmt.Println("key(" + validator.ConsPubKey.Key + ") " + "moniker(" + validator.Description.Moniker + ") ")
 	}
 	return vResult
 }
