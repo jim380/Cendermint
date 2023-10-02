@@ -1,0 +1,32 @@
+{{ define "GetBlockInfo" }}
+<div
+  {{
+  state
+  .
+  }}
+  name="GetBlockInfo"
+  ssa:poll="Action(this, 'Reload Block')"
+  ssa:poll.interval="5" {{/* 5 seconds */}}
+>
+  <div><b>Chain Id</b>: {{ .Block.Header.ChainID }}</div>
+  <div><b>Height</b>: {{ .Block.Header.Height }}</div>
+  <div><b>Timestamp</b>: {{ .Block.Header.Timestamp }}</div>
+  <div><b>Hash</b>: {{ .BlockId.Hash }}</div>
+  <div><b>Validator Signatures</b>: {{ len .Block.LastCommit.Signatures }}</div>
+  {{ if .MissingValidators }}
+  <b>Missing Validators</b>
+  <table>
+  <tr>
+    <th>Moniker</th>
+    <th>Consensus Hex Address</th>
+  </tr>
+  {{ range .MissingValidators }}
+  <tr>
+    <td>{{ .Moniker }}</td>
+    <td>{{ .ConsHexAddr }}</td>
+  </tr>
+  {{ end }}
+  </table>
+  {{ end }}
+</div>
+{{ end }}

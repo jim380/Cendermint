@@ -1,0 +1,22 @@
+{{ define "GetNodeInfo" }}
+<div
+  {{
+  state
+  .
+  }}
+  name="GetNodeInfo"
+  {{/* no refresh since these don't change by block */}}
+  {{/* ssa:poll="Action(this, 'Reload Node')"
+  ssa:poll.interval="5"  */}}
+>
+  <div><b>Node Id</b>: {{ .Default.NodeID }}</div>
+  <div><b>Tendermint Version</b>: {{ .Default.TMVersion }}</div>
+  <div><b>Moniker</b>: {{ .Default.Moniker }}</div>
+  <div><b>App Name</b>: {{ .Application.AppName }}</div>
+  <div><b>Name</b>: {{ .Application.Name }}</div>
+  <div><b>Version</b>: {{ .Application.Version }}</div>
+  <div><b>Git Commit</b>: {{ .Application.GitCommit }}</div>
+  <div><b>Go Version</b>: {{ .Application.GoVersion }}</div>
+  <div><b>SDK Version</b>: {{ .Application.SDKVersion }}</div>
+</div>
+{{ end }}

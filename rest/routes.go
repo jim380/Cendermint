@@ -7,7 +7,7 @@ import (
 /***********************
  * SDK Routes
 ************************/
-func getBlockInfoRoute(cfg config.Config) string {
+func GetBlockInfoRoute(cfg config.Config) string {
 	if cfg.IsLegacySDKVersion() {
 		return "/blocks/latest"
 	} else {
@@ -66,7 +66,7 @@ func getValidatorByAddressRoute(cfg config.Config) string {
 	return "/cosmos/staking/v1beta1/validators/"
 }
 
-func getValidatorsRoute(cfg config.Config) string {
+func GetValidatorsRoute() string {
 	return "/cosmos/staking/v1beta1/validators"
 }
 
@@ -86,7 +86,7 @@ func getProposalsRoute(cfg config.Config) string {
 	return "/cosmos/gov/v1beta1/proposals"
 }
 
-func getNodeInfoRoute() string {
+func GetNodeInfoRoute() string {
 	return "/cosmos/base/tendermint/v1beta1/node_info"
 }
 

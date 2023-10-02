@@ -15,18 +15,19 @@ import (
 )
 
 type Config struct {
-	Chain           Chain
-	ChainList       map[string][]string
-	SDKVersion      string
-	OperatorAddr    string
-	RestAddr        string
-	RpcAddr         string
-	ListeningPort   string
-	MissThreshold   string
-	MissConsecutive string
-	LogOutput       string
-	PollInterval    string
-	LogLevel        string
+	Chain            Chain
+	ChainList        map[string][]string
+	SDKVersion       string
+	OperatorAddr     string
+	RestAddr         string
+	RpcAddr          string
+	ListeningPort    string
+	MissThreshold    string
+	MissConsecutive  string
+	LogOutput        string
+	PollInterval     string
+	LogLevel         string
+	DashboardEnabled string
 }
 
 type Chain struct {

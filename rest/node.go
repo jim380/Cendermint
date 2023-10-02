@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type nodeInfo struct {
+type NodeInfo struct {
 	Default     DefaultInfo `json:"default_node_info"`
 	Application appVersion  `json:"application_version"`
 }
@@ -29,9 +29,9 @@ type appVersion struct {
 }
 
 func (rd *RESTData) getNodeInfo(cfg *config.Config) {
-	var nodeInfo nodeInfo
+	var nodeInfo NodeInfo
 
-	route := getNodeInfoRoute()
+	route := GetNodeInfoRoute()
 	res, err := HttpQuery(RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))

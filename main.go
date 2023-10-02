@@ -19,8 +19,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/dashboard"
 	"github.com/jim380/Cendermint/exporter"
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/rest"
@@ -48,15 +50,16 @@ func main() {
 	providedChain := os.Getenv("CHAIN")
 
 	cfg := config.Config{
-		OperatorAddr:    os.Getenv("OPERATOR_ADDR"),
-		RestAddr:        os.Getenv("REST_ADDR"),
-		RpcAddr:         os.Getenv("RPC_ADDR"),
-		ListeningPort:   os.Getenv("LISTENING_PORT"),
-		MissThreshold:   os.Getenv("MISS_THRESHOLD"),
-		MissConsecutive: os.Getenv("MISS_CONSECUTIVE"),
-		LogOutput:       os.Getenv("LOG_OUTPUT"),
-		PollInterval:    os.Getenv("POLL_INTERVAL"),
-		LogLevel:        os.Getenv("LOG_LEVEL"),
+		OperatorAddr:     os.Getenv("OPERATOR_ADDR"),
+		RestAddr:         os.Getenv("REST_ADDR"),
+		RpcAddr:          os.Getenv("RPC_ADDR"),
+		ListeningPort:    os.Getenv("LISTENING_PORT"),
+		MissThreshold:    os.Getenv("MISS_THRESHOLD"),
+		MissConsecutive:  os.Getenv("MISS_CONSECUTIVE"),
+		LogOutput:        os.Getenv("LOG_OUTPUT"),
+		PollInterval:     os.Getenv("POLL_INTERVAL"),
+		LogLevel:         os.Getenv("LOG_LEVEL"),
+		DashboardEnabled: os.Getenv("DASHBOARD_ENABLED"),
 	}
 
 	chainList := config.GetChainList()
@@ -89,6 +92,11 @@ func main() {
 	rest.RESTAddr = restAddr
 	rest.RPCAddr = rpcAddr
 	rest.OperAddr = operAddr
+
+	// run dashboard in a separate thread in enabled
+	if strings.ToLower(cfg.DashboardEnabled) == "true" {
+		dashboard.StartDashboard()
+	}
 
 	exporter.Start(&cfg, listeningPort, logger)
 }

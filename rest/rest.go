@@ -24,7 +24,7 @@ type RESTData struct {
 	BlockHeight   int64
 	BlockInterval int64
 	Commit        commitInfo
-	NodeInfo      nodeInfo
+	NodeInfo      NodeInfo
 	TxInfo        txInfo
 	StakingPool   stakingPool
 	Slashing      slashingInfo
