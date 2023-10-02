@@ -45,7 +45,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 			Find validators with missing signatures in the block
 		*/
 		var cs rest.ConsensusState
-		var activeSet map[string]string = make(map[string]string)
+		var activeSet map[string][]string = make(map[string][]string)
 
 		resp, err = rest.HttpQuery(rest.RPCAddr + "/dump_consensus_state")
 		if err != nil {
@@ -64,8 +64,8 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 		for _, validator := range cs.Result.Validatorset.Validators {
 			// get moniker
 			validator.Moniker = conspubMonikerMap[validator.ConsPubKey.Key]
-			// populate the map => [ConsAddr]Moniker; ConsAddr is in hex coming back from rpc
-			activeSet[validator.ConsAddr] = validator.Moniker
+			// populate the map => [ConsAddr]{consPubKey, moniker}; ConsAddr is in hex coming back from rpc
+			activeSet[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.Moniker}
 		}
 
 		/*
@@ -80,11 +80,11 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 		}
 
 		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap
-		for consAddrInHex, moniker := range activeSet {
+		for consAddrInHex, props := range activeSet {
 			// convert consAddrInHex to base64
 			if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consAddrInHex)]; !exists {
 				// If the Validator_address does not exist in allSignaturesInBlock, add it to MissingValidators
-				state.MissingValidators = append(state.MissingValidators, moniker)
+				state.MissingValidators = append(state.MissingValidators, props[1])
 			}
 		}
 
