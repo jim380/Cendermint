@@ -90,6 +90,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 				}{
 					Moniker:     props[1],
 					ConsHexAddr: consAddrInHex,
+					// TO-DO add operator address
 				})
 			}
 		}
