@@ -27,7 +27,10 @@ type Blocks struct {
 		Header     header     `json:"header"`
 		LastCommit lastCommit `json:"last_commit"`
 	} `json:"block"`
-	MissingValidators []string // not part of the response so no json tag
+	MissingValidators []struct {
+		Moniker     string
+		ConsHexAddr string
+	} // not part of the response so no json tag
 }
 
 type header struct {

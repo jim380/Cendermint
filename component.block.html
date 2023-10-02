@@ -13,6 +13,20 @@
   <div><b>Timestamp</b>: {{ .Block.Header.Timestamp }}</div>
   <div><b>Hash</b>: {{ .BlockId.Hash }}</div>
   <div><b>Validator Signatures</b>: {{ len .Block.LastCommit.Signatures }}</div>
-  <div><b>Missing Validators</b>: {{ .MissingValidators }}</div>
+  {{ if .MissingValidators }}
+  <b>Missing Validators</b>
+  <table>
+  <tr>
+    <th>Moniker</th>
+    <th>ConsAdress</th>
+  </tr>
+  {{ range .MissingValidators }}
+  <tr>
+    <td>{{ .Moniker }}</td>
+    <td>{{ .ConsHexAddr }}</td>
+  </tr>
+  {{ end }}
+  </table>
+  {{ end }}
 </div>
 {{ end }}
