@@ -47,6 +47,14 @@ https://github.com/jim380/Cendermint/assets/31609693/1df264df-9c54-4a60-b3f0-5c9
 
 <details close>
 
+<summary>Node Info</summary>
+  
+![consensus](assets/node.jpg)
+
+</details>
+
+<details close>
+
 <summary>Consensus</summary>
   
 ![consensus](assets/consensus.jpg)
