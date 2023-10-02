@@ -13,6 +13,7 @@
   <div><b>Step</b>: {{ .ConsensusState.Result.Step }}</div>
   <div><b>Prevotes Bit Array</b>: {{ (index .ConsensusState.Result.Votes 0).PrevotesBitArray}}</div>
   <div><b>Precommits Bit Array</b>: {{ (index .ConsensusState.Result.Votes 0).PrecommitsBitArray}}</div>
+  <div><b>Total Validators</b>: {{ len .Validatorsets}}</div>
   <table>
   <tr>
     <th>Moniker</th>

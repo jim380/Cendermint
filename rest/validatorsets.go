@@ -49,17 +49,15 @@ func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64
 	var vSetsResultFinal map[string][]string
 
 	if cfg.IsLegacySDKVersion() {
-		var vSets, vSets2, vSets3, vsetTest validatorsetsLegacy
+		var vSets, vSets2, vsetTest validatorsetsLegacy
 		var vSetsResult map[string][]string = make(map[string][]string)
 		var vSetsResult2 map[string][]string = make(map[string][]string)
-		var vSetsResult3 map[string][]string = make(map[string][]string)
 
 		shouldRunPages := testPageLimit(cfg, currentBlockHeight, &vsetTest, 3)
 
 		if shouldRunPages {
 			runPages(cfg, currentBlockHeight, &vSets, vSetsResult, 1)
 			runPages(cfg, currentBlockHeight, &vSets2, vSetsResult2, 2)
-			runPages(cfg, currentBlockHeight, &vSets3, vSetsResult3, 3)
 
 			for _, value := range vSets.Result.Validators {
 				// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
@@ -71,13 +69,8 @@ func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64
 				vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
 			}
 
-			for _, value := range vSets3.Result.Validators {
-				// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-				vSetsResult3[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-			}
-			vSetsResultTemp := mergeMap(vSetsResult, vSetsResult2)
-			vSetsResultFinal = mergeMap(vSetsResultTemp, vSetsResult3)
-			zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSets.Result.Validators)+len(vSets2.Result.Validators)+len(vSets3.Result.Validators))))
+			vSetsResultFinal = mergeMap(vSetsResult, vSetsResult2)
+			zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSetsResultFinal))))
 		} else {
 			runPages(cfg, currentBlockHeight, &vSets, vSetsResult, 1)
 			for _, value := range vSets.Result.Validators {
@@ -190,7 +183,7 @@ func testPageLimit(cfg config.Config, currentBlockHeight int64, vSets *validator
 	multiPagesSupported := true
 
 	route := getValidatorSetByHeightRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + fmt.Sprint(currentBlockHeight) + "?page=3")
+	res, err := HttpQuery(RESTAddr + route + fmt.Sprint(currentBlockHeight) + "?page=2")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

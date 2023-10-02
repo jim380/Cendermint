@@ -33,14 +33,15 @@ type header struct {
 	ChainID          string `json:"chain_id"`
 	Height           string `json:"height"`
 	Proposer_address string `json:"proposer_address"`
-	LastTimestamp    string
 	Timestamp        string `json:"time"`
+	LastTimestamp    string // not part of the response so no json tag
 }
 
 type lastCommit struct {
 	Signatures []struct {
 		Validator_address string `json:"validator_address"`
-	}
+		Signature         string `json:"signature"`
+	} `json:"signatures"`
 }
 
 func (b *Blocks) GetInfo(cfg config.Config) Blocks {
