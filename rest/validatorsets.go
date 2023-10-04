@@ -160,7 +160,6 @@ func runPages(cfg config.Config, currentBlockHeight int64, vSets *validatorsetsL
 	route := getValidatorSetByHeightRoute(cfg)
 
 	res, err := HttpQuery(RESTAddr + route + fmt.Sprint(currentBlockHeight))
-
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

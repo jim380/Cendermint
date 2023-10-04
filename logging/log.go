@@ -23,7 +23,7 @@ func getLogWriter() zapcore.WriteSyncer {
 		panic(err)
 	}
 	timestamp := time.Now().UTC().Format("Jan-02-2006")
-	file, err := os.OpenFile(path+"/logs/"+timestamp+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(path+"/logs/"+timestamp+".txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func InitLogger(logOutput string, logLvl zapcore.Level) *zap.Logger {
 func logConsole(atom zap.AtomicLevel, logLvl zapcore.Level) *zap.Logger {
 	// write syncers
 	stdoutSyncer := zapcore.Lock(os.Stdout)
-	//stderrSyncer := zapcore.Lock(os.Stderr)
+	// stderrSyncer := zapcore.Lock(os.Stderr)
 
 	// tee core
 	core := zapcore.NewTee(

@@ -23,7 +23,6 @@ func Start(config *config.Config, port string, logger *zap.Logger) {
 		zap.L().Fatal("\t", zap.Bool("Success", false), zap.String("HTTP error", fmt.Sprint(err)))
 	}
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Serving at port", port))
-
 }
 
 func Run(cfg *config.Config, log *zap.Logger) {

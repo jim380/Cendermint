@@ -60,7 +60,6 @@ func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
 				// MissedCount resets when the validator signs again
 				cInfo.MissedCount = 0
 			}
-
 		}()
 	}
 	if missed {

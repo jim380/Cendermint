@@ -124,7 +124,6 @@ func (rd *RESTData) getUmeePrice() {
 	var p umeePrice
 
 	res, err := HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
-
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

@@ -44,7 +44,6 @@ func getInflationRoute(cfg config.Config) string {
 		return "/irishub/mint/params"
 	} else if cfg.IsLegacySDKVersion() {
 		return "/minting/inflation"
-
 	} else {
 		return "/cosmos/mint/v1beta1/inflation"
 	}
