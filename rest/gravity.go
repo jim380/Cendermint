@@ -143,7 +143,9 @@ func (rd *RESTData) getBatchFees(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &b)
+	if err := json.Unmarshal(res, &b); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	for _, bf := range b.BatchFees {
 		b.Fees += utils.StringToFloat64(bf.TotalFees)
@@ -165,7 +167,9 @@ func (rd *RESTData) getBatchesFees(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &b)
+	if err := json.Unmarshal(res, &b); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	for _, batch := range b.Batches {
 		for _, tx := range batch.Transactions {

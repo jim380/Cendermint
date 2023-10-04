@@ -119,7 +119,11 @@ func (rd *RESTData) getAkashDeployments(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &deployments)
+
+	// Unmarshal the JSON response and check for errors
+	if err := json.Unmarshal(res, &deployments); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	// get total deployments count
 	totalDeploymentsCount, err := strconv.Atoi(deployments.Pagination.Total)
@@ -133,7 +137,11 @@ func (rd *RESTData) getAkashDeployments(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(resActive, &activeDeployments)
+
+	// Unmarshal the JSON response and check for errors
+	if err := json.Unmarshal(resActive, &activeDeployments); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	activeDeploymentsCount, err := strconv.Atoi(activeDeployments.Pagination.Total)
 	if err != nil {

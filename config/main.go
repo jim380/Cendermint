@@ -2,8 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -138,14 +137,19 @@ func GetDenomList(chain string, chainList map[string][]string) []string {
 func GetChainList() map[string][]string {
 	jsonFile, err := os.Open("chains.json")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Error opening JSON file: %v", err)
 	}
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, err := io.ReadAll(jsonFile)
+	if err != nil {
+		log.Fatalf("Error reading JSON file: %v", err)
+	}
 
 	var chains []Chain
-	json.Unmarshal(byteValue, &chains)
+	if err := json.Unmarshal(byteValue, &chains); err != nil {
+		log.Fatalf("Error unmarshaling JSON data: %v", err)
+	}
 
 	chainList := make(map[string][]string)
 	for _, chain := range chains {

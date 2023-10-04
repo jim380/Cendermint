@@ -68,7 +68,11 @@ func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &cs)
+
+	// Unmarshal the JSON response and check for errors
+	if err := json.Unmarshal(res, &cs); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	conspubMonikerMap := rpc.getConspubMonikerMap(cfg)
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
@@ -113,7 +117,12 @@ func (rpc *RPCData) getConspubMonikerMap(cfg config.Config) map[string]string {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &v)
+
+	// Unmarshal the JSON response and check for errors
+	if err := json.Unmarshal(res, &v); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
