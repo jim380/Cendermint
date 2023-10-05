@@ -127,7 +127,9 @@ func (rd *RESTData) getUmeePrice() {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &p)
+	if err := json.Unmarshal(res, &p); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	rd.GravityInfo.UMEEPrice = p.UMEEPrice
 }
@@ -194,7 +196,9 @@ func (rd *RESTData) getBridgeFees(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &p)
+	if err := json.Unmarshal(res, &p); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	rd.GravityInfo.ETHPrice = p.ETHPrice
 	rd.getUmeePrice()
@@ -214,7 +218,9 @@ func (rd *RESTData) getBridgeParams(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &params)
+	if err := json.Unmarshal(res, &params); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	rd.GravityInfo.BridgeParams = params.BridgeParams
 
@@ -237,7 +243,9 @@ func (rd *RESTData) getOracleEventNonce(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &evt)
+	if err := json.Unmarshal(res, &evt); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	rd.GravityInfo.EventNonce = evt.EventNonce
 }
@@ -255,7 +263,9 @@ func (rd *RESTData) getValSet(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &vs)
+	if err := json.Unmarshal(res, &vs); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	for _, member := range vs.ValSet.Members {
 		vsResult[member.ETHAddr] = member.Power
