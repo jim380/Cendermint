@@ -137,18 +137,23 @@ func GetDenomList(chain string, chainList map[string][]string) []string {
 func GetChainList() map[string][]string {
 	jsonFile, err := os.Open("chains.json")
 	if err != nil {
-		log.Fatalf("Error opening JSON file: %v", err)
+		log.Println("Error opening JSON file: ", err)
+		return nil
 	}
 	defer jsonFile.Close()
 
 	byteValue, err := io.ReadAll(jsonFile)
 	if err != nil {
-		log.Fatalf("Error reading JSON file: %v", err)
+		jsonFile.Close()
+		log.Println("Error reading JSON file: ", err)
+		return nil
 	}
 
 	var chains []Chain
 	if err := json.Unmarshal(byteValue, &chains); err != nil {
-		log.Fatalf("Error unmarshaling JSON data: %v", err)
+		jsonFile.Close()
+		log.Println("Error unmarshaling JSON data: ", err)
+		return nil
 	}
 
 	chainList := make(map[string][]string)
