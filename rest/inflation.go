@@ -54,11 +54,12 @@ func (rd *RESTData) getInflation(cfg config.Config, denom string) {
 		if err := json.Unmarshal(res, &i); err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
-		if strings.Contains(string(res), "not found") {
+		switch {
+		case strings.Contains(string(res), "not found"):
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		case strings.Contains(string(res), "error:"), strings.Contains(string(res), "error\\\":"):
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else {
+		default:
 			result = i.Result
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 		}

@@ -38,17 +38,18 @@ func (rd *RESTData) getDelegations(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	
+
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &delInfo); err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
-	if strings.Contains(string(res), "not found") {
+	switch {
+	case strings.Contains(string(res), "not found"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:"), strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from range", fmt.Sprint(len(delInfo.DelegationRes))))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from pagination", delInfo.Pagination.Total))
 	}

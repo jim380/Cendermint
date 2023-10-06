@@ -54,11 +54,14 @@ func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 	if err := json.Unmarshal(res, &ts); err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	if strings.Contains(string(res), "not found") {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+
+	resStr := string(res)
+	switch {
+	case strings.Contains(resStr, "not found"):
+		log.Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	case strings.Contains(resStr, "error:") || strings.Contains(resStr, "error\\\":"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	default:
 		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Amount.Amount))
 	}
 

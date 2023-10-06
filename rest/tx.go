@@ -99,11 +99,14 @@ func (rd *RESTData) getTxInfo(cfg config.Config, currentBlockHeight int64) {
 	if err := json.Unmarshal(res, &txInfo); err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+
+	resStr := string(res)
+	switch {
+	case strings.Contains(resStr, "not found"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	case strings.Contains(resStr, "error:") || strings.Contains(resStr, "error\\\":"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Pagination.Total))
 	}
 

@@ -94,11 +94,14 @@ func (rd *RESTData) getIBCChannels(cfg config.Config) {
 	if err := json.Unmarshal(res, &ibcInfo); err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+
+	resStr := string(res)
+	switch {
+	case strings.Contains(resStr, "not found"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	case strings.Contains(resStr, "error:"), strings.Contains(resStr, "error\\\":"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Active IBC channels", fmt.Sprint(len(ibcInfo.IBCChannels))))
 	}
 
@@ -134,11 +137,14 @@ func (rd *RESTData) getIBCConnections(cfg config.Config) {
 	if err := json.Unmarshal(res, &ibcInfo); err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+
+	resStr := string(res)
+	switch {
+	case strings.Contains(resStr, "not found"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	case strings.Contains(resStr, "error:"), strings.Contains(resStr, "error\\\":"):
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", resStr))
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Active IBC connections", fmt.Sprint(len(ibcInfo.IBConnections))))
 	}
 
