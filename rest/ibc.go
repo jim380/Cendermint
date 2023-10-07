@@ -62,10 +62,8 @@ type ibcConnections []struct {
 }
 
 type connectionVersions []struct {
-	Identifier string `json:"identifier"`
-	Features   []struct {
-		string
-	}
+	Identifier string   `json:"identifier"`
+	Features   []string `json:"features"`
 }
 
 type counterpartyChannel struct {

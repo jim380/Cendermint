@@ -126,9 +126,14 @@ func (rd *RESTData) getAkashDeployments(cfg config.Config) {
 	}
 
 	// get total deployments count
+	if deployments.Pagination.Total == "" {
+		zap.L().Error("Total deployments count is empty")
+		return
+	}
 	totalDeploymentsCount, err := strconv.Atoi(deployments.Pagination.Total)
 	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to parse total deployments count", zap.String("err", err.Error()))
+		return
 	}
 	rd.AkashInfo.TotalDeployments = totalDeploymentsCount
 
@@ -143,9 +148,14 @@ func (rd *RESTData) getAkashDeployments(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
+	if activeDeployments.Pagination.Total == "" {
+		zap.L().Error("Active deployments count is empty")
+		return
+	}
 	activeDeploymentsCount, err := strconv.Atoi(activeDeployments.Pagination.Total)
 	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to parse active deployments count", zap.String("err", err.Error()))
+		return
 	}
 	rd.AkashInfo.ActiveDeployments = activeDeploymentsCount
 

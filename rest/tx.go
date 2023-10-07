@@ -113,9 +113,9 @@ func (rd *RESTData) getTxInfo(cfg config.Config, currentBlockHeight int64) {
 	for _, v := range txInfo.TxResp {
 		// zap.L().Info("", zap.Bool("Success", true), zap.String("Tx #:", fmt.Sprintf("%v", i)))
 		gasWantedRes, _ := strconv.ParseFloat(v.GasWanted, 64)
-		txRes.GasWantedTotal = txRes.GasWantedTotal + gasWantedRes
+		txRes.GasWantedTotal += gasWantedRes
 		gasUsedRes, _ := strconv.ParseFloat(v.GasUsd, 64)
-		txRes.GasUsedTotal = txRes.GasUsedTotal + gasUsedRes
+		txRes.GasUsedTotal += gasUsedRes
 		for _, v := range v.Logs {
 			for _, v := range v.Events {
 				txRes.Default.EventsTotal++

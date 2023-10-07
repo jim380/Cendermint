@@ -27,6 +27,12 @@ func (rd *RESTData) getUpgradeInfo(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+
+	// Check if the response is valid JSON
+	if !json.Valid(res) {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Response is not valid JSON"))
+	}
+
 	if err := json.Unmarshal(res, &upgradeInfo); err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
