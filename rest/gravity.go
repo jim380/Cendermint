@@ -128,7 +128,8 @@ func (rd *RESTData) getUmeePrice() {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &p); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	rd.GravityInfo.UMEEPrice = p.UMEEPrice
@@ -146,7 +147,8 @@ func (rd *RESTData) getBatchFees(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &b); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	for _, bf := range b.BatchFees {
@@ -170,7 +172,8 @@ func (rd *RESTData) getBatchesFees(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &b); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	for _, batch := range b.Batches {
@@ -197,7 +200,8 @@ func (rd *RESTData) getBridgeFees(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &p); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	rd.GravityInfo.ETHPrice = p.ETHPrice
@@ -219,7 +223,8 @@ func (rd *RESTData) getBridgeParams(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &params); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	rd.GravityInfo.BridgeParams = params.BridgeParams
@@ -244,7 +249,8 @@ func (rd *RESTData) getOracleEventNonce(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &evt); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	rd.GravityInfo.EventNonce = evt.EventNonce
@@ -264,7 +270,8 @@ func (rd *RESTData) getValSet(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &vs); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	for _, member := range vs.ValSet.Members {

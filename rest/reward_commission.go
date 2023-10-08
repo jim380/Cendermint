@@ -30,7 +30,8 @@ func (rd *RESTData) getRewardsCommission(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &rc); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))

@@ -31,7 +31,8 @@ func (rd *RESTData) getStakingPool(cfg config.Config, denom string) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
 	if err := json.Unmarshal(res, &sp); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
@@ -52,7 +53,8 @@ func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &ts); err != nil {
-		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return utils.StringToFloat64(ts.Amount.Amount)
 	}
 
 	resStr := string(res)

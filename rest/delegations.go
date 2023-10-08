@@ -41,7 +41,8 @@ func (rd *RESTData) getDelegations(cfg config.Config) {
 
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &delInfo); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	switch {

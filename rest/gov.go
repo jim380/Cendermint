@@ -53,7 +53,8 @@ func (rd *RESTData) getGovInfo(cfg config.Config) {
 
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &g); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	if strings.Contains(string(res), "not found") {
@@ -81,7 +82,8 @@ func (rd *RESTData) getGovInfo(cfg config.Config) {
 
 		// Unmarshal the JSON response and check for errors
 		if err := json.Unmarshal(res, &voteInfo); err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+			return
 		}
 
 		if voteInfo.Votes.Option != "" {

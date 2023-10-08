@@ -88,9 +88,9 @@ func (rd *RESTData) getValidatorsets(cfg config.Config, currentBlockHeight int64
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
-
 		if err := json.Unmarshal(res, &vSets); err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+			return rd.locateValidatorInActiveSet()
 		}
 
 		if strings.Contains(string(res), "not found") {
@@ -165,9 +165,9 @@ func runPages(cfg config.Config, currentBlockHeight int64, vSets *validatorsetsL
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-
 	if err := json.Unmarshal(res, &vSets); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return
 	}
 
 	if strings.Contains(string(res), "not found") {
@@ -190,9 +190,9 @@ func testPageLimit(cfg config.Config, currentBlockHeight int64, vSets *validator
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-
 	if err := json.Unmarshal(res, &vSets); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return multiPagesSupported
 	}
 
 	if strings.Contains(string(res), "Internal error: page should be within") {

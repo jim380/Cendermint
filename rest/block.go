@@ -57,7 +57,8 @@ func (b *Blocks) GetInfo(cfg config.Config) Blocks {
 
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &b); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return *b
 	}
 
 	if strings.Contains(string(res), "not found") {
@@ -79,7 +80,8 @@ func (b *Blocks) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) B
 
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &lastBlock); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return *b
 	}
 
 	if strings.Contains(string(res), "not found") {
