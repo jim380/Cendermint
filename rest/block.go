@@ -55,9 +55,14 @@ func (b *Blocks) GetInfo(cfg config.Config) Blocks {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return *b
+	}
+
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &b); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return *b
 	}
 
@@ -78,9 +83,14 @@ func (b *Blocks) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) B
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return *b
+	}
+
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &lastBlock); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return *b
 	}
 

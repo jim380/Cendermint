@@ -36,8 +36,12 @@ func (rd *RESTData) getNodeInfo(cfg *config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &nodeInfo); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 	if strings.Contains(string(res), "not found") {

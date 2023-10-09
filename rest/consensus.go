@@ -69,9 +69,14 @@ func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &cs); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -119,9 +124,14 @@ func (rpc *RPCData) getConspubMonikerMap(cfg config.Config) map[string]string {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return vResult
+	}
+
 	// Unmarshal the JSON response and check for errors
 	if err := json.Unmarshal(res, &v); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return vResult
 	}
 

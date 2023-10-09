@@ -127,8 +127,12 @@ func (rd *RESTData) getUmeePrice() {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &p); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -146,8 +150,12 @@ func (rd *RESTData) getBatchFees(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &b); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -171,8 +179,12 @@ func (rd *RESTData) getBatchesFees(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &b); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -199,8 +211,12 @@ func (rd *RESTData) getBridgeFees(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &p); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -222,8 +238,12 @@ func (rd *RESTData) getBridgeParams(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &params); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -248,8 +268,12 @@ func (rd *RESTData) getOracleEventNonce(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &evt); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
@@ -269,8 +293,12 @@ func (rd *RESTData) getValSet(cfg config.Config) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 	if err := json.Unmarshal(res, &vs); err != nil {
-		zap.L().Error("Failed to unmarshal JSON response", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
 
