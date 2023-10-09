@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/jim380/Cendermint/rest/types"
 	"go.uber.org/zap"
 )
 
@@ -17,7 +18,7 @@ type commitInfo struct {
 	MissConsecutive          float64
 }
 
-func (rd *RESTData) getCommit(blockData Blocks, consHexAddr string) {
+func (rd *RESTData) getCommit(blockData types.Blocks, consHexAddr string) {
 	var cInfo commitInfo
 	missed := true
 

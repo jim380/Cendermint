@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/rest/types"
 	utils "github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
@@ -57,7 +58,7 @@ func (rpc RPCData) new() *RPCData {
 	return &RPCData{Validatorsets: make(map[string][]string)}
 }
 
-func GetData(cfg *config.Config, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetData(cfg *config.Config, blockHeight int64, blockData types.Blocks, denom string) *RESTData {
 	// rpc
 	var rpcData RPCData
 	rpc := rpcData.new()
@@ -109,7 +110,7 @@ func GetData(cfg *config.Config, blockHeight int64, blockData Blocks, denom stri
 	return rd
 }
 
-func (rd *RESTData) computerTPS(blockData Blocks) {
+func (rd *RESTData) computerTPS(blockData types.Blocks) {
 	lastTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.LastTimestamp)
 	currentTimestamp, _ := time.Parse("2006-01-02T15:04:05Z", blockData.Block.Header.Timestamp)
 	interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
@@ -121,7 +122,7 @@ func (rd *RESTData) computerTPS(blockData Blocks) {
 	rd.TxInfo.TPS = tps
 }
 
-func GetDelegationsData(cfg config.Config, chain string, blockHeight int64, blockData Blocks, denom string) *RESTData {
+func GetDelegationsData(cfg config.Config, chain string, blockHeight int64, blockData types.Blocks, denom string) *RESTData {
 	var restData RESTData
 	AccAddr = utils.GetAccAddrFromOperAddr(OperAddr)
 

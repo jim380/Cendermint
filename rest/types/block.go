@@ -1,13 +1,4 @@
-package rest
-
-import (
-	"encoding/json"
-	"strconv"
-	"strings"
-
-	"github.com/jim380/Cendermint/config"
-	"go.uber.org/zap"
-)
+package types
 
 type LastBlock struct {
 	Block struct {
@@ -46,23 +37,4 @@ type lastCommit struct {
 		Validator_address string `json:"validator_address"`
 		Signature         string `json:"signature"`
 	} `json:"signatures"`
-}
-
-func (b *Blocks) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) Blocks {
-	var lastBlock LastBlock
-	route := getBlockByHeightRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + strconv.Itoa(int(currentHeight-1)))
-	if err != nil {
-		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	json.Unmarshal(res, &lastBlock)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	}
-
-	b.Block.Header.LastTimestamp = lastBlock.Block.Header.Timestamp
-
-	return *b
 }

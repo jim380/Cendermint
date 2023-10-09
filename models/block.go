@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/rest/types"
 	"go.uber.org/zap"
 )
 
@@ -19,11 +21,11 @@ type Block struct {
 }
 
 type BlockService struct {
-	Block *rest.Blocks
+	Block *types.Blocks
 	DB    *sql.DB
 }
 
-func (bs *BlockService) GetBlockInfo(cfg config.Config) rest.Blocks {
+func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {
 	route := rest.GetBlockInfoRoute(cfg)
 	res, err := rest.HttpQuery(rest.RESTAddr + route)
 	if err != nil {
@@ -35,6 +37,25 @@ func (bs *BlockService) GetBlockInfo(cfg config.Config) rest.Blocks {
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
+
+	return *bs.Block
+}
+
+func (bs *BlockService) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) types.Blocks {
+	var lastBlock types.LastBlock
+	route := rest.GetBlockByHeightRoute(cfg)
+	res, err := rest.HttpQuery(rest.RESTAddr + route + strconv.Itoa(int(currentHeight-1)))
+	if err != nil {
+		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &lastBlock)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+
+	bs.Block.Block.Header.LastTimestamp = lastBlock.Block.Header.Timestamp
 
 	return *bs.Block
 }

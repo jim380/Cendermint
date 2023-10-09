@@ -15,7 +15,7 @@ func GetBlockInfoRoute(cfg config.Config) string {
 	}
 }
 
-func getBlockByHeightRoute(cfg config.Config) string {
+func GetBlockByHeightRoute(cfg config.Config) string {
 	if cfg.IsLegacySDKVersion() {
 		return "/blocks/"
 	} else {

@@ -39,17 +39,12 @@ func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServic
 	go func() {
 		for {
 			block := restService.GetBlockInfo(*cfg)
-
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
 			if previousBlockHeight != currentBlockHeight {
-				fmt.Println("--------------------------- Start ---------------------------")
-				block.GetLastBlockTimestamp(*cfg, currentBlockHeight)
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))
+				block = restService.GetLastBlockTimestamp(*cfg, currentBlockHeight)
 				select {
 				case <-ticker:
-					// fetch info from REST
+					// fetch data with block info via REST
 					restData := rest.GetData(cfg, currentBlockHeight, block, denomList[0])
 					SetMetric(currentBlockHeight, restData, log)
 					// case <-ticker2:

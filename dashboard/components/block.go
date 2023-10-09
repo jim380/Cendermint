@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/rest/types"
 	"github.com/jim380/Cendermint/utils"
 	"github.com/kyoto-framework/kyoto/v2"
 	"go.uber.org/zap"
@@ -17,27 +18,27 @@ Component
     which executes component asynchronously and gets a state future object
   - Context holds common objects like http.ResponseWriter, *http.Request, etc
 */
-func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
+func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 	route := "/cosmos/base/tendermint/v1beta1/blocks/latest" //TO-DO refactor this
-	fetchBlockInfo := func() rest.Blocks {
-		var state rest.Blocks
+	fetchBlockInfo := func() types.Blocks {
+		var state types.Blocks
 		resp, err := rest.HttpQuery(rest.RESTAddr + route)
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.Blocks{}
+			return types.Blocks{}
 		}
 
 		err = json.Unmarshal(resp, &state)
 		if err != nil {
 			zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.Blocks{}
+			return types.Blocks{}
 		}
 
 		// convert block hash from base64 to hex
 		hashInHex, err := utils.Base64ToHex(state.BlockId.Hash)
 		if err != nil {
 			zap.L().Fatal("Failed to convert base64 to hex", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.Blocks{}
+			return types.Blocks{}
 		}
 		state.BlockId.Hash = hashInHex
 
@@ -50,13 +51,13 @@ func GetBlockInfo(ctx *kyoto.Context) (state rest.Blocks) {
 		resp, err = rest.HttpQuery(rest.RPCAddr + "/dump_consensus_state")
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.Blocks{}
+			return types.Blocks{}
 		}
 
 		err = json.Unmarshal(resp, &cs)
 		if err != nil {
 			zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.Blocks{}
+			return types.Blocks{}
 		}
 
 		conspubMonikerMap := GetConspubMonikerMap()
