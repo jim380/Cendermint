@@ -1,52 +1,34 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"strconv"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"github.com/jim380/Cendermint/config"
-	utils "github.com/jim380/Cendermint/utils"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
+	"go.uber.org/zap"
 )
 
-type govInfo struct {
-	TotalProposalCount      float64
-	VotingProposalCount     float64
-	InVotingVotedCount      float64
-	InVotingDidNotVoteCount float64
+type GovService struct {
+	DB *sql.DB
 }
 
-type gov struct {
-	Proposals  []proposal `json:"proposals"`
-	Pagination struct {
-		Total string `json:"total"`
-	} `json:"pagination"`
-}
-
-type proposal struct {
-	ProposalID string `json:"proposal_id"`
-	Status     string `json:"status"`
-}
-
-type voteInfo struct {
-	Votes struct {
-		Option string `json:"option"`
-	} `json:"vote"`
-}
-
-func (rd *RESTData) getGovInfo(cfg config.Config) {
+func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var (
-		g                  gov
-		gi                 govInfo
+		g                  types.Gov
+		gi                 types.GovInfo
 		proposalsInVoting  []string
 		inVotingVoted      int
 		inVotingDidNotVote int
 	)
 
-	route := getProposalsRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=2000")
+	route := rest.GetProposalsRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=2000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -68,8 +50,8 @@ func (rd *RESTData) getGovInfo(cfg config.Config) {
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Proposals in voting", strconv.Itoa(len(proposalsInVoting))))
 
 	for _, value := range proposalsInVoting {
-		var voteInfo voteInfo
-		res, err := HttpQuery(RESTAddr + route + value + "/votes/" + utils.GetAccAddrFromOperAddr(OperAddr))
+		var voteInfo types.VoteInfo
+		res, err := utils.HttpQuery(constants.RESTAddr + route + value + "/votes/" + utils.GetAccAddrFromOperAddr(constants.OperAddr))
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}

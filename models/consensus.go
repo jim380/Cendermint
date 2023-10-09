@@ -1,76 +1,35 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
-type RPCData struct {
-	ConsensusState
-	Validatorsets map[string][]string
+type ConsensusService struct {
+	DB *sql.DB
 }
 
-type ConsensusState struct {
-	Result struct {
-		RoundState `json:"round_state"`
-	} `json:"result"`
-}
-
-type RoundState struct {
-	Height       string           `json:"height"`
-	Round        int64            `json:"round"`
-	Step         int64            `json:"step"`
-	Validatorset rpcValidatorsets `json:"validators"`
-	Votes        []struct {
-		Prevotes           []string `json:"prevotes"`
-		Precommits         []string `json:"precommits"`
-		PrevotesBitArray   string   `json:"prevotes_bit_array"`
-		PrecommitsBitArray string   `json:"precommits_bit_array"`
-	} `json:"votes"`
-}
-
-type rpcValidatorsets struct {
-	Validators []struct {
-		ConsAddr   string `json:"address"`
-		ConsPubKey struct {
-			Type string `json:"type"`
-			Key  string `json:"value"`
-		} `json:"pub_key"`
-		ProposerPriority string `json:"proposer_priority"`
-		VotingPower      string `json:"voting_power"`
-		Moniker          string
-	} `json:"validators"`
-}
-
-type RpcValidators struct {
-	Validators []struct {
-		ConsPubKey struct {
-			Type string `json:"@type"`
-			Key  string `json:"key"`
-		} `json:"consensus_pubkey"`
-		Description struct {
-			Moniker string `json:"moniker"`
-		} `json:"description"`
-	} `json:"validators"`
-}
-
-func (rpc *RPCData) getConsensusDump(cfg config.Config) {
-	var cs ConsensusState
+func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) {
+	var cs types.ConsensusState
 	var vSetsResult map[string][]string = make(map[string][]string)
 
-	res, err := HttpQuery(RPCAddr + "/dump_consensus_state")
+	res, err := utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &cs)
 
-	conspubMonikerMap := rpc.getConspubMonikerMap(cfg)
+	conspubMonikerMap := getConspubMonikerMap(cfg, rpc)
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
 	for index, validator := range cs.Result.Validatorset.Validators {
 		var prevote, precommit string
@@ -104,12 +63,12 @@ func (rpc *RPCData) getConsensusDump(cfg config.Config) {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC", fmt.Sprint(len(rpc.Validatorsets))))
 }
 
-func (rpc *RPCData) getConspubMonikerMap(cfg config.Config) map[string]string {
-	var v RpcValidators
+func getConspubMonikerMap(cfg config.Config, rpc *types.RPCData) map[string]string {
+	var v types.RpcValidators
 	var vResult map[string]string = make(map[string]string)
 
-	route := GetValidatorsRoute()
-	res, err := HttpQuery(RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
+	route := rest.GetValidatorsRoute()
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

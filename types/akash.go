@@ -1,21 +1,13 @@
-package rest
+package types
 
-import (
-	"encoding/json"
-	"strconv"
-
-	"github.com/jim380/Cendermint/config"
-	"go.uber.org/zap"
-)
-
-type akashInfo struct {
+type AkashInfo struct {
 	// Deployments       akashDeployments
 	TotalDeployments  int
 	ActiveDeployments int
 	ClosedDeployments int
 }
 
-type akashDeployments struct {
+type AkashDeployments struct {
 	Deployments []akashDeployment `json:"deployments"`
 	Pagination  struct {
 		Total string `json:"total"`
@@ -106,41 +98,4 @@ type GroupSpec struct {
 			Amount string `json:"amount"`
 		} `json:"price"`
 	} `json:"resources"`
-}
-
-func (rd *RESTData) getAkashDeployments(cfg config.Config) {
-	if cfg.Chain.Chain != "akash" {
-		return
-	}
-	var deployments, activeDeployments akashDeployments
-
-	route := getDeploymentsRoute()
-	res, err := HttpQuery(RESTAddr + route)
-	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	json.Unmarshal(res, &deployments)
-
-	// get total deployments count
-	totalDeploymentsCount, err := strconv.Atoi(deployments.Pagination.Total)
-	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	rd.AkashInfo.TotalDeployments = totalDeploymentsCount
-
-	// get active deployments count
-	resActive, err := HttpQuery(RESTAddr + route + "?filters.state=active")
-	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	json.Unmarshal(resActive, &activeDeployments)
-
-	activeDeploymentsCount, err := strconv.Atoi(activeDeployments.Pagination.Total)
-	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	rd.AkashInfo.ActiveDeployments = activeDeploymentsCount
-
-	// get closed deployments count
-	rd.AkashInfo.ClosedDeployments = totalDeploymentsCount - activeDeploymentsCount
 }

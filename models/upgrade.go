@@ -1,29 +1,28 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"strconv"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
-type upgradeInfo struct {
-	Planned bool
-	Plan    struct {
-		Name   string `json:"name"`
-		Time   string `json:"time"`
-		Height string `json:"height"`
-		Info   string `json:"info"`
-	}
+type UpgradeService struct {
+	DB *sql.DB
 }
 
-func (rd *RESTData) getUpgradeInfo(cfg config.Config) {
-	var upgradeInfo upgradeInfo
+func (us *UpgradeService) GetInfo(cfg config.Config, rd *types.RESTData) {
+	var upgradeInfo types.UpgradeInfo
 
-	route := getUpgradeCurrentPlanRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route)
+	route := rest.GetUpgradeCurrentPlanRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

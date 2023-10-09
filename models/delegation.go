@@ -1,40 +1,29 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
-type delegationsInfo struct {
-	DelegationRes delegationRes `json:"delegation_responses"`
-	Pagination    struct {
-		NextKey string `json:"next_key"`
-		Total   string `json:"total"`
-	}
+type DelegationService struct {
+	DB *sql.DB
 }
 
-type delegationRes []struct {
-	Delegation struct {
-		DelegatorAddr string `json:"delegator_address"`
-		ValidatorAddr string `json:"validator_address"`
-		Shares        string `json:"shares"`
-	}
-	balance struct {
-		Denom  string `json:"denom"`
-		Amount string `json:"amount"`
-	}
-}
-
-func (rd *RESTData) getDelegations(cfg config.Config) {
-	var delInfo delegationsInfo
+func (ds *DelegationService) GetInfo(cfg config.Config, rd *types.RESTData) {
+	var delInfo types.DelegationsInfo
 	var delRes map[string][]string = make(map[string][]string)
 
-	route := getValidatorByAddressRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + OperAddr + "/delegations" + "?pagination.limit=1000")
+	route := rest.GetValidatorByAddressRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + constants.OperAddr + "/delegations" + "?pagination.limit=1000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -55,7 +44,7 @@ func (rd *RESTData) getDelegations(cfg config.Config) {
 					// precommit failure validator
 				}
 			}()
-			delRes[value.Delegation.DelegatorAddr] = []string{value.balance.Amount}
+			delRes[value.Delegation.DelegatorAddr] = []string{value.Balance.Amount}
 		}()
 	}
 

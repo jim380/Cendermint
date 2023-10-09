@@ -1,38 +1,28 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
-type NodeInfo struct {
-	Default     DefaultInfo `json:"default_node_info"`
-	Application appVersion  `json:"application_version"`
+type NodeService struct {
+	Node *types.NodeInfo
+	DB   *sql.DB
 }
 
-type DefaultInfo struct {
-	NodeID    string `json:"default_node_id"`
-	TMVersion string `json:"version"`
-	Moniker   string `json:"moniker"`
-}
+func (ns *NodeService) GetInfo(cfg *config.Config, rd *types.RESTData) {
+	var nodeInfo types.NodeInfo
 
-type appVersion struct {
-	AppName    string `json:"name"`
-	Name       string `json:"app_name"`
-	Version    string `json:"version"`
-	GitCommit  string `json:"git_commit"`
-	GoVersion  string `json:"go_version"`
-	SDKVersion string `json:"cosmos_sdk_version"`
-}
-
-func (rd *RESTData) getNodeInfo(cfg *config.Config) {
-	var nodeInfo NodeInfo
-
-	route := GetNodeInfoRoute()
-	res, err := HttpQuery(RESTAddr + route)
+	route := rest.GetNodeInfoRoute()
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

@@ -5,13 +5,14 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/types"
 	utils "github.com/jim380/Cendermint/utils"
 )
 
 // gauges/labels <-> value
-func SetMetric(currentBlock int64, restData *rest.RESTData, log *zap.Logger) {
-	operAddr := rest.OperAddr
+func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
+	operAddr := constants.OperAddr
 	consPubKey := restData.Validator.ConsPubKey
 	consAddr := restData.Validatorsets[consPubKey.Key][0]
 

@@ -1,6 +1,10 @@
 package controllers
 
-import "go.uber.org/zap"
+import (
+	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/types"
+	"go.uber.org/zap"
+)
 
 func (rs RestServices) IndexValidator(consHexAddr, moniker string) {
 	validator, err := rs.ValidatorService.Index(consHexAddr, moniker)
@@ -20,4 +24,8 @@ func (rs RestServices) IndexAbsentValidator(height int, consHexAddr string) {
 	} else {
 		zap.L().Info("Absent validator successfully indexed", zap.String("ConsHexAddress", absentValidator.ConsHexAddress))
 	}
+}
+
+func (rs RestServices) GetValidatorInfo(cfg config.Config, currentBlockHeight int64, rd *types.RESTData) []string {
+	return rs.ValidatorService.GetValidatorInfo(cfg, currentBlockHeight, rd)
 }

@@ -1,25 +1,61 @@
-package rest
+package models
 
 import (
+	"database/sql"
+	"encoding/json"
 	"os"
 	"strconv"
+	"strings"
 
-	"github.com/jim380/Cendermint/rest/types"
+	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
-type commitInfo struct {
-	ChainId                  string
-	ValidatorPrecommitStatus float64 // [0]: false, [1]: true
-	ValidatorProposingStatus float64 // [0]: false, [1]: true
-	MissedCount              int
-	LastSigned               int
-	MissThreshold            float64
-	MissConsecutive          float64
+type SlashingService struct {
+	DB *sql.DB
 }
 
-func (rd *RESTData) getCommit(blockData types.Blocks, consHexAddr string) {
-	var cInfo commitInfo
+func (ss *SlashingService) GetSlashingParams(cfg config.Config, rd *types.RESTData) {
+	var d types.SlashingInfo
+
+	route := rest.GetSlashingParamsRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &d)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+	rd.Slashing.Params = d.Params
+}
+
+func (ss *SlashingService) GetSigningInfo(cfg config.Config, consAddr string, rd *types.RESTData) {
+	var d types.SlashingInfo
+
+	route := rest.GetSigningInfoByAddressRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + consAddr)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &d)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+
+	rd.Slashing.ValSigning = d.ValSigning
+}
+
+func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
+	var cInfo types.CommitInfo
 	missed := true
 
 	blockProposer := blockData.Block.Header.Proposer_address

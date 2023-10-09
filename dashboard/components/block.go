@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/jim380/Cendermint/rest"
-	"github.com/jim380/Cendermint/rest/types"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
 	"github.com/kyoto-framework/kyoto/v2"
 	"go.uber.org/zap"
@@ -22,7 +22,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 	route := "/cosmos/base/tendermint/v1beta1/blocks/latest" //TO-DO refactor this
 	fetchBlockInfo := func() types.Blocks {
 		var state types.Blocks
-		resp, err := rest.HttpQuery(rest.RESTAddr + route)
+		resp, err := utils.HttpQuery(constants.RESTAddr + route)
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.Blocks{}
@@ -45,10 +45,10 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		/*
 			Find validators with missing signatures in the block
 		*/
-		var cs rest.ConsensusState
+		var cs types.ConsensusState
 		var activeSet map[string][]string = make(map[string][]string)
 
-		resp, err = rest.HttpQuery(rest.RPCAddr + "/dump_consensus_state")
+		resp, err = utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.Blocks{}

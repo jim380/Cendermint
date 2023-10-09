@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/jim380/Cendermint/config"
-	"github.com/jim380/Cendermint/rest/types"
+	"github.com/jim380/Cendermint/types"
 	"go.uber.org/zap"
 )
 

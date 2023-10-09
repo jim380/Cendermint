@@ -1,93 +1,30 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
-type ibcInfo struct {
-	ibcChannelInfo
-	ibcConnectionInfo
+type IbcService struct {
+	DB *sql.DB
 }
 
-type ibcChannelInfo struct {
-	OpenChannels int
-	IBCChannels  ibcChannels `json:"channels"`
-	Pagination   struct {
-		NextKey string `json:"next_key"`
-		Total   string `json:"total"`
-	}
-	Height struct {
-		RevisionNumber string `json:"revision_number"`
-		RevisionHeight string `json:"revision_height"`
-	}
-}
-
-type ibcConnectionInfo struct {
-	OpenConnections int
-	IBConnections   ibcConnections `json:"connections"`
-	Pagination      struct {
-		NextKey string `json:"next_key"`
-		Total   string `json:"total"`
-	}
-	Height struct {
-		RevisionNumber string `json:"revision_number"`
-		RevisionHeight string `json:"revision_height"`
-	}
-}
-
-type ibcChannels []struct {
-	State          string              `json:"state"`
-	Ordering       string              `json:"ordering"`
-	Counterparty   counterpartyChannel `json:"counterparty"`
-	ConnectionHops []struct {
-		string
-	}
-	Version   string `json:"version"`
-	PortID    string `json:"port_id"`
-	ChannelID string `json:"channel_id"`
-}
-
-type ibcConnections []struct {
-	ID           string                 `json:"id"`
-	ClientID     string                 `json:"client_id"`
-	Versions     connectionVersions     `json:"versions"`
-	State        string                 `json:"state"`
-	Counterparty counterpartyConnection `json:"counterparty"`
-	DelayPeriod  string                 `json:"delay_period"`
-}
-
-type connectionVersions []struct {
-	Identifier string `json:"identifier"`
-	Features   []struct {
-		string
-	}
-}
-
-type counterpartyChannel struct {
-	PortID    string `json:"port_id"`
-	ChannelID string `json:"channel_id"`
-}
-
-type counterpartyConnection struct {
-	ClientID     string `json:"client_id"`
-	ConnectionID string `json:"connection_id"`
-	Prefix       struct {
-		KeyPrefix string `json:"key_prefix"`
-	}
-}
-
-func (rd *RESTData) getIBCChannels(cfg config.Config) {
-	var ibcInfo ibcChannelInfo
+func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
+	var ibcInfo types.IbcChannelInfo
 	var ibcChannels map[string][]string = make(map[string][]string)
 
 	ibcInfo.OpenChannels = 0
-	route := getIBCChannelsRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=1000000")
+	route := rest.GetIBCChannelsRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=1000000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -116,16 +53,16 @@ func (rd *RESTData) getIBCChannels(cfg config.Config) {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Open IBC channels", fmt.Sprint(ibcInfo.OpenChannels)))
 
 	rd.IBC.IBCChannels = ibcChannels
-	rd.IBC.IBCInfo.ibcChannelInfo = ibcInfo
+	rd.IBC.IBCInfo.IbcChannelInfo = ibcInfo
 }
 
-func (rd *RESTData) getIBCConnections(cfg config.Config) {
-	var ibcInfo ibcConnectionInfo
+func (is *IbcService) GetConnectionInfo(cfg config.Config, rd *types.RESTData) {
+	var ibcInfo types.IbcConnectionInfo
 	var ibcConnections map[string][]string = make(map[string][]string)
 
 	ibcInfo.OpenConnections = 0
-	route := getIBCConnectionsRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + "?pagination.limit=100000")
+	route := rest.GetIBCConnectionsRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=100000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -154,5 +91,5 @@ func (rd *RESTData) getIBCConnections(cfg config.Config) {
 	zap.L().Info("", zap.Bool("Success", true), zap.String("Open IBC connections", fmt.Sprint(ibcInfo.OpenConnections)))
 
 	rd.IBC.IBCConnections = ibcConnections
-	rd.IBC.IBCInfo.ibcConnectionInfo = ibcInfo
+	rd.IBC.IBCInfo.IbcConnectionInfo = ibcInfo
 }

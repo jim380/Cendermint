@@ -1,32 +1,31 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"github.com/jim380/Cendermint/config"
-	utils "github.com/jim380/Cendermint/utils"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
+	"go.uber.org/zap"
 )
 
-type stakingPool struct {
-	Pool struct {
-		Not_bonded_tokens string `json:"not_bonded_tokens"`
-		Bonded_tokens     string `json:"bonded_tokens"`
-		Total_supply      float64
-	}
+type StakingService struct {
+	DB *sql.DB
 }
 
 type totalSupply struct {
-	Amount Coin
+	Amount types.Coin
 }
 
-func (rd *RESTData) getStakingPool(cfg config.Config, denom string) {
-	var sp stakingPool
+func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RESTData) {
+	var sp types.StakingPool
 
-	route := getStakingPoolRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route)
+	route := rest.GetStakingPoolRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
@@ -44,8 +43,8 @@ func (rd *RESTData) getStakingPool(cfg config.Config, denom string) {
 func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 	var ts totalSupply
 
-	route := getSupplyRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route + denom)
+	route := rest.GetSupplyRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + denom)
 	if err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

@@ -1,13 +1,16 @@
-package rest
+package models
 
 import (
+	"database/sql"
 	"encoding/json"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"github.com/jim380/Cendermint/config"
-	utils "github.com/jim380/Cendermint/utils"
+	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
+	"go.uber.org/zap"
 )
 
 type inflation struct {
@@ -22,11 +25,15 @@ type inflation_iris struct {
 	}
 }
 
-func (rd *RESTData) getInflation(cfg config.Config, denom string) {
+type InflationService struct {
+	DB *sql.DB
+}
+
+func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var result string
 
-	route := getInflationRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route)
+	route := rest.GetInflationRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
 
 	switch cfg.Chain.Chain {
 	case "irisnet":
@@ -44,7 +51,7 @@ func (rd *RESTData) getInflation(cfg config.Config, denom string) {
 	default:
 		var i inflation
 
-		res, err := HttpQuery(RESTAddr + route) // route does not existing in osmosis
+		res, err := utils.HttpQuery(constants.RESTAddr + route) // route does not existing in osmosis
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}

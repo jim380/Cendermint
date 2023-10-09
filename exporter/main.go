@@ -11,13 +11,12 @@ import (
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/controllers"
-	"github.com/jim380/Cendermint/rest"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices) {
+func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
 	http.Handle("/metrics", promhttp.Handler())
-	go Run(config, logger, restService)
+	go Run(config, logger, restService, rpcService)
 
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
@@ -27,7 +26,7 @@ func Start(config *config.Config, port string, logger *zap.Logger, restService c
 
 }
 
-func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices) {
+func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
 	denomList := config.GetDenomList(cfg.Chain.Chain, cfg.ChainList)
 
 	registerGauges(denomList)
@@ -45,12 +44,12 @@ func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServic
 				select {
 				case <-ticker:
 					// fetch data with block info via REST
-					restData := rest.GetData(cfg, currentBlockHeight, block, denomList[0])
+					restData := restService.GetData(cfg, rpcService, currentBlockHeight, block, denomList[0])
 					SetMetric(currentBlockHeight, restData, log)
 					// case <-ticker2:
 					// takes ~5-6 blocks to return results per request
 					// tends to halt the node too. Caution !!!
-					// restData := rest.GetDelegationsData(cfg, chain, currentBlockHeight, block, denomList[0])
+					// restService.DelegationService.GetInfo(*cfg, restData)
 					// SetMetric(currentBlockHeight, restData, log)
 				}
 

@@ -9,8 +9,10 @@ import (
 	"time"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/rest"
-	"github.com/jim380/Cendermint/rest/types"
+	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
 
@@ -27,7 +29,7 @@ type BlockService struct {
 
 func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {
 	route := rest.GetBlockInfoRoute(cfg)
-	res, err := rest.HttpQuery(rest.RESTAddr + route)
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -44,7 +46,7 @@ func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {
 func (bs *BlockService) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) types.Blocks {
 	var lastBlock types.LastBlock
 	route := rest.GetBlockByHeightRoute(cfg)
-	res, err := rest.HttpQuery(rest.RESTAddr + route + strconv.Itoa(int(currentHeight-1)))
+	res, err := utils.HttpQuery(constants.RESTAddr + route + strconv.Itoa(int(currentHeight-1)))
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

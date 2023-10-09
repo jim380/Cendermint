@@ -23,7 +23,7 @@ func GetBlockByHeightRoute(cfg config.Config) string {
 	}
 }
 
-func getValidatorSetByHeightRoute(cfg config.Config) string {
+func GetValidatorSetByHeightRoute(cfg config.Config) string {
 	if cfg.IsLegacySDKVersion() {
 		return "/validatorsets/"
 	} else {
@@ -31,7 +31,7 @@ func getValidatorSetByHeightRoute(cfg config.Config) string {
 	}
 }
 
-func getValidatorDistributionByAddressRoute(cfg config.Config) string {
+func GetValidatorDistributionByAddressRoute(cfg config.Config) string {
 	if cfg.IsLegacySDKVersion() {
 		return "/distribution/validators/"
 	} else {
@@ -39,7 +39,7 @@ func getValidatorDistributionByAddressRoute(cfg config.Config) string {
 	}
 }
 
-func getInflationRoute(cfg config.Config) string {
+func GetInflationRoute(cfg config.Config) string {
 	if cfg.Chain.Chain == "irisnet" {
 		return "/irishub/mint/params"
 	} else if cfg.IsLegacySDKVersion() {
@@ -50,19 +50,19 @@ func getInflationRoute(cfg config.Config) string {
 	}
 }
 
-func getBalancesByAddressRoute(cfg config.Config) string {
+func GetBalancesByAddressRoute(cfg config.Config) string {
 	return "/cosmos/bank/v1beta1/balances/"
 }
 
-func getStakingPoolRoute(cfg config.Config) string {
+func GetStakingPoolRoute(cfg config.Config) string {
 	return "/cosmos/staking/v1beta1/pool"
 }
 
-func getSupplyRoute(cfg config.Config) string {
+func GetSupplyRoute(cfg config.Config) string {
 	return "/cosmos/bank/v1beta1/supply/"
 }
 
-func getValidatorByAddressRoute(cfg config.Config) string {
+func GetValidatorByAddressRoute(cfg config.Config) string {
 	return "/cosmos/staking/v1beta1/validators/"
 }
 
@@ -70,19 +70,19 @@ func GetValidatorsRoute() string {
 	return "/cosmos/staking/v1beta1/validators"
 }
 
-func getTxByHeightRoute(cfg config.Config) string {
+func GetTxByHeightRoute(cfg config.Config) string {
 	return "/cosmos/tx/v1beta1/txs?events=tx.height="
 }
 
-func getSlashingParamsRoute(cfg config.Config) string {
+func GetSlashingParamsRoute(cfg config.Config) string {
 	return "/cosmos/slashing/v1beta1/params"
 }
 
-func getSigningInfoByAddressRoute(cfg config.Config) string {
+func GetSigningInfoByAddressRoute(cfg config.Config) string {
 	return "/cosmos/slashing/v1beta1/signing_infos/"
 }
 
-func getProposalsRoute(cfg config.Config) string {
+func GetProposalsRoute(cfg config.Config) string {
 	return "/cosmos/gov/v1beta1/proposals"
 }
 
@@ -90,51 +90,51 @@ func GetNodeInfoRoute() string {
 	return "/cosmos/base/tendermint/v1beta1/node_info"
 }
 
-func getUpgradeCurrentPlanRoute(cfg config.Config) string {
+func GetUpgradeCurrentPlanRoute(cfg config.Config) string {
 	return "/cosmos/upgrade/v1beta1/current_plan"
 }
 
 /***********************
  * IBC Routes
 ************************/
-func getIBCChannelsRoute(cfg config.Config) string {
+func GetIBCChannelsRoute(cfg config.Config) string {
 	return "/ibc/core/channel/v1/channels"
 }
 
-func getIBCConnectionsRoute(cfg config.Config) string {
+func GetIBCConnectionsRoute(cfg config.Config) string {
 	return "/ibc/core/connection/v1/connections"
 }
 
 /***********************
  * Gravity Bridge Routes
 ************************/
-func getBatchFeesRoute() string {
+func GetBatchFeesRoute() string {
 	return "/gravity/v1beta/batchfees"
 }
 
-func getBatchesFeesRoute() string {
+func GetBatchesFeesRoute() string {
 	return "/gravity/v1beta1/batch/outgoingtx"
 }
 
-func getBridgeFeesRoute() string {
+func GetBridgeFeesRoute() string {
 	return "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
 }
 
-func getBridgeParamsRoute() string {
+func GetBridgeParamsRoute() string {
 	return "/gravity/v1beta/params"
 }
 
-func getOracleEventNonceByAddressRoute() string {
+func GetOracleEventNonceByAddressRoute() string {
 	return "/gravity/v1beta/oracle/eventnonce/"
 }
 
-func getCurrentValidatorSetRoute() string {
+func GetCurrentValidatorSetRoute() string {
 	return "/gravity/v1beta/valset/current"
 }
 
 /***********************
  * Akash Routes
 ************************/
-func getDeploymentsRoute() string {
+func GetDeploymentsRoute() string {
 	return "/akash/deployment/v1beta2/deployments/list"
 }

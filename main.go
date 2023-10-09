@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Jay Jie
+Copyright © 2023 Jay Jie
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import (
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/controllers"
 	"github.com/jim380/Cendermint/dashboard"
 	"github.com/jim380/Cendermint/exporter"
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/models"
-	"github.com/jim380/Cendermint/rest"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -91,9 +91,9 @@ func main() {
 	zap.ReplaceGlobals(logger)
 
 	cfg.SetSDKConfig()
-	rest.RESTAddr = restAddr
-	rest.RPCAddr = rpcAddr
-	rest.OperAddr = operAddr
+	constants.RESTAddr = restAddr
+	constants.RPCAddr = rpcAddr
+	constants.OperAddr = operAddr
 
 	// Setup a db connection
 	dbConfig := models.DefaultPostgresConfig()
@@ -106,7 +106,16 @@ func main() {
 	}
 	defer db.Close()
 
-	// Setup model services
+	// initialize rpc services
+	consensusService := models.ConsensusService{
+		DB: db,
+	}
+
+	rpcServicesController := controllers.RpcServices{
+		ConsensusService: &consensusService,
+	}
+
+	// initialize rest services
 	blockService := models.BlockService{
 		DB: db,
 	}
@@ -116,12 +125,55 @@ func main() {
 	absentValidatorService := models.AbsentValidatorService{
 		DB: db,
 	}
+	nodeService := models.NodeService{
+		DB: db,
+	}
+	stakingService := models.StakingService{
+		DB: db,
+	}
+	slashingService := models.SlashingService{
+		DB: db,
+	}
+	inflationService := models.InflationService{
+		DB: db,
+	}
+	govService := models.GovService{
+		DB: db,
+	}
+	bankService := models.BankService{
+		DB: db,
+	}
+	delegationService := models.DelegationService{
+		DB: db,
+	}
+	upgradeService := models.UpgradeService{
+		DB: db,
+	}
+	ibcService := models.IbcService{
+		DB: db,
+	}
+	gravityService := models.GravityService{
+		DB: db,
+	}
+	akashService := models.AkashService{
+		DB: db,
+	}
 
-	// TO-DO: Setup controllers
 	restServicesController := controllers.RestServices{
 		BlockService:           &blockService,
 		ValidatorService:       &validatorService,
 		AbsentValidatorService: &absentValidatorService,
+		NodeService:            &nodeService,
+		StakingService:         &stakingService,
+		SlashingService:        &slashingService,
+		InflationService:       &inflationService,
+		GovService:             &govService,
+		BankService:            &bankService,
+		DelegationService:      &delegationService,
+		UpgradeService:         &upgradeService,
+		IbcServices:            &ibcService,
+		GravityService:         &gravityService,
+		AkashService:           &akashService,
 	}
 
 	// run dashboard in a separate thread in enabled
@@ -129,5 +181,5 @@ func main() {
 		dashboard.StartDashboard()
 	}
 
-	exporter.Start(&cfg, listeningPort, logger, restServicesController)
+	exporter.Start(&cfg, listeningPort, logger, restServicesController, rpcServicesController)
 }
