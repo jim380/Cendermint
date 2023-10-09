@@ -2,8 +2,14 @@ package models
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/rest"
+	"go.uber.org/zap"
 )
 
 type Block struct {
@@ -13,7 +19,24 @@ type Block struct {
 }
 
 type BlockService struct {
-	DB *sql.DB
+	Block *rest.Blocks
+	DB    *sql.DB
+}
+
+func (bs *BlockService) GetBlockInfo(cfg config.Config) rest.Blocks {
+	route := rest.GetBlockInfoRoute(cfg)
+	res, err := rest.HttpQuery(rest.RESTAddr + route)
+	if err != nil {
+		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &bs.Block)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+
+	return *bs.Block
 }
 
 func (bs *BlockService) Index(height int, hash string, timestamp time.Time) (*Block, error) {

@@ -10,13 +10,14 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/controllers"
 	"github.com/jim380/Cendermint/rest"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start(config *config.Config, port string, logger *zap.Logger) {
+func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices) {
 	http.Handle("/metrics", promhttp.Handler())
-	go Run(config, logger)
+	go Run(config, logger, restService)
 
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
@@ -26,7 +27,7 @@ func Start(config *config.Config, port string, logger *zap.Logger) {
 
 }
 
-func Run(cfg *config.Config, log *zap.Logger) {
+func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices) {
 	denomList := config.GetDenomList(cfg.Chain.Chain, cfg.ChainList)
 
 	registerGauges(denomList)
@@ -37,8 +38,7 @@ func Run(cfg *config.Config, log *zap.Logger) {
 
 	go func() {
 		for {
-			var block rest.Blocks
-			block.GetInfo(*cfg)
+			block := restService.GetBlockInfo(*cfg)
 
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
 			if previousBlockHeight != currentBlockHeight {

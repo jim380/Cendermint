@@ -22,9 +22,11 @@ import (
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
+	"github.com/jim380/Cendermint/controllers"
 	"github.com/jim380/Cendermint/dashboard"
 	"github.com/jim380/Cendermint/exporter"
 	"github.com/jim380/Cendermint/logging"
+	"github.com/jim380/Cendermint/models"
 	"github.com/jim380/Cendermint/rest"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -93,10 +95,39 @@ func main() {
 	rest.RPCAddr = rpcAddr
 	rest.OperAddr = operAddr
 
+	// Setup a db connection
+	dbConfig := models.DefaultPostgresConfig()
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Using db config", dbConfig.String()))
+	db, err := models.Open(dbConfig)
+	if err != nil {
+		zap.L().Fatal("\t", zap.Bool("Success", false), zap.String("Database connection", "failed with error:"+err.Error()))
+	} else {
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Database connection", "ok"))
+	}
+	defer db.Close()
+
+	// Setup model services
+	blockService := models.BlockService{
+		DB: db,
+	}
+	validatorService := models.ValidatorService{
+		DB: db,
+	}
+	absentValidatorService := models.AbsentValidatorService{
+		DB: db,
+	}
+
+	// TO-DO: Setup controllers
+	restServicesController := controllers.RestServices{
+		BlockService:           &blockService,
+		ValidatorService:       &validatorService,
+		AbsentValidatorService: &absentValidatorService,
+	}
+
 	// run dashboard in a separate thread in enabled
 	if strings.ToLower(cfg.DashboardEnabled) == "true" {
 		dashboard.StartDashboard()
 	}
 
-	exporter.Start(&cfg, listeningPort, logger)
+	exporter.Start(&cfg, listeningPort, logger, restServicesController)
 }

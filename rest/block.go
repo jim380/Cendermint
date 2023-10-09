@@ -48,22 +48,6 @@ type lastCommit struct {
 	} `json:"signatures"`
 }
 
-func (b *Blocks) GetInfo(cfg config.Config) Blocks {
-	route := GetBlockInfoRoute(cfg)
-	res, err := HttpQuery(RESTAddr + route)
-	if err != nil {
-		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	json.Unmarshal(res, &b)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	}
-
-	return *b
-}
-
 func (b *Blocks) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) Blocks {
 	var lastBlock LastBlock
 	route := getBlockByHeightRoute(cfg)
