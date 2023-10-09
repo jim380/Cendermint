@@ -2,14 +2,14 @@ package pages
 
 import (
 	"github.com/jim380/Cendermint/dashboard/components"
-	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
 	"github.com/kyoto-framework/kyoto/v2"
 )
 
 type PIndexState struct {
-	Block     *kyoto.ComponentF[rest.Blocks]
-	Node      *kyoto.ComponentF[rest.NodeInfo]
-	Consensus *kyoto.ComponentF[rest.RPCData]
+	Block     *kyoto.ComponentF[types.Blocks]
+	Node      *kyoto.ComponentF[types.NodeInfo]
+	Consensus *kyoto.ComponentF[types.RPCData]
 }
 
 /*

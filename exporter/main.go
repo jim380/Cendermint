@@ -10,13 +10,13 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/jim380/Cendermint/config"
-	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/controllers"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start(config *config.Config, port string, logger *zap.Logger) {
+func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
 	http.Handle("/metrics", promhttp.Handler())
-	go Run(config, logger)
+	go Run(config, logger, restService, rpcService)
 
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
@@ -26,7 +26,7 @@ func Start(config *config.Config, port string, logger *zap.Logger) {
 
 }
 
-func Run(cfg *config.Config, log *zap.Logger) {
+func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
 	denomList := config.GetDenomList(cfg.Chain.Chain, cfg.ChainList)
 
 	registerGauges(denomList)
@@ -37,25 +37,19 @@ func Run(cfg *config.Config, log *zap.Logger) {
 
 	go func() {
 		for {
-			var block rest.Blocks
-			block.GetInfo(*cfg)
-
+			block := restService.GetBlockInfo(*cfg)
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
 			if previousBlockHeight != currentBlockHeight {
-				fmt.Println("--------------------------- Start ---------------------------")
-				block.GetLastBlockTimestamp(*cfg, currentBlockHeight)
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
-				zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))
+				block = restService.GetLastBlockTimestamp(*cfg, currentBlockHeight)
 				select {
 				case <-ticker:
-					// fetch info from REST
-					restData := rest.GetData(cfg, currentBlockHeight, block, denomList[0])
+					// fetch data with block info via REST
+					restData := restService.GetData(cfg, rpcService, currentBlockHeight, block, denomList[0])
 					SetMetric(currentBlockHeight, restData, log)
 					// case <-ticker2:
 					// takes ~5-6 blocks to return results per request
 					// tends to halt the node too. Caution !!!
-					// restData := rest.GetDelegationsData(cfg, chain, currentBlockHeight, block, denomList[0])
+					// restService.DelegationService.GetInfo(*cfg, restData)
 					// SetMetric(currentBlockHeight, restData, log)
 				}
 

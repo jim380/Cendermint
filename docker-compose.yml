@@ -18,9 +18,31 @@ services:
       /bin/sh -c 'Cendermint run'
     networks:
       - local
-    # env_file:
-    #   - config.env
     restart: unless-stopped
+
+  db:
+    image: postgres
+    container_name: cdt_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234567890
+      POSTGRES_DB: cendermint
+    ports:
+      - 5432:5432
+    networks:
+      - local
+
+  adminer:
+    image: adminer
+    container_name: cdt_adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DESIGN: dracula
+    ports:
+      - 3333:8080
+    networks:
+      - local
 
   prometheus:
     image: prom/prometheus:latest

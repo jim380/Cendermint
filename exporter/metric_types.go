@@ -1,7 +1,7 @@
 package exporter
 
 import (
-	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -94,9 +94,9 @@ type metric struct {
 		}
 
 		Account struct {
-			Balances   []rest.Coin
-			Commission []rest.Coin
-			Rewards    []rest.Coin
+			Balances   []types.Coin
+			Commission []types.Coin
+			Rewards    []types.Coin
 		}
 
 		Commit struct {
