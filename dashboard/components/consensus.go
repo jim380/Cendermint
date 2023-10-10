@@ -69,7 +69,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 
 	state = fetchConsensusInfo()
 
-	return
+	return state
 }
 
 func GetConspubMonikerMap() map[string]string {

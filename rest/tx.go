@@ -98,7 +98,7 @@ func (rd *RESTData) getTxInfo(cfg config.Config, currentBlockHeight int64) {
 	}
 	if !json.Valid(res) {
 		zap.L().Error("Response is not valid JSON")
-		return 
+		return
 	}
 	if err := json.Unmarshal(res, &txInfo); err != nil {
 		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
