@@ -111,7 +111,6 @@ func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blo
 				// MissedCount resets when the validator signs again
 				cInfo.MissedCount = 0
 			}
-
 		}()
 	}
 	if missed {

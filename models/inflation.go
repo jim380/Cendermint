@@ -70,11 +70,12 @@ func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 			zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 			return
 		}
-		if strings.Contains(string(res), "not found") {
+		switch {
+		case strings.Contains(string(res), "not found"):
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else {
+		default:
 			result = i.Result
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 		}

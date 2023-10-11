@@ -35,11 +35,12 @@ func (ds *DelegationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return
 	}
-	if strings.Contains(string(res), "not found") {
+	switch {
+	case strings.Contains(string(res), "not found"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from range", fmt.Sprint(len(delInfo.DelegationRes))))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from pagination", delInfo.Pagination.Total))
 	}

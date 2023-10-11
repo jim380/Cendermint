@@ -118,5 +118,5 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 	// Default loading behavior if not handled
 	state = fetchBlockInfo()
 
-	return
+	return state
 }

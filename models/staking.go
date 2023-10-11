@@ -63,11 +63,12 @@ func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
 		return utils.StringToFloat64(ts.Amount.Amount)
 	}
-	if strings.Contains(string(res), "not found") {
+	switch {
+	case strings.Contains(string(res), "not found"):
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Amount.Amount))
 	}
 

@@ -88,7 +88,6 @@ func GetAccAddrFromOperAddr(operAddr string) string {
 func GetAccAddrFromOperAddr_localPrefixes(operAddr string, bech32Prefixes []string) string {
 	bz, err := sdk.GetFromBech32(operAddr, bech32Prefixes[2])
 	if err != nil {
-
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	}
 

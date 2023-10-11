@@ -34,7 +34,7 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	metricData.Network.Slashing.SignedBlocksWindow = utils.StringToFloat64(restData.Slashing.Params.SignedBlocksWindow)
 	metricData.Network.Slashing.MinSignedPerWindow = utils.StringToFloat64(restData.Slashing.Params.MinSignedPerWindow)
 	jailedDurationTime, _ := time.ParseDuration(restData.Slashing.Params.DowntimeJailDuration)
-	metricData.Network.Slashing.DowntimeJailDuration = float64(jailedDurationTime.Seconds())
+	metricData.Network.Slashing.DowntimeJailDuration = jailedDurationTime.Seconds()
 	metricData.Network.Slashing.SlashFractionDoubleSign = utils.StringToFloat64(restData.Slashing.Params.SlashFractionDoubleSign)
 	metricData.Network.Slashing.SlashFractionDowntime = utils.StringToFloat64(restData.Slashing.Params.SlashFractionDowntime)
 	metricData.Network.Slashing.StartHeight = utils.StringToFloat64(restData.Slashing.ValSigning.StartHeight)
