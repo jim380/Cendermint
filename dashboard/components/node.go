@@ -15,7 +15,7 @@ func GetNodeInfo(ctx *kyoto.Context) (state types.NodeInfo) {
 	route := rest.GetNodeInfoRoute()
 	fetchNodeInfo := func() types.NodeInfo {
 		var state types.NodeInfo
-		resp, err := utils.HttpQuery(constants.RESTAddr + route)
+		resp, err := utils.HTTPQuery(constants.RESTAddr + route)
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.NodeInfo{}

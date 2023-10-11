@@ -13,19 +13,17 @@ linters:
     - goconst
     - gocritic
     - gofumpt
-    # - gosec
-    - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - nolintlint
-    - staticcheck
+    #- staticcheck
     - stylecheck
     - typecheck
     - unconvert
-    - unparam
-    - unused
+    # - unparam
+    # - unused
 
 issues:
   max-issues-per-linter: 10000

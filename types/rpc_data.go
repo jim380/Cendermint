@@ -37,7 +37,7 @@ type rpcValidatorsets struct {
 	} `json:"validators"`
 }
 
-type RpcValidators struct {
+type RPCValidators struct {
 	Validators []struct {
 		ConsPubKey struct {
 			Type string `json:"@type"`

@@ -23,7 +23,7 @@ func (ds *DelegationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var delRes map[string][]string = make(map[string][]string)
 
 	route := rest.GetValidatorByAddressRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + constants.OperAddr + "/delegations" + "?pagination.limit=1000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + constants.OperAddr + "/delegations" + "?pagination.limit=1000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

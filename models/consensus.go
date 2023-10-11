@@ -23,7 +23,7 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	var cs types.ConsensusState
 	var vSetsResult map[string][]string = make(map[string][]string)
 
-	res, err := utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
+	res, err := utils.HTTPQuery(constants.RPCAddr + "/dump_consensus_state")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -71,11 +71,11 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 }
 
 func getConspubMonikerMap(cfg config.Config, rpc *types.RPCData) map[string]string {
-	var v types.RpcValidators
+	var v types.RPCValidators
 	var vResult map[string]string = make(map[string]string)
 
 	route := rest.GetValidatorsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

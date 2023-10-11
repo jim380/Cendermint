@@ -22,7 +22,7 @@ func (ns *NodeService) GetInfo(cfg *config.Config, rd *types.RESTData) {
 	var nodeInfo types.NodeInfo
 
 	route := rest.GetNodeInfoRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

@@ -18,8 +18,8 @@ type validatorsetsLegacy struct {
 	Height string `json:"height"`
 
 	Result struct {
-		Block_Height string `json:"block_height"`
-		Validators   []struct {
+		BlockHeight string `json:"block_height"`
+		Validators  []struct {
 			ConsAddr         string                 `json:"address"`
 			ConsPubKey       consPubKeyValSetLegacy `json:"pub_key"`
 			ProposerPriority string                 `json:"proposer_priority"`
@@ -29,8 +29,8 @@ type validatorsetsLegacy struct {
 }
 
 type validatorsets struct {
-	Block_Height string `json:"block_height"`
-	Validators   []struct {
+	BlockHeight string `json:"block_height"`
+	Validators  []struct {
 		ConsAddr         string           `json:"address"`
 		ConsPubKey       consPubKeyValSet `json:"pub_key"`
 		ProposerPriority string           `json:"proposer_priority"`
@@ -111,7 +111,7 @@ func (vs *ValidatorService) GetValidatorInfo(cfg config.Config, currentBlockHeig
 		var vSetsResult map[string][]string = make(map[string][]string)
 
 		route := rest.GetValidatorSetByHeightRoute(cfg)
-		res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight))
+		res, err := utils.HTTPQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight))
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
@@ -173,7 +173,7 @@ func mergeMap(a map[string][]string, b map[string][]string) map[string][]string 
 func runPages(cfg config.Config, currentBlockHeight int64, vSets *validatorsetsLegacy, vSetsResult map[string][]string, pages int) {
 	route := rest.GetValidatorSetByHeightRoute(cfg)
 
-	res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight))
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight))
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -203,7 +203,7 @@ func testPageLimit(cfg config.Config, currentBlockHeight int64, vSets *validator
 	multiPagesSupported := true
 
 	route := rest.GetValidatorSetByHeightRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight) + "?page=2")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight) + "?page=2")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -229,7 +229,7 @@ func getValidator(cfg config.Config, rd *types.RESTData) {
 	var v types.Validators
 
 	route := rest.GetValidatorByAddressRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + constants.OperAddr)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + constants.OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

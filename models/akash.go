@@ -24,7 +24,7 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTDat
 	var deployments, activeDeployments types.AkashDeployments
 
 	route := rest.GetDeploymentsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -51,7 +51,7 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTDat
 	rd.AkashInfo.TotalDeployments = totalDeploymentsCount
 
 	// get active deployments count
-	resActive, err := utils.HttpQuery(constants.RESTAddr + route + "?filters.state=active")
+	resActive, err := utils.HTTPQuery(constants.RESTAddr + route + "?filters.state=active")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

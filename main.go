@@ -54,7 +54,7 @@ func main() {
 	cfg := config.Config{
 		OperatorAddr:     os.Getenv("OPERATOR_ADDR"),
 		RestAddr:         os.Getenv("REST_ADDR"),
-		RpcAddr:          os.Getenv("RPC_ADDR"),
+		RPCAddr:          os.Getenv("RPC_ADDR"),
 		ListeningPort:    os.Getenv("LISTENING_PORT"),
 		MissThreshold:    os.Getenv("MISS_THRESHOLD"),
 		MissConsecutive:  os.Getenv("MISS_CONSECUTIVE"),
@@ -83,7 +83,7 @@ func main() {
 	chain = cfg.Chain.Chain
 	operAddr = cfg.OperatorAddr
 	restAddr = cfg.RestAddr
-	rpcAddr = cfg.RpcAddr
+	rpcAddr = cfg.RPCAddr
 	listeningPort = cfg.ListeningPort
 	logOutput = cfg.LogOutput
 	logLevel = config.GetLogLevel(cfg.LogLevel)

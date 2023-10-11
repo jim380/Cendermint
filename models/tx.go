@@ -24,7 +24,7 @@ func (ts *TxnService) GetInfo(cfg config.Config, currentBlockHeight int64, rd *t
 	var txRes types.TxResult
 
 	route := rest.GetTxByHeightRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprintf("%v", currentBlockHeight))
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + fmt.Sprintf("%v", currentBlockHeight))
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

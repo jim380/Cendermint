@@ -25,9 +25,9 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	metricData.Network.Minting.ActualInflation = metricData.Network.Minting.Inflation / metricData.Network.Staking.BondedRatio
 
 	// staking
-	metricData.Network.Staking.NotBondedTokens = utils.StringToFloat64(restData.StakingPool.Pool.Not_bonded_tokens)
-	metricData.Network.Staking.BondedTokens = utils.StringToFloat64(restData.StakingPool.Pool.Bonded_tokens)
-	metricData.Network.Staking.TotalSupply = restData.StakingPool.Pool.Total_supply
+	metricData.Network.Staking.NotBondedTokens = utils.StringToFloat64(restData.StakingPool.Pool.NotBondedTokens)
+	metricData.Network.Staking.BondedTokens = utils.StringToFloat64(restData.StakingPool.Pool.BondedTokens)
+	metricData.Network.Staking.TotalSupply = restData.StakingPool.Pool.TotalSupply
 	metricData.Network.Staking.BondedRatio = metricData.Network.Staking.BondedTokens / metricData.Network.Staking.TotalSupply
 
 	// slashing
@@ -61,8 +61,8 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	// metricData.Validator.Delegation.Self = restData.Delegations.SelfDelegation
 	// validator commission
 	metricData.Validator.Commission.Rate = utils.StringToFloat64(restData.Validator.Commission.Commission.Rate)
-	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validator.Commission.Commission.Max_rate)
-	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validator.Commission.Commission.Max_change_rate)
+	metricData.Validator.Commission.MaxRate = utils.StringToFloat64(restData.Validator.Commission.Commission.MaxRate)
+	metricData.Validator.Commission.MaxChangeRate = utils.StringToFloat64(restData.Validator.Commission.Commission.MaxChangeRate)
 	// validator signing
 	metricData.Validator.Commit.PrecommitStatus = restData.Commit.ValidatorPrecommitStatus
 	metricData.Validator.Proposer.Status = restData.Commit.ValidatorProposingStatus
@@ -129,7 +129,7 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	metricData.Gravity.BridgeFees = restData.GravityInfo.BridgeFees
 
 	// labels node
-	metricData.Network.ChainID = restData.Commit.ChainId
+	metricData.Network.ChainID = restData.Commit.ChainID
 	metricData.Validator.Moniker = restData.Validator.Description.Moniker
 	metricData.Network.NodeInfo.Moniker = restData.NodeInfo.Default.Moniker
 	metricData.Network.NodeInfo.NodeID = restData.NodeInfo.Default.NodeID

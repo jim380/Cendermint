@@ -22,7 +22,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 	route := "/cosmos/base/tendermint/v1beta1/blocks/latest" // TO-DO refactor this
 	fetchBlockInfo := func() types.Blocks {
 		var state types.Blocks
-		resp, err := utils.HttpQuery(constants.RESTAddr + route)
+		resp, err := utils.HTTPQuery(constants.RESTAddr + route)
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.Blocks{}
@@ -35,12 +35,12 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		}
 
 		// convert block hash from base64 to hex
-		hashInHex, err := utils.Base64ToHex(state.BlockId.Hash)
+		hashInHex, err := utils.Base64ToHex(state.BlockID.Hash)
 		if err != nil {
 			zap.L().Fatal("Failed to convert base64 to hex", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.Blocks{}
 		}
-		state.BlockId.Hash = hashInHex
+		state.BlockID.Hash = hashInHex
 
 		/*
 			Find validators with missing signatures in the block
@@ -48,7 +48,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		var cs types.ConsensusState
 		var activeSet map[string][]string = make(map[string][]string)
 
-		resp, err = utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
+		resp, err = utils.HTTPQuery(constants.RPCAddr + "/dump_consensus_state")
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.Blocks{}
@@ -77,7 +77,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		validatorConsAddrInHexSignedMap := make(map[string]bool)
 		for _, signature := range allSignaturesInBlock {
 			// Validator_address could be in hex or base64; hex is legacy so using base64 here
-			validatorConsAddrInHexSignedMap[signature.Validator_address] = true
+			validatorConsAddrInHexSignedMap[signature.ValidatorAddress] = true
 		}
 
 		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap

@@ -18,10 +18,10 @@ type inflation struct {
 	Result string `json:"result"`
 }
 
-type inflation_iris struct {
+type inflationIris struct {
 	Params struct {
-		Mint_Denom string
-		Inflation  string
+		MintDenom string
+		Inflation string
 	}
 }
 
@@ -33,11 +33,11 @@ func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var result string
 
 	route := rest.GetInflationRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 
 	switch cfg.Chain.Chain {
 	case "irisnet":
-		var i inflation_iris
+		var i inflationIris
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 		}
@@ -58,7 +58,7 @@ func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	default:
 		var i inflation
 
-		res, err := utils.HttpQuery(constants.RESTAddr + route) // route does not existing in osmosis
+		res, err := utils.HTTPQuery(constants.RESTAddr + route) // route does not existing in osmosis
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}

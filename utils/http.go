@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func HttpQuery(route string) ([]byte, error) {
+func HTTPQuery(route string) ([]byte, error) {
 	req, err := http.NewRequest("GET", route, nil)
 	if err != nil {
 		return nil, err

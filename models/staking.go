@@ -25,7 +25,7 @@ func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RES
 	var sp types.StakingPool
 
 	route := rest.GetStakingPoolRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
@@ -40,10 +40,10 @@ func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RES
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.Bonded_tokens))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.BondedTokens))
 	}
 
-	sp.Pool.Total_supply = getTotalSupply(cfg, denom, zap.L())
+	sp.Pool.TotalSupply = getTotalSupply(cfg, denom, zap.L())
 	rd.StakingPool = sp
 }
 
@@ -51,7 +51,7 @@ func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 	var ts totalSupply
 
 	route := rest.GetSupplyRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + denom)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + denom)
 	if err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

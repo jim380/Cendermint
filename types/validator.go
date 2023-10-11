@@ -20,8 +20,8 @@ type Validator struct {
 	UnbondingHeight string `json:"unbonding_height"`
 	UnbondingTime   string `json:"unbonding_time"`
 	Commission      struct {
-		Commission commission_rates `json:"commission_rates"`
-		UpdateTime string           `json:"update_time"`
+		Commission commissionRates `json:"commission_rates"`
+		UpdateTime string          `json:"update_time"`
 	}
 	MinSelfDelegation string `json:"min_self_delegation"`
 }
@@ -31,8 +31,8 @@ type consPubKeyVal struct {
 	Key  string `json:"key"`
 }
 
-type commission_rates struct {
-	Rate            string `json:"rate"`
-	Max_rate        string `json:"max_rate"`
-	Max_change_rate string `json:"max_change_rate"`
+type commissionRates struct {
+	Rate          string `json:"rate"`
+	MaxRate       string `json:"max_rate"`
+	MaxChangeRate string `json:"max_change_rate"`
 }

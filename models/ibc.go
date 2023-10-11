@@ -24,7 +24,7 @@ func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 
 	ibcInfo.OpenChannels = 0
 	route := rest.GetIBCChannelsRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=1000000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?pagination.limit=1000000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -70,7 +70,7 @@ func (is *IbcService) GetConnectionInfo(cfg config.Config, rd *types.RESTData) {
 
 	ibcInfo.OpenConnections = 0
 	route := rest.GetIBCConnectionsRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=100000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?pagination.limit=100000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

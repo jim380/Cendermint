@@ -19,7 +19,7 @@ type Config struct {
 	SDKVersion       string
 	OperatorAddr     string
 	RestAddr         string
-	RpcAddr          string
+	RPCAddr          string
 	ListeningPort    string
 	MissThreshold    string
 	MissConsecutive  string
@@ -68,7 +68,7 @@ func (config Config) CheckInputs(chainList map[string][]string) {
 		log.Fatal("REST address was not provided")
 	}
 
-	if config.RpcAddr == "" {
+	if config.RPCAddr == "" {
 		log.Fatal("RPC address was not provided")
 	}
 
@@ -120,17 +120,12 @@ func GetLogLevel(lvl string) zapcore.Level {
 }
 
 func GetDenomList(chain string, chainList map[string][]string) []string {
-	var found bool
-
 	for k, v := range chainList {
 		if k == chain {
-			found = true
 			return v
 		}
 	}
-	if !found {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "chain("+chain+") denom not supported"))
-	}
+	zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "chain("+chain+") denom not supported"))
 	return []string{}
 }
 

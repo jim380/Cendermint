@@ -20,7 +20,7 @@ type GravityService struct {
 func GetUmeePrice(rd *types.RESTData) {
 	var p types.UmeePrice
 
-	res, err := utils.HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
+	res, err := utils.HTTPQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -43,7 +43,7 @@ func (gs *GravityService) GetBatchFees(cfg config.Config, rd *types.RESTData) {
 	var b types.BatchFees
 
 	route := rest.GetBatchFeesRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -72,7 +72,7 @@ func (gs *GravityService) GetBatchesFees(cfg config.Config, rd *types.RESTData) 
 	var b types.Batches
 
 	route := rest.GetBatchesFeesRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -104,7 +104,7 @@ func (gs *GravityService) GetBridgeFees(cfg config.Config, rd *types.RESTData) {
 	var bf float64
 
 	route := rest.GetBridgeFeesRoute()
-	res, err := utils.HttpQuery(route)
+	res, err := utils.HTTPQuery(route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -131,7 +131,7 @@ func (gs *GravityService) GetBridgeParams(cfg config.Config, rd *types.RESTData)
 
 	rd.GravityInfo.GravityActive = 0.0
 	route := rest.GetBridgeParamsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -161,7 +161,7 @@ func (gs *GravityService) GetOracleEventNonce(cfg config.Config, rd *types.RESTD
 
 	orchAddr := os.Getenv("UMEE_ORCH_ADDR")
 	route := rest.GetOracleEventNonceByAddressRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route + orchAddr)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + orchAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -186,7 +186,7 @@ func (gs *GravityService) GetValSet(cfg config.Config, rd *types.RESTData) {
 	var vsResult map[string]string = make(map[string]string)
 
 	route := rest.GetCurrentValidatorSetRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}

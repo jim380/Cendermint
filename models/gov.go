@@ -28,7 +28,7 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	)
 
 	route := rest.GetProposalsRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=2000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?pagination.limit=2000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
@@ -58,7 +58,7 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 
 	for _, value := range proposalsInVoting {
 		var voteInfo types.VoteInfo
-		res, err := utils.HttpQuery(constants.RESTAddr + route + value + "/votes/" + utils.GetAccAddrFromOperAddr(constants.OperAddr))
+		res, err := utils.HTTPQuery(constants.RESTAddr + route + value + "/votes/" + utils.GetAccAddrFromOperAddr(constants.OperAddr))
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
