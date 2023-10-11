@@ -16,7 +16,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state types.RPCData) {
 	fetchConsensusInfo := func() types.RPCData {
 		var state types.RPCData
 		var cs types.ConsensusState
-		var vSetsResult map[string][]string = make(map[string][]string)
+		vSetsResult := make(map[string][]string)
 
 		resp, err := utils.HTTPQuery(constants.RPCAddr + "/dump_consensus_state")
 		if err != nil {
@@ -76,7 +76,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state types.RPCData) {
 
 func GetConspubMonikerMap() map[string]string {
 	var v types.RPCValidators
-	var vResult map[string]string = make(map[string]string)
+	vResult := make(map[string]string)
 
 	route := rest.GetValidatorsRoute()
 	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")

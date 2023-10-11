@@ -77,8 +77,8 @@ func (vs *ValidatorService) GetValidatorInfo(cfg config.Config, currentBlockHeig
 
 	if cfg.IsLegacySDKVersion() {
 		var vSets, vSets2, vsetTest validatorsetsLegacy
-		var vSetsResult map[string][]string = make(map[string][]string)
-		var vSetsResult2 map[string][]string = make(map[string][]string)
+		vSetsResult := make(map[string][]string)
+		vSetsResult2 := make(map[string][]string)
 
 		shouldRunPages := testPageLimit(cfg, currentBlockHeight, &vsetTest, 3)
 
@@ -108,7 +108,7 @@ func (vs *ValidatorService) GetValidatorInfo(cfg config.Config, currentBlockHeig
 		}
 	} else {
 		var vSets validatorsets
-		var vSetsResult map[string][]string = make(map[string][]string)
+		vSetsResult := make(map[string][]string)
 
 		route := rest.GetValidatorSetByHeightRoute(cfg)
 		res, err := utils.HTTPQuery(constants.RESTAddr + route + fmt.Sprint(currentBlockHeight))

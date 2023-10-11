@@ -111,7 +111,7 @@ func main() {
 		DB: db,
 	}
 
-	rpcServicesController := controllers.RpcServices{
+	rpcServicesController := controllers.RPCServices{
 		ConsensusService: &consensusService,
 	}
 

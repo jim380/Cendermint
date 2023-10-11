@@ -20,7 +20,7 @@ type DelegationService struct {
 
 func (ds *DelegationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var delInfo types.DelegationsInfo
-	var delRes map[string][]string = make(map[string][]string)
+	delRes := make(map[string][]string)
 
 	route := rest.GetValidatorByAddressRoute(cfg)
 	res, err := utils.HTTPQuery(constants.RESTAddr + route + constants.OperAddr + "/delegations" + "?pagination.limit=1000")

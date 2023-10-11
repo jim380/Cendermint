@@ -14,7 +14,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
+func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RPCServices) {
 	http.Handle("/metrics", promhttp.Handler())
 	go Run(config, logger, restService, rpcService)
 
@@ -25,7 +25,7 @@ func Start(config *config.Config, port string, logger *zap.Logger, restService c
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Serving at port", port))
 }
 
-func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
+func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RPCServices) {
 	denomList := config.GetDenomList(cfg.Chain.Chain, cfg.ChainList)
 
 	registerGauges(denomList)

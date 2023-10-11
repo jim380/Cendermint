@@ -46,7 +46,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 			Find validators with missing signatures in the block
 		*/
 		var cs types.ConsensusState
-		var activeSet map[string][]string = make(map[string][]string)
+		activeSet := make(map[string][]string)
 
 		resp, err = utils.HTTPQuery(constants.RPCAddr + "/dump_consensus_state")
 		if err != nil {

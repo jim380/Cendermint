@@ -20,7 +20,7 @@ type IbcService struct {
 
 func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 	var ibcInfo types.IbcChannelInfo
-	var ibcChannels map[string][]string = make(map[string][]string)
+	ibcChannels := make(map[string][]string)
 
 	ibcInfo.OpenChannels = 0
 	route := rest.GetIBCChannelsRoute(cfg)
@@ -66,7 +66,7 @@ func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 
 func (is *IbcService) GetConnectionInfo(cfg config.Config, rd *types.RESTData) {
 	var ibcInfo types.IbcConnectionInfo
-	var ibcConnections map[string][]string = make(map[string][]string)
+	ibcConnections := make(map[string][]string)
 
 	ibcInfo.OpenConnections = 0
 	route := rest.GetIBCConnectionsRoute(cfg)

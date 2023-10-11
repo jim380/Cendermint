@@ -183,7 +183,7 @@ func (gs *GravityService) GetValSet(cfg config.Config, rd *types.RESTData) {
 	}
 	var vs types.ValSetInfo
 
-	var vsResult map[string]string = make(map[string]string)
+	vsResult := make(map[string]string)
 
 	route := rest.GetCurrentValidatorSetRoute()
 	res, err := utils.HTTPQuery(constants.RESTAddr + route)
