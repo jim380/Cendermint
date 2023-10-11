@@ -28,9 +28,22 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTDat
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &deployments)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+
+	// Unmarshal the JSON response and check for errors
+	if err := json.Unmarshal(res, &deployments); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	// get total deployments count
+	if deployments.Pagination.Total == "" {
+		zap.L().Error("Total deployments count is empty")
+		return
+	}
 	totalDeploymentsCount, err := strconv.Atoi(deployments.Pagination.Total)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
@@ -42,8 +55,20 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTDat
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(resActive, &activeDeployments)
+	if !json.Valid(resActive) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
 
+	// Unmarshal the JSON response and check for errors
+	if err := json.Unmarshal(resActive, &activeDeployments); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
+	if activeDeployments.Pagination.Total == "" {
+		zap.L().Error("Active deployments count is empty")
+		return
+	}
 	activeDeploymentsCount, err := strconv.Atoi(activeDeployments.Pagination.Total)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))

@@ -39,7 +39,14 @@ func (bs *BankService) GetBalanceInfo(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &b)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &b); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -57,7 +64,14 @@ func (bs *BankService) GetRewardsCommissionInfo(cfg config.Config, rd *types.RES
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &rc)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &rc); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {

@@ -51,7 +51,7 @@ func InitLogger(logOutput string, logLvl zapcore.Level) *zap.Logger {
 func logConsole(atom zap.AtomicLevel, logLvl zapcore.Level) *zap.Logger {
 	// write syncers
 	stdoutSyncer := zapcore.Lock(os.Stdout)
-	//stderrSyncer := zapcore.Lock(os.Stderr)
+	// stderrSyncer := zapcore.Lock(os.Stderr)
 
 	// tee core
 	core := zapcore.NewTee(

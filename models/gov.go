@@ -32,7 +32,14 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &g)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &g); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -55,7 +62,14 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
-		json.Unmarshal(res, &voteInfo)
+		if !json.Valid(res) {
+			zap.L().Error("Response is not valid JSON")
+			return
+		}
+		if err := json.Unmarshal(res, &voteInfo); err != nil {
+			zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+			return
+		}
 		if voteInfo.Votes.Option != "" {
 			inVotingVoted++
 		} else {

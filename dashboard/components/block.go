@@ -19,7 +19,7 @@ Component
   - Context holds common objects like http.ResponseWriter, *http.Request, etc
 */
 func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
-	route := "/cosmos/base/tendermint/v1beta1/blocks/latest" //TO-DO refactor this
+	route := "/cosmos/base/tendermint/v1beta1/blocks/latest" // TO-DO refactor this
 	fetchBlockInfo := func() types.Blocks {
 		var state types.Blocks
 		resp, err := utils.HttpQuery(constants.RESTAddr + route)

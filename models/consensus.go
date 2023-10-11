@@ -27,7 +27,14 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &cs)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &cs); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	conspubMonikerMap := getConspubMonikerMap(cfg, rpc)
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
@@ -72,7 +79,14 @@ func getConspubMonikerMap(cfg config.Config, rpc *types.RPCData) map[string]stri
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &v)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return vResult
+	}
+	if err := json.Unmarshal(res, &v); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return vResult
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {

@@ -116,7 +116,14 @@ func (vs *ValidatorService) GetValidatorInfo(cfg config.Config, currentBlockHeig
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 
-		json.Unmarshal(res, &vSets)
+		if !json.Valid(res) {
+			zap.L().Error("Response is not valid JSON")
+			return locateValidatorInActiveSet(rd)
+		}
+		if err := json.Unmarshal(res, &vSets); err != nil {
+			zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+			return locateValidatorInActiveSet(rd)
+		}
 
 		if strings.Contains(string(res), "not found") {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
@@ -172,7 +179,14 @@ func runPages(cfg config.Config, currentBlockHeight int64, vSets *validatorsetsL
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
-	json.Unmarshal(res, &vSets)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &vSets); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
@@ -195,7 +209,14 @@ func testPageLimit(cfg config.Config, currentBlockHeight int64, vSets *validator
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
-	json.Unmarshal(res, &vSets)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		multiPagesSupported = false
+	}
+	if err := json.Unmarshal(res, &vSets); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		multiPagesSupported = false
+	}
 
 	if strings.Contains(string(res), "Internal error: page should be within") {
 		zap.L().Info("", zap.String("warn", string(res)))
@@ -213,7 +234,14 @@ func getValidator(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &v)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &v); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {

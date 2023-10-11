@@ -12,10 +12,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const cosmos = "cosmos"
+
 func GetPrefix(chain string) string {
 	switch chain {
-	case "cosmos":
-		return "cosmos"
+	case cosmos:
+		return cosmos
 	case "umee":
 		return "umee"
 	case "osmosis":
@@ -55,7 +57,7 @@ func GetPrefix(chain string) string {
 	case "nym":
 		return "n"
 	default:
-		return "cosmos"
+		return cosmos
 	}
 }
 

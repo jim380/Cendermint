@@ -8,7 +8,7 @@ type Validator struct {
 	OperAddr        string        `json:"operator_address"`
 	ConsPubKey      consPubKeyVal `json:"consensus_pubkey"`
 	Jailed          bool          `json:"jailed"`
-	Status          int           `json:"status"`
+	Status          string        `json:"status"`
 	Tokens          string        `json:"tokens"`
 	DelegatorShares string        `json:"delegator_shares"`
 	Description     struct {

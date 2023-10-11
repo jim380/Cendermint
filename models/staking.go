@@ -29,7 +29,14 @@ func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RES
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
-	json.Unmarshal(res, &sp)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &sp); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
@@ -48,7 +55,14 @@ func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
 	if err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &ts)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return utils.StringToFloat64(ts.Amount.Amount)
+	}
+	if err := json.Unmarshal(res, &ts); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return utils.StringToFloat64(ts.Amount.Amount)
+	}
 	if strings.Contains(string(res), "not found") {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
