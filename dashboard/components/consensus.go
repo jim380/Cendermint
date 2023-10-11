@@ -4,28 +4,30 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/rest"
+	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
 	"github.com/kyoto-framework/kyoto/v2"
 	"go.uber.org/zap"
 )
 
-func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
-	fetchConsensusInfo := func() rest.RPCData {
-		var state rest.RPCData
-		var cs rest.ConsensusState
+func GetConsensusInfo(ctx *kyoto.Context) (state types.RPCData) {
+	fetchConsensusInfo := func() types.RPCData {
+		var state types.RPCData
+		var cs types.ConsensusState
 		var vSetsResult map[string][]string = make(map[string][]string)
 
-		resp, err := rest.HttpQuery(rest.RPCAddr + "/dump_consensus_state")
+		resp, err := utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.RPCData{}
+			return types.RPCData{}
 		}
 
 		err = json.Unmarshal(resp, &cs)
 		if err != nil {
 			zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return rest.RPCData{}
+			return types.RPCData{}
 		}
 
 		conspubMonikerMap := GetConspubMonikerMap()
@@ -55,7 +57,7 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 		cs.Result.Votes[0].PrecommitsBitArray = fmt.Sprintf("%.2f", utils.ParseConsensusOutput(cs.Result.Votes[0].PrecommitsBitArray, "\\= (.*)", 1))
 		cs.Result.Votes[0].PrevotesBitArray = fmt.Sprintf("%.2f", utils.ParseConsensusOutput(cs.Result.Votes[0].PrevotesBitArray, "\\= (.*)", 1))
 		state.ConsensusState = cs
-		state.Validatorsets = rest.Sort(vSetsResult, 1) // sort by voting power
+		state.Validatorsets = utils.Sort(vSetsResult, 1) // sort by voting power
 		return state
 	}
 
@@ -69,15 +71,15 @@ func GetConsensusInfo(ctx *kyoto.Context) (state rest.RPCData) {
 
 	state = fetchConsensusInfo()
 
-	return state
+	return
 }
 
 func GetConspubMonikerMap() map[string]string {
-	var v rest.RpcValidators
+	var v types.RpcValidators
 	var vResult map[string]string = make(map[string]string)
 
 	route := rest.GetValidatorsRoute()
-	res, err := rest.HttpQuery(rest.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 		return map[string]string{}
