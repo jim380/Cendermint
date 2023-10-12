@@ -21,13 +21,20 @@ type ConsensusService struct {
 
 func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) {
 	var cs types.ConsensusState
-	var vSetsResult map[string][]string = make(map[string][]string)
+	vSetsResult := make(map[string][]string)
 
-	res, err := utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
+	res, err := utils.HTTPQuery(constants.RPCAddr + "/dump_consensus_state")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &cs)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &cs); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	conspubMonikerMap := getConspubMonikerMap(cfg, rpc)
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
@@ -64,15 +71,22 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 }
 
 func getConspubMonikerMap(cfg config.Config, rpc *types.RPCData) map[string]string {
-	var v types.RpcValidators
-	var vResult map[string]string = make(map[string]string)
+	var v types.RPCValidators
+	vResult := make(map[string]string)
 
 	route := rest.GetValidatorsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &v)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return vResult
+	}
+	if err := json.Unmarshal(res, &v); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return vResult
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {

@@ -16,9 +16,9 @@ func GetConsensusInfo(ctx *kyoto.Context) (state types.RPCData) {
 	fetchConsensusInfo := func() types.RPCData {
 		var state types.RPCData
 		var cs types.ConsensusState
-		var vSetsResult map[string][]string = make(map[string][]string)
+		vSetsResult := make(map[string][]string)
 
-		resp, err := utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
+		resp, err := utils.HTTPQuery(constants.RPCAddr + "/dump_consensus_state")
 		if err != nil {
 			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 			return types.RPCData{}
@@ -71,15 +71,15 @@ func GetConsensusInfo(ctx *kyoto.Context) (state types.RPCData) {
 
 	state = fetchConsensusInfo()
 
-	return
+	return state
 }
 
 func GetConspubMonikerMap() map[string]string {
-	var v types.RpcValidators
-	var vResult map[string]string = make(map[string]string)
+	var v types.RPCValidators
+	vResult := make(map[string]string)
 
 	route := rest.GetValidatorsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
 		return map[string]string{}

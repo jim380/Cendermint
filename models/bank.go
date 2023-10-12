@@ -16,9 +16,9 @@ import (
 type rewardsAndCommisson struct {
 	Height string `json:"height"`
 	Result struct {
-		Operator_Address string       `json:"operator_address"`
-		Selfbond_Rewards []types.Coin `json:"self_bond_rewards"`
-		Commission       `json:"val_commission"`
+		OperatorAddress string       `json:"operator_address"`
+		SelfbondRewards []types.Coin `json:"self_bond_rewards"`
+		Commission      `json:"val_commission"`
 	}
 }
 
@@ -35,11 +35,18 @@ func (bs *BankService) GetBalanceInfo(cfg config.Config, rd *types.RESTData) {
 
 	route := rest.GetBalancesByAddressRoute(cfg)
 
-	res, err := utils.HttpQuery(constants.RESTAddr + route + constants.AccAddr)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + constants.AccAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &b)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &b); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -53,17 +60,24 @@ func (bs *BankService) GetRewardsCommissionInfo(cfg config.Config, rd *types.RES
 	var rc rewardsAndCommisson
 
 	route := rest.GetValidatorDistributionByAddressRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + constants.OperAddr)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + constants.OperAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &rc)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &rc); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	}
 
-	rd.Rewards = rc.Result.Selfbond_Rewards
+	rd.Rewards = rc.Result.SelfbondRewards
 	rd.Commission = rc.Result.Commission.Commission
 }

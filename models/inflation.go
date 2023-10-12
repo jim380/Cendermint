@@ -18,10 +18,10 @@ type inflation struct {
 	Result string `json:"result"`
 }
 
-type inflation_iris struct {
+type inflationIris struct {
 	Params struct {
-		Mint_Denom string
-		Inflation  string
+		MintDenom string
+		Inflation string
 	}
 }
 
@@ -33,15 +33,22 @@ func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var result string
 
 	route := rest.GetInflationRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 
 	switch cfg.Chain.Chain {
 	case "irisnet":
-		var i inflation_iris
+		var i inflationIris
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 		}
-		json.Unmarshal(res, &i)
+		if !json.Valid(res) {
+			zap.L().Error("Response is not valid JSON")
+			return
+		}
+		if err := json.Unmarshal(res, &i); err != nil {
+			zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+			return
+		}
 		if strings.Contains(string(res), "not found") {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 		} else {
@@ -51,16 +58,24 @@ func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	default:
 		var i inflation
 
-		res, err := utils.HttpQuery(constants.RESTAddr + route) // route does not existing in osmosis
+		res, err := utils.HTTPQuery(constants.RESTAddr + route) // route does not existing in osmosis
 		if err != nil {
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
-		json.Unmarshal(res, &i)
-		if strings.Contains(string(res), "not found") {
+		if !json.Valid(res) {
+			zap.L().Error("Response is not valid JSON")
+			return
+		}
+		if err := json.Unmarshal(res, &i); err != nil {
+			zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+			return
+		}
+		switch {
+		case strings.Contains(string(res), "not found"):
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else {
+		default:
 			result = i.Result
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 		}

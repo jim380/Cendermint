@@ -2,8 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -20,7 +19,7 @@ type Config struct {
 	SDKVersion       string
 	OperatorAddr     string
 	RestAddr         string
-	RpcAddr          string
+	RPCAddr          string
 	ListeningPort    string
 	MissThreshold    string
 	MissConsecutive  string
@@ -59,41 +58,41 @@ func (cfg Config) SetSDKConfig() {
 	config.Seal()
 }
 
-func (config Config) CheckInputs(chainList map[string][]string) {
+func (cfg Config) CheckInputs(chainList map[string][]string) {
 	// TO-DO add more robust checks
-	if config.OperatorAddr == "" {
+	if cfg.OperatorAddr == "" {
 		log.Fatal("Operator address was not provided")
 	}
 
-	if config.RestAddr == "" {
+	if cfg.RestAddr == "" {
 		log.Fatal("REST address was not provided")
 	}
 
-	if config.RpcAddr == "" {
+	if cfg.RPCAddr == "" {
 		log.Fatal("RPC address was not provided")
 	}
 
-	if config.ListeningPort == "" {
+	if cfg.ListeningPort == "" {
 		log.Fatal("Listening port was not provided")
 	}
 
-	if config.MissThreshold == "" {
+	if cfg.MissThreshold == "" {
 		log.Fatal("Threshold to trigger missing block alerts was not provided")
 	}
 
-	if config.MissConsecutive == "" {
+	if cfg.MissConsecutive == "" {
 		log.Fatal("Threshold to trigger consecutively-missing block alerts was not provided")
 	}
 
-	if config.LogOutput == "" {
+	if cfg.LogOutput == "" {
 		log.Fatal("Log output was not provided")
 	}
 
-	if config.PollInterval == "" {
+	if cfg.PollInterval == "" {
 		log.Fatal("Poll interval was not provided")
 	}
 
-	if config.LogLevel == "" {
+	if cfg.LogLevel == "" {
 		log.Fatal("Log level was not provided")
 	}
 }
@@ -121,31 +120,36 @@ func GetLogLevel(lvl string) zapcore.Level {
 }
 
 func GetDenomList(chain string, chainList map[string][]string) []string {
-	var found bool
-
 	for k, v := range chainList {
 		if k == chain {
-			found = true
 			return v
 		}
 	}
-	if !found {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "chain("+chain+") denom not supported"))
-	}
+	zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "chain("+chain+") denom not supported"))
 	return []string{}
 }
 
 func GetChainList() map[string][]string {
 	jsonFile, err := os.Open("chains.json")
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error opening JSON file: ", err)
+		return nil
 	}
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, err := io.ReadAll(jsonFile)
+	if err != nil {
+		jsonFile.Close()
+		log.Println("Error reading JSON file: ", err)
+		return nil
+	}
 
 	var chains []Chain
-	json.Unmarshal(byteValue, &chains)
+	if err := json.Unmarshal(byteValue, &chains); err != nil {
+		jsonFile.Close()
+		log.Println("Error unmarshaling JSON data: ", err)
+		return nil
+	}
 
 	chainList := make(map[string][]string)
 	for _, chain := range chains {
@@ -157,20 +161,20 @@ func GetChainList() map[string][]string {
 	return chainList
 }
 
-func (config Config) IsLegacySDKVersion() bool {
-	var legacy bool = false
+func (cfg Config) IsLegacySDKVersion() bool {
+	legacy := false
 
-	if strings.Contains(config.SDKVersion, "0.45") {
+	if strings.Contains(cfg.SDKVersion, "0.45") {
 		legacy = true
 	}
 
 	return legacy
 }
 
-func (config Config) IsGravityBridgeEnabled() bool {
-	var enabled bool = false
+func (cfg Config) IsGravityBridgeEnabled() bool {
+	enabled := false
 
-	if config.Chain.Chain == "gravity" || config.Chain.Chain == "umee" {
+	if cfg.Chain.Chain == "gravity" || cfg.Chain.Chain == "umee" {
 		enabled = true
 	}
 

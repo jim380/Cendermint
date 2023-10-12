@@ -12,10 +12,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const cosmos = "cosmos"
+
 func GetPrefix(chain string) string {
 	switch chain {
-	case "cosmos":
-		return "cosmos"
+	case cosmos:
+		return cosmos
 	case "umee":
 		return "umee"
 	case "osmosis":
@@ -55,7 +57,7 @@ func GetPrefix(chain string) string {
 	case "nym":
 		return "n"
 	default:
-		return "cosmos"
+		return cosmos
 	}
 }
 
@@ -83,10 +85,9 @@ func GetAccAddrFromOperAddr(operAddr string) string {
 	return accAddr.String()
 }
 
-func GetAccAddrFromOperAddr_localPrefixes(operAddr string, bech32Prefixes []string) string {
+func GetAccAddrFromOperAddrLocalPrefixes(operAddr string, bech32Prefixes []string) string {
 	bz, err := sdk.GetFromBech32(operAddr, bech32Prefixes[2])
 	if err != nil {
-
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	}
 

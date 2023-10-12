@@ -18,7 +18,7 @@ type akashDeployment struct {
 	Deployment    `json:"deployment"`
 	Groups        []Group `json:"groups"`
 	EscrowAccount struct {
-		Id struct {
+		ID struct {
 			Scope string `json:"scope"`
 			Xid   string `json:"xid"`
 		} `json:"id"`
@@ -42,25 +42,25 @@ type akashDeployment struct {
 }
 
 type Deployment struct {
-	DeploymentId `json:"deployment_id"`
+	DeploymentID `json:"deployment_id"`
 	State        string `json:"state"`
 	Version      string `json:"version"`
 	CreatedAt    string `json:"created_at"`
 }
 
-type DeploymentId struct {
+type DeploymentID struct {
 	Owner string `json:"owner"`
 	Dseq  string `json:"dseq"`
 }
 
 type Group struct {
-	GroupId   `json:"group_id"`
+	GroupID   `json:"group_id"`
 	State     string `json:"state"`
 	GroupSpec `json:"group_spec"`
 	CreatedAt string `json:"created_at"`
 }
 
-type GroupId struct {
+type GroupID struct {
 	Owner string `json:"owner"`
 	Dseq  string `json:"dseq"`
 	Gseq  string `json:"gseq"`
@@ -71,7 +71,7 @@ type GroupSpec struct {
 	// Requirements `json:"requirements"`
 	Resources []struct {
 		Resources struct {
-			Cpu struct {
+			CPU struct {
 				Units struct {
 					Val string `json:"Val"`
 				} `json:"units"`
@@ -88,8 +88,8 @@ type GroupSpec struct {
 				} `json:"quantity"`
 			} `json:"storage"`
 			Endpoints []struct {
-				Kind            string `json:"kind"`
-				Sequence_number int    `json:"sequence_number"`
+				Kind           string `json:"kind"`
+				SequenceNumber int    `json:"sequence_number"`
 			} `json:"endpoints"`
 		} `json:"resources"`
 		Count string `json:"count"`

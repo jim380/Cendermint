@@ -23,11 +23,18 @@ func (ss *SlashingService) GetSlashingParams(cfg config.Config, rd *types.RESTDa
 	var d types.SlashingInfo
 
 	route := rest.GetSlashingParamsRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &d)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &d); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -40,11 +47,18 @@ func (ss *SlashingService) GetSigningInfo(cfg config.Config, consAddr string, rd
 	var d types.SlashingInfo
 
 	route := rest.GetSigningInfoByAddressRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + consAddr)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + consAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &d)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &d); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -58,8 +72,8 @@ func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blo
 	var cInfo types.CommitInfo
 	missed := true
 
-	blockProposer := blockData.Block.Header.Proposer_address
-	cInfo.ChainId = blockData.Block.Header.ChainID
+	blockProposer := blockData.Block.Header.ProposerAddress
+	cInfo.ChainID = blockData.Block.Header.ChainID
 	cInfo.ValidatorPrecommitStatus, cInfo.ValidatorProposingStatus, cInfo.MissThreshold, cInfo.MissConsecutive = 0.0, 0.0, 0.0, 0.0
 	currentHeight, _ := strconv.Atoi(blockData.Block.Header.Height)
 
@@ -76,7 +90,7 @@ func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blo
 				zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
 			}
 
-			if consHexAddr == v.Validator_address {
+			if consHexAddr == v.ValidatorAddress {
 				missed = false
 				cInfo.LastSigned = currentHeight
 				cInfo.ValidatorPrecommitStatus = 1.0
@@ -97,7 +111,6 @@ func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blo
 				// MissedCount resets when the validator signs again
 				cInfo.MissedCount = 0
 			}
-
 		}()
 	}
 	if missed {

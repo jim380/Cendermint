@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
@@ -25,37 +26,61 @@ func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RES
 	var sp types.StakingPool
 
 	route := rest.GetStakingPoolRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
 	}
-	json.Unmarshal(res, &sp)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &sp); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.Bonded_tokens))
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.BondedTokens))
 	}
 
-	sp.Pool.Total_supply = getTotalSupply(cfg, denom, zap.L())
+	totalSupply, err := getTotalSupply(cfg, denom, zap.L())
+	if err != nil {
+		// Handle the error here, such as logging or returning an error response.
+		zap.L().Error("Failed to get total supply", zap.Error(err))
+	}
+
+	sp.Pool.TotalSupply = totalSupply
 	rd.StakingPool = sp
 }
 
-func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
+func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) (float64, error) {
 	var ts totalSupply
 
 	route := rest.GetSupplyRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + denom)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + denom)
 	if err != nil {
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		return 0, err
 	}
-	json.Unmarshal(res, &ts)
-	if strings.Contains(string(res), "not found") {
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return 0, fmt.Errorf("response is not valid JSON")
+	}
+	if err := json.Unmarshal(res, &ts); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return 0, err
+	}
+	switch {
+	case strings.Contains(string(res), "not found"):
 		log.Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		return 0, fmt.Errorf("resource not found")
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		log.Info("", zap.Bool("Success", true), zap.String("Total supply", ts.Amount.Amount))
+		return 0, fmt.Errorf("error in response")
+	default:
+		log.Info("", zap.Bool("Success", true), zap.String("total supply", ts.Amount.Amount))
 	}
 
-	return utils.StringToFloat64(ts.Amount.Amount)
+	return utils.StringToFloat64(ts.Amount.Amount), nil
 }

@@ -11,7 +11,7 @@
   <div><b>Chain Id</b>: {{ .Block.Header.ChainID }}</div>
   <div><b>Height</b>: {{ .Block.Header.Height }}</div>
   <div><b>Timestamp</b>: {{ .Block.Header.Timestamp }}</div>
-  <div><b>Hash</b>: {{ .BlockId.Hash }}</div>
+  <div><b>Hash</b>: {{ .BlockID.Hash }}</div>
   <div><b>Validator Signatures</b>: {{ len .Block.LastCommit.Signatures }}</div>
   {{ if .MissingValidators }}
   <b>Missing Validators</b>

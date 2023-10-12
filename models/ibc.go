@@ -20,20 +20,28 @@ type IbcService struct {
 
 func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 	var ibcInfo types.IbcChannelInfo
-	var ibcChannels map[string][]string = make(map[string][]string)
+	ibcChannels := make(map[string][]string)
 
 	ibcInfo.OpenChannels = 0
 	route := rest.GetIBCChannelsRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=1000000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?pagination.limit=1000000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &ibcInfo)
-	if strings.Contains(string(res), "not found") {
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &ibcInfo); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
+	switch {
+	case strings.Contains(string(res), "not found"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Active IBC channels", fmt.Sprint(len(ibcInfo.IBCChannels))))
 	}
 
@@ -58,20 +66,28 @@ func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 
 func (is *IbcService) GetConnectionInfo(cfg config.Config, rd *types.RESTData) {
 	var ibcInfo types.IbcConnectionInfo
-	var ibcConnections map[string][]string = make(map[string][]string)
+	ibcConnections := make(map[string][]string)
 
 	ibcInfo.OpenConnections = 0
 	route := rest.GetIBCConnectionsRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.limit=100000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + "?pagination.limit=100000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &ibcInfo)
-	if strings.Contains(string(res), "not found") {
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &ibcInfo); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
+	switch {
+	case strings.Contains(string(res), "not found"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Active IBC connections", fmt.Sprint(len(ibcInfo.IBConnections))))
 	}
 

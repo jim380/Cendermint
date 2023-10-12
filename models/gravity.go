@@ -20,12 +20,18 @@ type GravityService struct {
 func GetUmeePrice(rd *types.RESTData) {
 	var p types.UmeePrice
 
-	res, err := utils.HttpQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
-
+	res, err := utils.HTTPQuery("https://api.coingecko.com/api/v3/simple/price?ids=umee&vs_currencies=usd")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &p)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &p); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	rd.GravityInfo.UMEEPrice = p.UMEEPrice
 }
@@ -37,11 +43,18 @@ func (gs *GravityService) GetBatchFees(cfg config.Config, rd *types.RESTData) {
 	var b types.BatchFees
 
 	route := rest.GetBatchFeesRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &b)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &b); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	for _, bf := range b.BatchFees {
 		b.Fees += utils.StringToFloat64(bf.TotalFees)
@@ -59,11 +72,18 @@ func (gs *GravityService) GetBatchesFees(cfg config.Config, rd *types.RESTData) 
 	var b types.Batches
 
 	route := rest.GetBatchesFeesRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &b)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &b); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	for _, batch := range b.Batches {
 		for _, tx := range batch.Transactions {
@@ -84,11 +104,18 @@ func (gs *GravityService) GetBridgeFees(cfg config.Config, rd *types.RESTData) {
 	var bf float64
 
 	route := rest.GetBridgeFeesRoute()
-	res, err := utils.HttpQuery(route)
+	res, err := utils.HTTPQuery(route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &p)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &p); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	rd.GravityInfo.ETHPrice = p.ETHPrice
 	GetUmeePrice(rd)
@@ -104,11 +131,18 @@ func (gs *GravityService) GetBridgeParams(cfg config.Config, rd *types.RESTData)
 
 	rd.GravityInfo.GravityActive = 0.0
 	route := rest.GetBridgeParamsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &params)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &params); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	rd.GravityInfo.BridgeParams = params.BridgeParams
 
@@ -127,11 +161,18 @@ func (gs *GravityService) GetOracleEventNonce(cfg config.Config, rd *types.RESTD
 
 	orchAddr := os.Getenv("UMEE_ORCH_ADDR")
 	route := rest.GetOracleEventNonceByAddressRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route + orchAddr)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + orchAddr)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &evt)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &evt); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	rd.GravityInfo.EventNonce = evt.EventNonce
 }
@@ -142,14 +183,21 @@ func (gs *GravityService) GetValSet(cfg config.Config, rd *types.RESTData) {
 	}
 	var vs types.ValSetInfo
 
-	var vsResult map[string]string = make(map[string]string)
+	vsResult := make(map[string]string)
 
 	route := rest.GetCurrentValidatorSetRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	res, err := utils.HTTPQuery(constants.RESTAddr + route)
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &vs)
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &vs); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
 
 	for _, member := range vs.ValSet.Members {
 		vsResult[member.ETHAddr] = member.Power

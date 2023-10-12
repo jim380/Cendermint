@@ -32,11 +32,11 @@ type RestServices struct {
 	AkashService           *models.AkashService
 }
 
-type RpcServices struct {
+type RPCServices struct {
 	ConsensusService *models.ConsensusService
 }
 
-func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, blockHeight int64, blockData types.Blocks, denom string) *types.RESTData {
+func (rs RestServices) GetData(cfg *config.Config, rpcService RPCServices, blockHeight int64, blockData types.Blocks, denom string) *types.RESTData {
 	// rpc
 	var rpcData types.RPCData
 	rpc := rpcData.New()
@@ -52,7 +52,7 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		rpcService.GetRpcInfo(*cfg, rpc)
+		rpcService.GetRPCInfo(*cfg, rpc)
 		rs.GetStakingInfo(*cfg, denom, rd)
 		rs.GetSlashingInfo(*cfg, rd)
 		rs.GetInflationInfo(*cfg, rd)

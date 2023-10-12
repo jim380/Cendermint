@@ -40,12 +40,12 @@ func GetValidatorDistributionByAddressRoute(cfg config.Config) string {
 }
 
 func GetInflationRoute(cfg config.Config) string {
-	if cfg.Chain.Chain == "irisnet" {
+	switch {
+	case cfg.Chain.Chain == "irisnet":
 		return "/irishub/mint/params"
-	} else if cfg.IsLegacySDKVersion() {
+	case cfg.IsLegacySDKVersion():
 		return "/minting/inflation"
-
-	} else {
+	default:
 		return "/cosmos/mint/v1beta1/inflation"
 	}
 }

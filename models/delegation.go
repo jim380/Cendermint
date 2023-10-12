@@ -20,19 +20,27 @@ type DelegationService struct {
 
 func (ds *DelegationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var delInfo types.DelegationsInfo
-	var delRes map[string][]string = make(map[string][]string)
+	delRes := make(map[string][]string)
 
 	route := rest.GetValidatorByAddressRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + constants.OperAddr + "/delegations" + "?pagination.limit=1000")
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + constants.OperAddr + "/delegations" + "?pagination.limit=1000")
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &delInfo)
-	if strings.Contains(string(res), "not found") {
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &delInfo); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
+	switch {
+	case strings.Contains(string(res), "not found"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from range", fmt.Sprint(len(delInfo.DelegationRes))))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total delegations from pagination", delInfo.Pagination.Total))
 	}

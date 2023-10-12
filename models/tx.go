@@ -24,25 +24,33 @@ func (ts *TxnService) GetInfo(cfg config.Config, currentBlockHeight int64, rd *t
 	var txRes types.TxResult
 
 	route := rest.GetTxByHeightRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprintf("%v", currentBlockHeight))
+	res, err := utils.HTTPQuery(constants.RESTAddr + route + fmt.Sprintf("%v", currentBlockHeight))
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &txInfo)
-	if strings.Contains(string(res), "not found") {
+	if !json.Valid(res) {
+		zap.L().Error("Response is not valid JSON")
+		return
+	}
+	if err := json.Unmarshal(res, &txInfo); err != nil {
+		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
+		return
+	}
+	switch {
+	case strings.Contains(string(res), "not found"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+	case strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":"):
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
+	default:
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Pagination.Total))
 	}
 
 	for _, v := range txInfo.TxResp {
 		// zap.L().Info("", zap.Bool("Success", true), zap.String("Tx #:", fmt.Sprintf("%v", i)))
 		gasWantedRes, _ := strconv.ParseFloat(v.GasWanted, 64)
-		txRes.GasWantedTotal = txRes.GasWantedTotal + gasWantedRes
+		txRes.GasWantedTotal += gasWantedRes
 		gasUsedRes, _ := strconv.ParseFloat(v.GasUsd, 64)
-		txRes.GasUsedTotal = txRes.GasUsedTotal + gasUsedRes
+		txRes.GasUsedTotal += gasUsedRes
 		for _, v := range v.Logs {
 			for _, v := range v.Events {
 				txRes.Default.EventsTotal++

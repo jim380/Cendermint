@@ -11,7 +11,7 @@ type lastBlockHeader struct {
 }
 
 type Blocks struct {
-	BlockId struct {
+	BlockID struct {
 		Hash string `json:"hash"`
 	} `json:"block_id"`
 	Block struct {
@@ -25,16 +25,16 @@ type Blocks struct {
 }
 
 type header struct {
-	ChainID          string `json:"chain_id"`
-	Height           string `json:"height"`
-	Proposer_address string `json:"proposer_address"`
-	Timestamp        string `json:"time"`
-	LastTimestamp    string // not part of the response so no json tag
+	ChainID         string `json:"chain_id"`
+	Height          string `json:"height"`
+	ProposerAddress string `json:"proposer_address"`
+	Timestamp       string `json:"time"`
+	LastTimestamp   string // not part of the response so no json tag
 }
 
 type lastCommit struct {
 	Signatures []struct {
-		Validator_address string `json:"validator_address"`
-		Signature         string `json:"signature"`
+		ValidatorAddress string `json:"validator_address"`
+		Signature        string `json:"signature"`
 	} `json:"signatures"`
 }
