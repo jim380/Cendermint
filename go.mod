@@ -21,10 +21,7 @@ require (
 	github.com/kyoto-framework/kyoto/v2 v2.0.1
 )
 
-require (
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
-)
+require github.com/mattn/go-isatty v0.0.19 // indirect
 
 require (
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
@@ -75,7 +72,6 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.15.0 // indirect
 	github.com/prometheus/procfs v0.2.0 // indirect
-	github.com/rs/zerolog v1.31.0
 	github.com/sasha-s/go-deadlock v0.2.1-0.20190427202633-1595213edefa // indirect
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
