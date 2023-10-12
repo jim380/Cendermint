@@ -35,11 +35,11 @@ func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {
 	}
 	if !json.Valid(res) {
 		zap.L().Error("Response is not valid JSON")
-		return *bs.Block
+		return types.Blocks{}
 	}
 	if err := json.Unmarshal(res, &bs.Block); err != nil {
 		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
-		return *bs.Block
+		return types.Blocks{}
 	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
@@ -59,11 +59,11 @@ func (bs *BlockService) GetLastBlockTimestamp(cfg config.Config, currentHeight i
 	}
 	if !json.Valid(res) {
 		zap.L().Error("Response is not valid JSON")
-		return *bs.Block
+		return types.Blocks{}
 	}
 	if err := json.Unmarshal(res, &lastBlock); err != nil {
 		zap.L().Error("Failed to unmarshal JSON response", zap.Error(err))
-		return *bs.Block
+		return types.Blocks{}
 	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
