@@ -19,7 +19,6 @@ RUN apk add --update ca-certificates
 
 WORKDIR /cendermint
 
-COPY --from=build-env /cendermint/config.env ./
 COPY --from=build-env /cendermint/chains.json ./
 COPY --from=build-env /cendermint/Cendermint /usr/bin/Cendermint
 
