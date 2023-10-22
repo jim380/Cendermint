@@ -19,7 +19,7 @@ type proposal struct {
 	Status     string `json:"status"`
 }
 
-type VoteInfo struct {
+type Vote struct {
 	Votes struct {
 		Option string `json:"option"`
 	} `json:"vote"`

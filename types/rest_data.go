@@ -24,6 +24,7 @@ type RESTData struct {
 	UpgradeInfo UpgradeInfo
 	GravityInfo GravityInfo
 	AkashInfo   AkashInfo
+	OracleInfo  OracleInfo
 }
 
 func (rd RESTData) New(blockHeight int64) *RESTData {

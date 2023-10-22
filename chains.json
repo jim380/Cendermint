@@ -196,5 +196,16 @@
       }
     ],
     "addr_prefix": "tori"
+  },
+  {
+    "chain": "pryzm",
+    "assets": [
+      {
+        "denom": "upryzm",
+        "symbol": "PRYZM",
+        "decimals": "6"
+      }
+    ],
+    "addr_prefix": "pryzm"
   }
 ]

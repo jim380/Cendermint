@@ -30,6 +30,7 @@ type RestServices struct {
 	IbcServices            *models.IbcService
 	GravityService         *models.GravityService
 	AkashService           *models.AkashService
+	OracleService          *models.OracleService
 }
 
 type RpcServices struct {
@@ -79,6 +80,9 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 		rs.GetAkashInfo(*cfg, rd)
 		// gravity
 		rs.GetGravityBridgeInfo(*cfg, rd)
+		// oracle
+		rs.GetOracleInfo(*cfg, rd)
+
 		wg.Done()
 	}()
 	wg.Wait()

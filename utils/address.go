@@ -12,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// TO-DO use chains.json
 func GetPrefix(chain string) string {
 	switch chain {
 	case "cosmos":
@@ -54,6 +55,8 @@ func GetPrefix(chain string) string {
 		return "tori"
 	case "nym":
 		return "n"
+	case "pryzm":
+		return "pryzm"
 	default:
 		return "cosmos"
 	}

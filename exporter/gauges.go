@@ -166,6 +166,11 @@ func (metricData *metric) setNormalGauges(defaultGauges []prometheus.Gauge) {
 		metricData.Akash.TotalDeployments,
 		metricData.Akash.ActiveDeployments,
 		metricData.Akash.ClosedDeployments,
+
+		// oracle
+		metricData.Oracle.MissedCounter,
+		metricData.Oracle.PrevoteSubmitHeight,
+		metricData.Oracle.ModuleVotes,
 	}
 	for i := 0; i < len(gaugesNamespaceList); i++ {
 		defaultGauges[i].Set(gaugesValue[i])
