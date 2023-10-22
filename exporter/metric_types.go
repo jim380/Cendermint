@@ -188,4 +188,8 @@ type metric struct {
 		ActiveDeployments float64
 		ClosedDeployments float64
 	}
+
+	Oracle struct {
+		MissedCounter float64
+	}
 }

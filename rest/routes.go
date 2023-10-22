@@ -138,3 +138,10 @@ func GetCurrentValidatorSetRoute() string {
 func GetDeploymentsRoute() string {
 	return "/akash/deployment/v1beta2/deployments/list"
 }
+
+/***********************
+ * Oracle Routes
+************************/
+func GetMissedCounterRoute() string {
+	return "/refractedlabs/oracle/oracle/miss_counter"
+}

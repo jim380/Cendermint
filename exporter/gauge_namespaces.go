@@ -107,7 +107,10 @@ var gaugesNamespaceList = [...]string{
 	"gravity_bridge_fees",
 
 	// akash
-	"akash_totalDeployments",
-	"akash_activeDeployments",
-	"akash_closedDeployments",
+	"akash_total_deployments",
+	"akash_active_deployments",
+	"akash_closed_deployments",
+
+	// oracle
+	"oracle_validator_missed_blocks_counter",
 }

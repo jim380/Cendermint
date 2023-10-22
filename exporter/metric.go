@@ -159,6 +159,9 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	metricData.Akash.TotalDeployments = float64(restData.AkashInfo.TotalDeployments)
 	metricData.Akash.ActiveDeployments = float64(restData.AkashInfo.ActiveDeployments)
 	metricData.Akash.ClosedDeployments = float64(restData.AkashInfo.ClosedDeployments)
+
+	// oracle
+	metricData.Oracle.MissedCounter = utils.StringToFloat64(restData.OracleInfo.MissedCounter.Counter)
 }
 
 func GetMetric() *metric {

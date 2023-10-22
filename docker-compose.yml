@@ -16,6 +16,8 @@ services:
     container_name: cendermint
     command: >
       /bin/sh -c 'Cendermint run'
+    ports:
+      - 26661:26661
     networks:
       - local
     restart: unless-stopped

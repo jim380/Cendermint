@@ -158,6 +158,9 @@ func main() {
 	akashService := models.AkashService{
 		DB: db,
 	}
+	oracleService := models.OracleService{
+		DB: db,
+	}
 
 	restServicesController := controllers.RestServices{
 		BlockService:           &blockService,
@@ -174,6 +177,7 @@ func main() {
 		IbcServices:            &ibcService,
 		GravityService:         &gravityService,
 		AkashService:           &akashService,
+		OracleService:          &oracleService,
 	}
 
 	// run dashboard in a separate thread in enabled
