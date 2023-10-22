@@ -145,3 +145,11 @@ func GetDeploymentsRoute() string {
 func GetMissedCounterRoute() string {
 	return "/refractedlabs/oracle/oracle/miss_counter"
 }
+
+func GetPrevoteRoute() string {
+	return "/refractedlabs/oracle/oracle/oracle_pre_vote"
+}
+
+func GetVoteRoute() string {
+	return "/refractedlabs/oracle/oracle/oracle_vote"
+}

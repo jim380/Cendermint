@@ -35,3 +35,41 @@ func (os *OracleService) GetMissedCounterInfoByValidator(cfg config.Config, rd *
 
 	rd.OracleInfo.MissedCounterInfo = ms
 }
+
+func (os *OracleService) GetPrevoteInfoByValidator(cfg config.Config, rd *types.RESTData) {
+	var pv types.PrevoteInfo
+
+	route := rest.GetPrevoteRoute()
+
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "/" + cfg.OperatorAddr)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &pv)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Warn("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Warn("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+
+	rd.OracleInfo.PrevoteInfo = pv
+}
+
+func (os *OracleService) GetVoteInfoByValidator(cfg config.Config, rd *types.RESTData) {
+	var v types.VoteInfo
+
+	route := rest.GetVoteRoute()
+
+	res, err := utils.HttpQuery(constants.RESTAddr + route + "/" + cfg.OperatorAddr)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &v)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Warn("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Warn("", zap.Bool("Success", false), zap.String("err", string(res)))
+	}
+
+	rd.OracleInfo.VoteInfo = v
+}

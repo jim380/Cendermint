@@ -113,4 +113,6 @@ var gaugesNamespaceList = [...]string{
 
 	// oracle
 	"oracle_validator_missed_blocks_counter",
+	"oracle_validator_prevote_submit_height",
+	"oracle_validator_vote_module_votes",
 }

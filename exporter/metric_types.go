@@ -190,6 +190,8 @@ type metric struct {
 	}
 
 	Oracle struct {
-		MissedCounter float64
+		MissedCounter       float64
+		PrevoteSubmitHeight float64
+		ModuleVotes         float64
 	}
 }

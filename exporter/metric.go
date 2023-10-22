@@ -162,6 +162,8 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 
 	// oracle
 	metricData.Oracle.MissedCounter = utils.StringToFloat64(restData.OracleInfo.MissedCounter.Counter)
+	metricData.Oracle.PrevoteSubmitHeight = utils.StringToFloat64(restData.OracleInfo.Prevote.SubmitBlock)
+	metricData.Oracle.ModuleVotes = float64(len(restData.OracleInfo.VoteInfo.Vote.ModuleVotes))
 }
 
 func GetMetric() *metric {

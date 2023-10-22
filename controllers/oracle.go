@@ -7,4 +7,6 @@ import (
 
 func (rs RestServices) GetOracleInfo(cfg config.Config, rd *types.RESTData) {
 	rs.OracleService.GetMissedCounterInfoByValidator(cfg, rd)
+	rs.OracleService.GetPrevoteInfoByValidator(cfg, rd)
+	rs.OracleService.GetVoteInfoByValidator(cfg, rd)
 }
