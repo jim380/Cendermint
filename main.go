@@ -113,19 +113,20 @@ func main() {
 	}
 
 	// initialize rpc services
+	validatorService := models.ValidatorService{
+		DB: db,
+	}
 	consensusService := models.ConsensusService{
 		DB: db,
 	}
 
 	rpcServicesController := controllers.RpcServices{
 		ConsensusService: &consensusService,
+		ValidatorService: &validatorService,
 	}
 
 	// initialize rest services
 	blockService := models.BlockService{
-		DB: db,
-	}
-	validatorService := models.ValidatorService{
 		DB: db,
 	}
 	absentValidatorService := models.AbsentValidatorService{
@@ -170,7 +171,6 @@ func main() {
 
 	restServicesController := controllers.RestServices{
 		BlockService:           &blockService,
-		ValidatorService:       &validatorService,
 		AbsentValidatorService: &absentValidatorService,
 		NodeService:            &nodeService,
 		StakingService:         &stakingService,

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jim380/Cendermint/constants"
+	"github.com/jim380/Cendermint/rest"
 	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
 	"github.com/kyoto-framework/kyoto/v2"
@@ -60,7 +61,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 			return types.Blocks{}
 		}
 
-		conspubMonikerMap := GetConspubMonikerMap()
+		conspubMonikerMap := rest.GetConspubMonikerMap()
 		// range over all validators in the active set
 		for _, validator := range cs.Result.Validatorset.Validators {
 			// get moniker

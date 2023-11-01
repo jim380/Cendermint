@@ -17,7 +17,7 @@ func (rs RestServices) IndexBlock(height int, hash string, timestamp time.Time) 
 		zap.L().Error("Error indexing block", zap.Error(err))
 		return
 	} else {
-		zap.L().Info("Block successfully indexed", zap.String("Height", strconv.Itoa(block.Height)))
+		zap.L().Debug("Block successfully indexed", zap.String("Height", strconv.Itoa(block.Height)))
 	}
 }
 

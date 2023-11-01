@@ -17,7 +17,6 @@ import (
 type RestServices struct {
 	BlockService           *models.BlockService
 	TxnService             *models.TxnService
-	ValidatorService       *models.ValidatorService
 	AbsentValidatorService *models.AbsentValidatorService
 	NodeService            *models.NodeService
 	StakingService         *models.StakingService
@@ -34,6 +33,7 @@ type RestServices struct {
 }
 
 type RpcServices struct {
+	ValidatorService *models.ValidatorService
 	ConsensusService *models.ConsensusService
 }
 
@@ -58,7 +58,7 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 		rs.GetSlashingInfo(*cfg, rd)
 		rs.GetInflationInfo(*cfg, rd)
 		rs.GetGovInfo(*cfg, rd)
-		valInfo := rs.GetValidatorInfo(*cfg, blockHeight, rd)
+		valInfo := rpcService.GetValidatorInfo(*cfg, blockHeight, rd)
 		rs.GetBalanceInfo(*cfg, rd)
 		rs.GetRewardsCommissionInfo(*cfg, rd)
 		rs.GetSigningInfo(*cfg, valInfo[0], rd)

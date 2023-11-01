@@ -62,13 +62,14 @@ func (vs *ValidatorService) Index(consHexAddr, moniker string) (*Validator, erro
 		ConsHexAddress: consHexAddr,
 		Moniker:        moniker,
 	}
-	row := vs.DB.QueryRow(`
+
+	_, err := vs.DB.Exec(`
 		INSERT INTO validators (cons_hex_address, moniker)
-		VALUES ($1, $2) RETURNING cons_hex_address`, consHexAddr, moniker)
-	err := row.Scan(&validator.ConsHexAddress)
+		VALUES ($1, $2) ON CONFLICT (cons_hex_address) DO NOTHING`, consHexAddr, moniker)
 	if err != nil {
 		return nil, fmt.Errorf("error indexing validator: %w", err)
 	}
+
 	return &validator, nil
 }
 

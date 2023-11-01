@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
@@ -19,7 +18,7 @@ type ConsensusService struct {
 	DB *sql.DB
 }
 
-func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) {
+func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) map[string]string {
 	var cs types.ConsensusState
 	var vSetsResult map[string][]string = make(map[string][]string)
 
@@ -29,7 +28,7 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	}
 	json.Unmarshal(res, &cs)
 
-	conspubMonikerMap := getConspubMonikerMap(cfg, rpc)
+	conspubMonikerMap := rest.GetConspubMonikerMap()
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
 	for index, validator := range cs.Result.Validatorset.Validators {
 		var prevote, precommit string
@@ -61,27 +60,6 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	precommitParsed := utils.ParseConsensusOutput(rpc.ConsensusState.Result.Votes[0].PrecommitsBitArray, "\\= (.*)", 1)
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Precommit bit array", fmt.Sprintf("%.2f", precommitParsed)))
 	zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC", fmt.Sprint(len(rpc.Validatorsets))))
-}
 
-func getConspubMonikerMap(cfg config.Config, rpc *types.RPCData) map[string]string {
-	var v types.RpcValidators
-	var vResult map[string]string = make(map[string]string)
-
-	route := rest.GetValidatorsRoute()
-	res, err := utils.HttpQuery(constants.RESTAddr + route + "?status=BOND_STATUS_BONDED&pagination.limit=300")
-	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	json.Unmarshal(res, &v)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	}
-
-	for _, validator := range v.Validators {
-		// populate the map => [conspub] -> (moniker)
-		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
-	}
-	return vResult
+	return conspubMonikerMap
 }

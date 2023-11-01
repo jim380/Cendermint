@@ -6,5 +6,8 @@ import (
 )
 
 func (rs RpcServices) GetRpcInfo(cfg config.Config, rpc *types.RPCData) {
-	rs.ConsensusService.GetConsensusDump(cfg, rpc)
+	conspubMonikerMap := rs.ConsensusService.GetConsensusDump(cfg, rpc)
+	for k, v := range conspubMonikerMap {
+		rs.IndexValidator(k, v)
+	}
 }

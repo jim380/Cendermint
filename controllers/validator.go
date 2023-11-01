@@ -6,13 +6,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (rs RestServices) IndexValidator(consHexAddr, moniker string) {
-	validator, err := rs.ValidatorService.Index(consHexAddr, moniker)
+func (rpc RpcServices) IndexValidator(consHexAddr, moniker string) {
+	validator, err := rpc.ValidatorService.Index(consHexAddr, moniker)
+
 	if err != nil {
 		zap.L().Error("Error indexing validator", zap.Error(err))
 		return
 	} else {
-		zap.L().Info("Validator successfully indexed", zap.String("ConsHexAddress", validator.ConsHexAddress))
+		zap.L().Debug("Validator successfully indexed", zap.String("ConsHexAddress", validator.ConsHexAddress))
 	}
 }
 
@@ -22,10 +23,10 @@ func (rs RestServices) IndexAbsentValidator(height int, consHexAddr string) {
 		zap.L().Error("Error indexing abscent validator", zap.Error(err))
 		return
 	} else {
-		zap.L().Info("Absent validator successfully indexed", zap.String("ConsHexAddress", absentValidator.ConsHexAddress))
+		zap.L().Debug("Absent validator successfully indexed", zap.String("ConsHexAddress", absentValidator.ConsHexAddress))
 	}
 }
 
-func (rs RestServices) GetValidatorInfo(cfg config.Config, currentBlockHeight int64, rd *types.RESTData) []string {
-	return rs.ValidatorService.GetValidatorInfo(cfg, currentBlockHeight, rd)
+func (rpc RpcServices) GetValidatorInfo(cfg config.Config, currentBlockHeight int64, rd *types.RESTData) []string {
+	return rpc.ValidatorService.GetValidatorInfo(cfg, currentBlockHeight, rd)
 }
