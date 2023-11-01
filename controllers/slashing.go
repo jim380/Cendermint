@@ -13,6 +13,6 @@ func (rs RestServices) GetSigningInfo(cfg config.Config, consAddr string, rd *ty
 	rs.SlashingService.GetSigningInfo(cfg, consAddr, rd)
 }
 
-func (rs RestServices) GetCommitInfo(rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
-	rs.SlashingService.GetCommitInfo(rd, blockData, consHexAddr)
+func (rs RestServices) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
+	rs.SlashingService.GetCommitInfo(cfg, rd, blockData, consHexAddr)
 }

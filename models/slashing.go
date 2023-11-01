@@ -54,7 +54,7 @@ func (ss *SlashingService) GetSigningInfo(cfg config.Config, consAddr string, rd
 	rd.Slashing.ValSigning = d.ValSigning
 }
 
-func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
+func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
 	var cInfo types.CommitInfo
 	missed := true
 
@@ -63,45 +63,48 @@ func (ss *SlashingService) GetCommitInfo(rd *types.RESTData, blockData types.Blo
 	cInfo.ValidatorPrecommitStatus, cInfo.ValidatorProposingStatus, cInfo.MissThreshold, cInfo.MissConsecutive = 0.0, 0.0, 0.0, 0.0
 	currentHeight, _ := strconv.Atoi(blockData.Block.Header.Height)
 
-	for _, v := range blockData.Block.LastCommit.Signatures {
-		func() {
-			defer func() {
-				if r := recover(); r != nil {
-					// precommit failure validator
-				}
-			}()
+	/*
+		- Create a map validatorConsAddrInHexSignedMap using allSignaturesInBlock for quick lookup
+		- validatorConsAddrInHexSignedMap gives all validators who signed on this block
+	*/
+	allSignaturesInBlock := blockData.Block.LastCommit.Signatures
+	validatorConsAddrInHexSignedMap := make(map[string]bool)
+	for _, signature := range allSignaturesInBlock {
+		if consHexAddr == blockProposer {
+			cInfo.ValidatorProposingStatus = 1.0
+			zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
+		}
 
-			if consHexAddr == blockProposer {
-				cInfo.ValidatorProposingStatus = 1.0
-				zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
-			}
-
-			if consHexAddr == v.Validator_address {
-				missed = false
-				cInfo.LastSigned = currentHeight
-				cInfo.ValidatorPrecommitStatus = 1.0
-				// if missed more than threshold
-				threshold, _ := strconv.Atoi(os.Getenv("MISS_THRESHOLD"))
-				if cInfo.MissedCount >= threshold {
-					zap.L().Warn("Missed >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(cInfo.MissedCount)))
-					zap.L().Warn("Missed >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_THRESHOLD")))
-					cInfo.MissThreshold = 1
-				}
-				// miss consecutively
-				consecutive, _ := strconv.Atoi(os.Getenv("MISS_CONSECUTIVE"))
-				if currentHeight-cInfo.LastSigned == consecutive {
-					zap.L().Warn("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(currentHeight-cInfo.LastSigned)))
-					zap.L().Warn("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_CONSECUTIVE")))
-					cInfo.MissConsecutive = 1
-				}
-				// MissedCount resets when the validator signs again
-				cInfo.MissedCount = 0
-			}
-
-		}()
+		// Validator_address could be in hex or base64; hex is legacy so using base64 here
+		validatorConsAddrInHexSignedMap[signature.Validator_address] = true
 	}
+
+	if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consHexAddr)]; exists {
+		// If exists, then the validator signed this block
+		missed = false
+		cInfo.LastSigned = currentHeight
+		cInfo.ValidatorPrecommitStatus = 1.0
+		// if missed more than threshold
+		threshold, _ := strconv.Atoi(os.Getenv("MISS_THRESHOLD"))
+		if cInfo.MissedCount >= threshold {
+			zap.L().Warn("Missed >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(cInfo.MissedCount)))
+			zap.L().Warn("Missed >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_THRESHOLD")))
+			cInfo.MissThreshold = 1
+		}
+		// miss consecutively
+		consecutive, _ := strconv.Atoi(os.Getenv("MISS_CONSECUTIVE"))
+		if currentHeight-cInfo.LastSigned == consecutive {
+			zap.L().Warn("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("MissedCount", strconv.Itoa(currentHeight-cInfo.LastSigned)))
+			zap.L().Warn("MissConsecutive >= threshold", zap.Bool("Success", true), zap.String("Threshold", os.Getenv("MISS_CONSECUTIVE")))
+			cInfo.MissConsecutive = 1
+		}
+		// MissedCount resets when the validator signs again
+		cInfo.MissedCount = 0
+	}
+
 	if missed {
 		cInfo.MissedCount += 1
 	}
+
 	rd.Commit = cInfo
 }

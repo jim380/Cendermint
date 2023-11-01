@@ -64,7 +64,7 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 		rs.GetSigningInfo(*cfg, valInfo[0], rd)
 
 		consHexAddr := utils.Bech32AddrToHexAddr(valInfo[0])
-		rs.GetCommitInfo(rd, blockData, consHexAddr)
+		rs.GetCommitInfo(*cfg, rd, blockData, consHexAddr)
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validator.Description.Moniker))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valInfo[1]))
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
