@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/types"
+	"go.uber.org/zap"
 )
 
 func (rs RestServices) GetSlashingInfo(cfg config.Config, rd *types.RESTData) {
@@ -14,5 +17,15 @@ func (rs RestServices) GetSigningInfo(cfg config.Config, consAddr string, rd *ty
 }
 
 func (rs RestServices) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
-	rs.SlashingService.GetCommitInfo(cfg, rd, blockData, consHexAddr)
+	missingValidators := rs.SlashingService.GetCommitInfo(cfg, rd, blockData, consHexAddr)
+	height := blockData.Block.Header.Height
+	// convert height to int
+	heightInt, err := strconv.Atoi(height)
+	if err != nil {
+		zap.L().Error("Failed to convert height to int: ", zap.Error(err))
+	}
+	// index missing validators
+	for _, v := range missingValidators {
+		rs.IndexAbsentValidator(heightInt, v.ConsPubAddr)
+	}
 }

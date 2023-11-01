@@ -19,6 +19,11 @@ type SlashingService struct {
 	DB *sql.DB
 }
 
+type MissingValidators []struct {
+	Moniker     string
+	ConsPubAddr string
+}
+
 func (ss *SlashingService) GetSlashingParams(cfg config.Config, rd *types.RESTData) {
 	var d types.SlashingInfo
 
@@ -54,7 +59,7 @@ func (ss *SlashingService) GetSigningInfo(cfg config.Config, consAddr string, rd
 	rd.Slashing.ValSigning = d.ValSigning
 }
 
-func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
+func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) MissingValidators {
 	var cInfo types.CommitInfo
 	missed := true
 
@@ -62,6 +67,32 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 	cInfo.ChainId = blockData.Block.Header.ChainID
 	cInfo.ValidatorPrecommitStatus, cInfo.ValidatorProposingStatus, cInfo.MissThreshold, cInfo.MissConsecutive = 0.0, 0.0, 0.0, 0.0
 	currentHeight, _ := strconv.Atoi(blockData.Block.Header.Height)
+
+	/*
+		Find validators with missing signatures in the block
+	*/
+	var cs types.ConsensusState
+	var activeSet map[string][]string = make(map[string][]string)
+	var missingValidators MissingValidators
+
+	resp, err := utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
+	if err != nil {
+		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
+	}
+
+	err = json.Unmarshal(resp, &cs)
+	if err != nil {
+		zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
+	}
+
+	conspubMonikerMap := rest.GetConspubMonikerMap()
+	// range over all validators in the active set
+	for _, validator := range cs.Result.Validatorset.Validators {
+		// get moniker
+		validator.Moniker = conspubMonikerMap[validator.ConsPubKey.Key]
+		// populate the map => [ConsAddr]{consPubKey, moniker}; ConsAddr is in hex coming back from rpc
+		activeSet[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.Moniker}
+	}
 
 	/*
 		- Create a map validatorConsAddrInHexSignedMap using allSignaturesInBlock for quick lookup
@@ -77,6 +108,22 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 
 		// Validator_address could be in hex or base64; hex is legacy so using base64 here
 		validatorConsAddrInHexSignedMap[signature.Validator_address] = true
+	}
+
+	// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap
+	for consAddrInHex, props := range activeSet {
+		// convert consAddrInHex to base64
+		if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consAddrInHex)]; !exists {
+			// If the Validator_address does not exist in allSignaturesInBlock, add it to MissingValidators
+			missingValidators = append(missingValidators, struct {
+				Moniker     string
+				ConsPubAddr string
+			}{
+				Moniker:     props[1],
+				ConsPubAddr: props[0],
+				// TO-DO add operator address
+			})
+		}
 	}
 
 	if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consHexAddr)]; exists {
@@ -107,4 +154,6 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 	}
 
 	rd.Commit = cInfo
+
+	return missingValidators
 }

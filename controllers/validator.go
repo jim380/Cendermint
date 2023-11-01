@@ -17,13 +17,13 @@ func (rpc RpcServices) IndexValidator(consHexAddr, moniker string) {
 	}
 }
 
-func (rs RestServices) IndexAbsentValidator(height int, consHexAddr string) {
-	absentValidator, err := rs.AbsentValidatorService.Index(height, consHexAddr)
+func (rs RestServices) IndexAbsentValidator(height int, consAddrBase64 string) {
+	absentValidator, err := rs.AbsentValidatorService.Index(height, consAddrBase64)
 	if err != nil {
 		zap.L().Error("Error indexing abscent validator", zap.Error(err))
 		return
 	} else {
-		zap.L().Debug("Absent validator successfully indexed", zap.String("ConsHexAddress", absentValidator.ConsHexAddress))
+		zap.L().Debug("Absent validator successfully indexed", zap.String("ConsHexAddress", absentValidator.ConsAddrBase64))
 	}
 }
 
