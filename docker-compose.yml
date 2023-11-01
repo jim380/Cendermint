@@ -8,19 +8,19 @@ networks:
   local:
 
 services:
-  cendermint:
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
-    image: cendermint-dev
-    container_name: cendermint
-    command: >
-      /bin/sh -c 'Cendermint run'
-    ports:
-      - 26661:26661
-    networks:
-      - local
-    restart: unless-stopped
+  # cendermint:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-dev
+  #   image: cendermint-dev
+  #   container_name: cendermint
+  #   command: >
+  #     /bin/sh -c 'Cendermint run'
+  #   ports:
+  #     - 26661:26661
+  #   networks:
+  #     - local
+  #   restart: unless-stopped
 
   db:
     image: postgres

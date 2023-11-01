@@ -70,9 +70,14 @@ func (bs *BlockService) Index(height int, hash string, timestamp time.Time) (*Bl
 	}
 	row := bs.DB.QueryRow(`
 		INSERT INTO blocks (height, block_hash, timestamp)
-		VALUES ($1, $2, $3) RETURNING block_hash`, height, hash, timestamp)
+		VALUES ($1, $2, $3) ON CONFLICT (height) DO NOTHING RETURNING block_hash`, height, hash, timestamp)
 	err := row.Scan(&block.BlockHash)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			// if no row was returned because the height already exists
+			// simply return the block
+			return &block, nil
+		}
 		return nil, fmt.Errorf("error indexing block: %w", err)
 	}
 	return &block, nil

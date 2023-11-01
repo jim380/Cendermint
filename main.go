@@ -27,6 +27,7 @@ import (
 	"github.com/jim380/Cendermint/dashboard"
 	"github.com/jim380/Cendermint/exporter"
 	"github.com/jim380/Cendermint/logging"
+	"github.com/jim380/Cendermint/migrations"
 	"github.com/jim380/Cendermint/models"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -105,6 +106,11 @@ func main() {
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Database connection", "ok"))
 	}
 	defer db.Close()
+
+	err = models.MigrateFS(db, migrations.FS, ".")
+	if err != nil {
+		panic(err)
+	}
 
 	// initialize rpc services
 	consensusService := models.ConsensusService{

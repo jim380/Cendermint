@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -22,6 +23,17 @@ func (rs RestServices) IndexBlock(height int, hash string, timestamp time.Time) 
 
 func (rs RestServices) GetBlockInfo(cfg config.Config) types.Blocks {
 	block := rs.BlockService.GetInfo(cfg)
+
+	// index
+	height, err := strconv.Atoi(block.Block.Header.Height)
+	if err != nil {
+		log.Fatal("Failed to convert height to int: ", err)
+	}
+	timestamp, err := time.Parse(time.RFC3339, block.Block.Header.Timestamp)
+	if err != nil {
+		log.Fatal("Failed to parse timestamp: ", err)
+	}
+	rs.IndexBlock(height, block.BlockId.Hash, timestamp)
 
 	return block
 }
