@@ -97,16 +97,23 @@ $ ./Cendermint run
 
 #### Local Dev
 
+##### Start Up
+
 ```bash
-$ DOCKER_BUILDKIT=1 docker compose build cendermint --no-cache
 $ docker compose up -d
-$ docker-compose down
+$ modd
+```
+
+##### Tear Down
+
+```bash
+$ docker compose down && docker system prune --volumes -f
 ```
 
 #### Deploy
 
 ```bash
-$ docker run --name cendermint -dt --restart on-failure -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:<tag> Cendermint run && docker logs cendermint -f --since 1m
+$ docker run --name cendermint -dt --restart unless-stopped -v <your_dir>:/root --net="host" --env-file ./config.env ghcr.io/jim380/cendermint:<tag> Cendermint run && docker logs cendermint -f --since 1m
 ```
 
 Again, remember to create a `config.env` under `<your_dir>` and have it filled out.
