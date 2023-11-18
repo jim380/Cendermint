@@ -22,7 +22,7 @@ func (as *AkashService) Init(db *sql.DB) {
 }
 
 func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTData) {
-	if cfg.Chain.Chain != "akash" {
+	if cfg.Chain.Name != "akash" {
 		return
 	}
 	var deployments, activeDeployments types.AkashDeployments

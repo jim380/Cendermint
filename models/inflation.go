@@ -39,7 +39,7 @@ func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	route := rest.GetInflationRoute(cfg)
 	res, err := utils.HttpQuery(constants.RESTAddr + route)
 
-	switch cfg.Chain.Chain {
+	switch cfg.Chain.Name {
 	case "irisnet":
 		var i inflation_iris
 		if err != nil {

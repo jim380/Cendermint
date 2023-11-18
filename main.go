@@ -18,7 +18,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
@@ -29,7 +28,6 @@ import (
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/migrations"
 	"github.com/jim380/Cendermint/models"
-	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -41,30 +39,8 @@ var (
 )
 
 func main() {
-	err := godotenv.Load("config.env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
-	if os.Getenv("CHAIN") == "" {
-		log.Fatal("Chain was not provided.")
-	}
-
-	providedChain := os.Getenv("CHAIN")
-
-	cfg := config.Config{
-		OperatorAddr:     os.Getenv("OPERATOR_ADDR"),
-		RestAddr:         os.Getenv("REST_ADDR"),
-		RpcAddr:          os.Getenv("RPC_ADDR"),
-		ListeningPort:    os.Getenv("LISTENING_PORT"),
-		MissThreshold:    os.Getenv("MISS_THRESHOLD"),
-		MissConsecutive:  os.Getenv("MISS_CONSECUTIVE"),
-		LogOutput:        os.Getenv("LOG_OUTPUT"),
-		PollInterval:     os.Getenv("POLL_INTERVAL"),
-		LogLevel:         os.Getenv("LOG_LEVEL"),
-		DashboardEnabled: os.Getenv("DASHBOARD_ENABLED"),
-	}
-
+	cfg := config.LoadConfig()
 	chainList := config.GetChainList()
 	cfg.ChainList = chainList
 	supportedChains := make([]string, 0, len(chainList))
@@ -72,16 +48,16 @@ func main() {
 		supportedChains = append(supportedChains, key)
 	}
 	var found bool
-	if _, found = chainList[providedChain]; found {
-		cfg.Chain = config.Chain{Chain: providedChain}
+	if _, found = chainList[cfg.Chain.Name]; found {
+		cfg.Chain = config.Chain{Name: cfg.Chain.Name}
 	}
 	if !found {
-		log.Fatal(fmt.Sprintf("%s is not supported", providedChain) + fmt.Sprint("\nList of supported chains: ", supportedChains))
+		log.Fatal(fmt.Sprintf("%s is not supported", cfg.Chain.Name) + fmt.Sprint("\nList of supported chains: ", supportedChains))
 	}
 
 	cfg.CheckInputs(chainList)
 
-	chain = cfg.Chain.Chain
+	chain = cfg.Chain.Name
 	operAddr = cfg.OperatorAddr
 	restAddr = cfg.RestAddr
 	rpcAddr = cfg.RpcAddr
