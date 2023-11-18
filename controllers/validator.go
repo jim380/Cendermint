@@ -1,13 +1,15 @@
 package controllers
 
 import (
+	"time"
+
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/types"
 	"go.uber.org/zap"
 )
 
-func (rpc RpcServices) IndexValidator(consPubKey, consAddr, consAddrHex, moniker string) {
-	validator, err := rpc.ValidatorService.Index(consPubKey, consAddr, consAddrHex, moniker)
+func (rpc RpcServices) IndexValidator(consPubKey, consAddr, consAddrHex, moniker string, lastActive time.Time) {
+	validator, err := rpc.ValidatorService.Index(consPubKey, consAddr, consAddrHex, moniker, lastActive)
 
 	if err != nil {
 		zap.L().Error("Error indexing validator", zap.Error(err))
