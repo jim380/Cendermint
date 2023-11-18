@@ -18,6 +18,10 @@ type ConsensusService struct {
 	DB *sql.DB
 }
 
+func (css *ConsensusService) Init(db *sql.DB) {
+	css.DB = db
+}
+
 func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) map[string]string {
 	var cs types.ConsensusState
 	var vSetsResult map[string][]string = make(map[string][]string)

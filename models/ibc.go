@@ -18,6 +18,10 @@ type IbcService struct {
 	DB *sql.DB
 }
 
+func (ibcs *IbcService) Init(db *sql.DB) {
+	ibcs.DB = db
+}
+
 func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 	var ibcInfo types.IbcChannelInfo
 	var ibcChannels map[string][]string = make(map[string][]string)

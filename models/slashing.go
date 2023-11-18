@@ -19,6 +19,10 @@ type SlashingService struct {
 	DB *sql.DB
 }
 
+func (sls *SlashingService) Init(db *sql.DB) {
+	sls.DB = db
+}
+
 type MissingValidators []struct {
 	Moniker     string
 	ConsPubAddr string

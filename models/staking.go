@@ -17,6 +17,10 @@ type StakingService struct {
 	DB *sql.DB
 }
 
+func (stks *StakingService) Init(db *sql.DB) {
+	stks.DB = db
+}
+
 type totalSupply struct {
 	Amount types.Coin
 }

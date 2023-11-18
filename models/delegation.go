@@ -18,6 +18,10 @@ type DelegationService struct {
 	DB *sql.DB
 }
 
+func (ds *DelegationService) Init(db *sql.DB) {
+	ds.DB = db
+}
+
 func (ds *DelegationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var delInfo types.DelegationsInfo
 	var delRes map[string][]string = make(map[string][]string)

@@ -18,6 +18,10 @@ type NodeService struct {
 	DB   *sql.DB
 }
 
+func (ns *NodeService) Init(db *sql.DB) {
+	ns.DB = db
+}
+
 func (ns *NodeService) GetInfo(cfg *config.Config, rd *types.RESTData) {
 	var nodeInfo types.NodeInfo
 

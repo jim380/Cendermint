@@ -29,6 +29,10 @@ type InflationService struct {
 	DB *sql.DB
 }
 
+func (is *InflationService) Init(db *sql.DB) {
+	is.DB = db
+}
+
 func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var result string
 

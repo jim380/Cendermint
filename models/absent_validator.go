@@ -16,6 +16,10 @@ type AbsentValidatorService struct {
 	DB *sql.DB
 }
 
+func (avs *AbsentValidatorService) Init(db *sql.DB) {
+	avs.DB = db
+}
+
 func (abs *AbsentValidatorService) Index(height int, consAddrBase64 string) (*AbsentValidator, error) {
 	zap.L().Info("Indexing absent validator", zap.Int("height", height), zap.String("consAddrBase64", consAddrBase64))
 	abscentValidator := AbsentValidator{

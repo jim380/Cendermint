@@ -17,6 +17,10 @@ type OracleService struct {
 	DB *sql.DB
 }
 
+func (os *OracleService) Init(db *sql.DB) {
+	os.DB = db
+}
+
 func (os *OracleService) GetMissedCounterInfoByValidator(cfg config.Config, rd *types.RESTData) {
 	var ms types.MissedCounterInfo
 

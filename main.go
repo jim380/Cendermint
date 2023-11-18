@@ -113,77 +113,53 @@ func main() {
 	}
 
 	// initialize rpc services
-	validatorService := models.ValidatorService{
-		DB: db,
-	}
-	consensusService := models.ConsensusService{
-		DB: db,
+	rpcServices := []models.DBService{
+		&models.ValidatorService{},
+		&models.ConsensusService{},
 	}
 
 	rpcServicesController := controllers.RpcServices{
-		ConsensusService: &consensusService,
-		ValidatorService: &validatorService,
+		ValidatorService: rpcServices[0].(*models.ValidatorService),
+		ConsensusService: rpcServices[1].(*models.ConsensusService),
 	}
 
 	// initialize rest services
-	blockService := models.BlockService{
-		DB: db,
+	restServices := []models.DBService{
+		&models.BlockService{},
+		&models.AbsentValidatorService{},
+		&models.NodeService{},
+		&models.StakingService{},
+		&models.SlashingService{},
+		&models.InflationService{},
+		&models.GovService{},
+		&models.BankService{},
+		&models.DelegationService{},
+		&models.UpgradeService{},
+		&models.IbcService{},
+		&models.GravityService{},
+		&models.AkashService{},
+		&models.OracleService{},
 	}
-	absentValidatorService := models.AbsentValidatorService{
-		DB: db,
-	}
-	nodeService := models.NodeService{
-		DB: db,
-	}
-	stakingService := models.StakingService{
-		DB: db,
-	}
-	slashingService := models.SlashingService{
-		DB: db,
-	}
-	inflationService := models.InflationService{
-		DB: db,
-	}
-	govService := models.GovService{
-		DB: db,
-	}
-	bankService := models.BankService{
-		DB: db,
-	}
-	delegationService := models.DelegationService{
-		DB: db,
-	}
-	upgradeService := models.UpgradeService{
-		DB: db,
-	}
-	ibcService := models.IbcService{
-		DB: db,
-	}
-	gravityService := models.GravityService{
-		DB: db,
-	}
-	akashService := models.AkashService{
-		DB: db,
-	}
-	oracleService := models.OracleService{
-		DB: db,
+
+	for _, service := range restServices {
+		service.Init(db)
 	}
 
 	restServicesController := controllers.RestServices{
-		BlockService:           &blockService,
-		AbsentValidatorService: &absentValidatorService,
-		NodeService:            &nodeService,
-		StakingService:         &stakingService,
-		SlashingService:        &slashingService,
-		InflationService:       &inflationService,
-		GovService:             &govService,
-		BankService:            &bankService,
-		DelegationService:      &delegationService,
-		UpgradeService:         &upgradeService,
-		IbcServices:            &ibcService,
-		GravityService:         &gravityService,
-		AkashService:           &akashService,
-		OracleService:          &oracleService,
+		BlockService:           restServices[0].(*models.BlockService),
+		AbsentValidatorService: restServices[1].(*models.AbsentValidatorService),
+		NodeService:            restServices[2].(*models.NodeService),
+		StakingService:         restServices[3].(*models.StakingService),
+		SlashingService:        restServices[4].(*models.SlashingService),
+		InflationService:       restServices[5].(*models.InflationService),
+		GovService:             restServices[6].(*models.GovService),
+		BankService:            restServices[7].(*models.BankService),
+		DelegationService:      restServices[8].(*models.DelegationService),
+		UpgradeService:         restServices[9].(*models.UpgradeService),
+		IbcServices:            restServices[10].(*models.IbcService),
+		GravityService:         restServices[11].(*models.GravityService),
+		AkashService:           restServices[12].(*models.AkashService),
+		OracleService:          restServices[13].(*models.OracleService),
 	}
 
 	// run dashboard in a separate thread in enabled

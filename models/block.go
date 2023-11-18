@@ -27,6 +27,10 @@ type BlockService struct {
 	DB    *sql.DB
 }
 
+func (bs *BlockService) Init(db *sql.DB) {
+	bs.DB = db
+}
+
 func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {
 	route := rest.GetBlockInfoRoute(cfg)
 	res, err := utils.HttpQuery(constants.RESTAddr + route)

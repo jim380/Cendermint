@@ -17,6 +17,10 @@ type GravityService struct {
 	DB *sql.DB
 }
 
+func (gs *GravityService) Init(db *sql.DB) {
+	gs.DB = db
+}
+
 func GetUmeePrice(rd *types.RESTData) {
 	var p types.UmeePrice
 
