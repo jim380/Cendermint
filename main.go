@@ -113,7 +113,7 @@ func main() {
 	}
 
 	// initialize rpc services
-	rpcServices := []models.DBService{
+	rpcServices := []models.RpcServices{
 		&models.ValidatorService{},
 		&models.ConsensusService{},
 	}
@@ -124,7 +124,7 @@ func main() {
 	}
 
 	// initialize rest services
-	restServices := []models.DBService{
+	restServices := []models.RestServices{
 		&models.BlockService{},
 		&models.AbsentValidatorService{},
 		&models.NodeService{},
