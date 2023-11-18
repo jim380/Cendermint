@@ -11,6 +11,7 @@ import (
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/types"
+
 	"github.com/jim380/Cendermint/utils"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -207,7 +208,7 @@ func LoadConfig() Config {
 	return cfg
 }
 
-func (cfg *Config) ValidateConfig() *types.AppConfig {
+func (cfg *Config) ValidateConfig() types.AppConfig {
 	chainList := GetChainList()
 	cfg.ChainList = chainList
 	supportedChains := make([]string, 0, len(chainList))
@@ -224,7 +225,7 @@ func (cfg *Config) ValidateConfig() *types.AppConfig {
 
 	cfg.CheckInputs(chainList)
 
-	appConfig := &types.AppConfig{
+	appConfig := types.AppConfig{
 		Chain:         cfg.Chain.Name,
 		OperAddr:      cfg.OperatorAddr,
 		RestAddr:      cfg.RestAddr,

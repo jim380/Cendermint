@@ -6,7 +6,9 @@ import (
 	"io/fs"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/jim380/Cendermint/migrations"
 	"github.com/pressly/goose/v3"
+	"go.uber.org/zap"
 )
 
 type PostgresConfig struct {
@@ -68,4 +70,24 @@ func MigrateFS(db *sql.DB, migrationsFS fs.FS, dir string) error {
 		goose.SetBaseFS(nil)
 	}()
 	return Migrate(db, dir)
+}
+
+func SetupDatabase() *sql.DB {
+	dbConfig := DefaultPostgresConfig()
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Using db config", dbConfig.String()))
+	db, err := Open(dbConfig)
+	if err != nil {
+		zap.L().Fatal("\t", zap.Bool("Success", false), zap.String("Database connection", "failed with error:"+err.Error()))
+	} else {
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Database connection", "ok"))
+	}
+
+	return db
+}
+
+func MigrateDatabase(db *sql.DB) {
+	err := MigrateFS(db, migrations.FS, ".")
+	if err != nil {
+		panic(err)
+	}
 }

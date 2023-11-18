@@ -5,6 +5,7 @@ import (
 
 	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/types"
+
 	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
