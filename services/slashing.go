@@ -67,7 +67,7 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 	var cInfo types.CommitInfo
 	missed := true
 
-	blockProposer := blockData.Block.Header.Proposer_address
+	blockProposer := blockData.Block.Header.ProposerAddress
 	cInfo.ChainId = blockData.Block.Header.ChainID
 	cInfo.ValidatorPrecommitStatus, cInfo.ValidatorProposingStatus, cInfo.MissThreshold, cInfo.MissConsecutive = 0.0, 0.0, 0.0, 0.0
 	currentHeight, _ := strconv.Atoi(blockData.Block.Header.Height)

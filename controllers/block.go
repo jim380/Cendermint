@@ -11,8 +11,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func (rs RestServices) IndexBlock(height int, hash string, timestamp time.Time, txnCount int) {
-	block, err := rs.BlockService.Index(height, hash, timestamp, txnCount)
+func (rs RestServices) IndexBlock(height int, hash string, timestamp time.Time, proposer string, txnCount int) {
+	block, err := rs.BlockService.Index(height, hash, timestamp, proposer, txnCount)
 	if err != nil {
 		zap.L().Error("Error indexing block", zap.Error(err))
 		return
@@ -34,8 +34,9 @@ func (rs RestServices) GetBlockInfo(cfg config.Config) types.Blocks {
 		log.Fatal("Failed to parse timestamp: ", err)
 	}
 	txnCount := len(block.Block.Data.Txs)
+	propser := block.Block.Header.ProposerAddress
 
-	rs.IndexBlock(height, block.BlockId.Hash, timestamp, txnCount)
+	rs.IndexBlock(height, block.BlockId.Hash, timestamp, propser, txnCount)
 
 	return block
 }

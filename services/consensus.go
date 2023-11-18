@@ -22,7 +22,7 @@ func (css *ConsensusService) Init(db *sql.DB) {
 	css.DB = db
 }
 
-func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) map[string]string {
+func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) map[string][]string {
 	var cs types.ConsensusState
 	var vSetsResult map[string][]string = make(map[string][]string)
 
@@ -65,5 +65,5 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Precommit bit array", fmt.Sprintf("%.2f", precommitParsed)))
 	zap.L().Info("", zap.Bool("Success", true), zap.String("# of validators from RPC", fmt.Sprint(len(rpc.Validatorsets))))
 
-	return conspubMonikerMap
+	return vSetsResult
 }

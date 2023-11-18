@@ -28,11 +28,11 @@ type Blocks struct {
 }
 
 type header struct {
-	ChainID          string `json:"chain_id"`
-	Height           string `json:"height"`
-	Proposer_address string `json:"proposer_address"`
-	Timestamp        string `json:"time"`
-	LastTimestamp    string // not part of the response so no json tag
+	ChainID         string `json:"chain_id"`
+	Height          string `json:"height"`
+	ProposerAddress string `json:"proposer_address"`
+	Timestamp       string `json:"time"`
+	LastTimestamp   string // not part of the response so no json tag
 }
 
 type lastCommit struct {

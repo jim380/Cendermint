@@ -27,8 +27,8 @@ func (abs *AbsentValidatorService) Index(height int, consAddrBase64 string) (*Ab
 		ConsAddrBase64: consAddrBase64,
 	}
 	row := abs.DB.QueryRow(`
-		INSERT INTO absent_validators (block_height, cons_pub_address)
-		VALUES ($1, $2) RETURNING cons_pub_address`, height, consAddrBase64)
+		INSERT INTO absent_validators (block_height, cons_pub_key)
+		VALUES ($1, $2) RETURNING cons_pub_key`, height, consAddrBase64)
 	err := row.Scan(&abscentValidator.ConsAddrBase64)
 	if err != nil {
 		return nil, fmt.Errorf("error indexing absent validator: %w", err)

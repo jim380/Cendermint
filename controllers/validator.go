@@ -6,14 +6,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (rpc RpcServices) IndexValidator(consHexAddr, moniker string) {
-	validator, err := rpc.ValidatorService.Index(consHexAddr, moniker)
+func (rpc RpcServices) IndexValidator(consPubKey, consAddr, consAddrHex, moniker string) {
+	validator, err := rpc.ValidatorService.Index(consPubKey, consAddr, consAddrHex, moniker)
 
 	if err != nil {
 		zap.L().Error("Error indexing validator", zap.Error(err))
 		return
 	} else {
-		zap.L().Debug("Validator successfully indexed", zap.String("ConsHexAddress", validator.ConsHexAddress))
+		zap.L().Debug("Validator successfully indexed", zap.String("ConsPubAddress", validator.ConsPubKey))
 	}
 }
 
