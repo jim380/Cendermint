@@ -15,7 +15,10 @@ type Blocks struct {
 		Hash string `json:"hash"`
 	} `json:"block_id"`
 	Block struct {
-		Header     header     `json:"header"`
+		Header header `json:"header"`
+		Data   struct {
+			Txs []string `json:"txs"`
+		} `json:"data"`
 		LastCommit lastCommit `json:"last_commit"`
 	} `json:"block"`
 	MissingValidators []struct {
