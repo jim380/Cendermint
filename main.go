@@ -118,6 +118,10 @@ func main() {
 		&models.ConsensusService{},
 	}
 
+	for _, service := range rpcServices {
+		service.Init(db)
+	}
+
 	rpcServicesController := controllers.RpcServices{
 		ValidatorService: rpcServices[0].(*models.ValidatorService),
 		ConsensusService: rpcServices[1].(*models.ConsensusService),
