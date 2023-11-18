@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -16,6 +16,10 @@ import (
 
 type IbcService struct {
 	DB *sql.DB
+}
+
+func (ibcs *IbcService) Init(db *sql.DB) {
+	ibcs.DB = db
 }
 
 func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {

@@ -6,7 +6,7 @@ import (
 )
 
 func (rs RestServices) GetOracleInfo(cfg config.Config, rd *types.RESTData) {
-	if cfg.Chain.Chain != "pryzm" {
+	if cfg.Chain.Name != "pryzm" {
 		return
 	}
 	rs.OracleService.GetMissedCounterInfoByValidator(cfg, rd)

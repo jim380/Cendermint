@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -16,6 +16,10 @@ import (
 
 type UpgradeService struct {
 	DB *sql.DB
+}
+
+func (us *UpgradeService) Init(db *sql.DB) {
+	us.DB = db
 }
 
 func (us *UpgradeService) GetInfo(cfg config.Config, rd *types.RESTData) {

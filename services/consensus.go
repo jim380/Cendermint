@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -16,6 +16,10 @@ import (
 
 type ConsensusService struct {
 	DB *sql.DB
+}
+
+func (css *ConsensusService) Init(db *sql.DB) {
+	css.DB = db
 }
 
 func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCData) map[string]string {

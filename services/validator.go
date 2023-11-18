@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -55,6 +55,10 @@ type Validator struct {
 
 type ValidatorService struct {
 	DB *sql.DB
+}
+
+func (vs *ValidatorService) Init(db *sql.DB) {
+	vs.DB = db
 }
 
 func (vs *ValidatorService) Index(consHexAddr, moniker string) (*Validator, error) {

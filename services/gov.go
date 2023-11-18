@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -16,6 +16,10 @@ import (
 
 type GovService struct {
 	DB *sql.DB
+}
+
+func (gs *GovService) Init(db *sql.DB) {
+	gs.DB = db
 }
 
 func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {

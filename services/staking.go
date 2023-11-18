@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -15,6 +15,10 @@ import (
 
 type StakingService struct {
 	DB *sql.DB
+}
+
+func (stks *StakingService) Init(db *sql.DB) {
+	stks.DB = db
 }
 
 type totalSupply struct {

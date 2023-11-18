@@ -8,34 +8,11 @@ import (
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
-	"github.com/jim380/Cendermint/models"
+
 	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
 	"go.uber.org/zap"
 )
-
-type RestServices struct {
-	BlockService           *models.BlockService
-	TxnService             *models.TxnService
-	AbsentValidatorService *models.AbsentValidatorService
-	NodeService            *models.NodeService
-	StakingService         *models.StakingService
-	SlashingService        *models.SlashingService
-	InflationService       *models.InflationService
-	GovService             *models.GovService
-	BankService            *models.BankService
-	DelegationService      *models.DelegationService
-	UpgradeService         *models.UpgradeService
-	IbcServices            *models.IbcService
-	GravityService         *models.GravityService
-	AkashService           *models.AkashService
-	OracleService          *models.OracleService
-}
-
-type RpcServices struct {
-	ValidatorService *models.ValidatorService
-	ConsensusService *models.ConsensusService
-}
 
 func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, blockHeight int64, blockData types.Blocks, denom string) *types.RESTData {
 	// rpc

@@ -9,7 +9,11 @@ import (
 	"strings"
 
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/jim380/Cendermint/logging"
+	"github.com/jim380/Cendermint/types"
+
 	"github.com/jim380/Cendermint/utils"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -31,7 +35,7 @@ type Config struct {
 }
 
 type Chain struct {
-	Chain  string `json:"chain"`
+	Name   string `json:"chain"`
 	Assets []struct {
 		Denom string `json:"denom"`
 	} `json:"assets"`
@@ -39,7 +43,7 @@ type Chain struct {
 
 func (cfg Config) SetSDKConfig() {
 	// Bech32MainPrefix is the common prefix of all prefixes
-	Bech32MainPrefix := utils.GetPrefix(cfg.Chain.Chain)
+	Bech32MainPrefix := utils.GetPrefix(cfg.Chain.Name)
 	// Bech32PrefixAccAddr is the prefix of account addresses
 	Bech32PrefixAccAddr := Bech32MainPrefix
 	// Bech32PrefixAccPub is the prefix of account public keys
@@ -150,7 +154,7 @@ func GetChainList() map[string][]string {
 	chainList := make(map[string][]string)
 	for _, chain := range chains {
 		for _, asset := range chain.Assets {
-			chainList[chain.Chain] = append(chainList[chain.Chain], asset.Denom)
+			chainList[chain.Name] = append(chainList[chain.Name], asset.Denom)
 		}
 	}
 
@@ -170,9 +174,67 @@ func (config Config) IsLegacySDKVersion() bool {
 func (config Config) IsGravityBridgeEnabled() bool {
 	var enabled bool = false
 
-	if config.Chain.Chain == "gravity" || config.Chain.Chain == "umee" {
+	if config.Chain.Name == "gravity" || config.Chain.Name == "umee" {
 		enabled = true
 	}
 
 	return enabled
+}
+
+func LoadConfig() Config {
+	err := godotenv.Load("config.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	if os.Getenv("CHAIN") == "" {
+		log.Fatal("Chain was not provided.")
+	}
+
+	cfg := Config{
+		Chain:            Chain{Name: os.Getenv("CHAIN")},
+		OperatorAddr:     os.Getenv("OPERATOR_ADDR"),
+		RestAddr:         os.Getenv("REST_ADDR"),
+		RpcAddr:          os.Getenv("RPC_ADDR"),
+		ListeningPort:    os.Getenv("LISTENING_PORT"),
+		MissThreshold:    os.Getenv("MISS_THRESHOLD"),
+		MissConsecutive:  os.Getenv("MISS_CONSECUTIVE"),
+		LogOutput:        os.Getenv("LOG_OUTPUT"),
+		PollInterval:     os.Getenv("POLL_INTERVAL"),
+		LogLevel:         os.Getenv("LOG_LEVEL"),
+		DashboardEnabled: os.Getenv("DASHBOARD_ENABLED"),
+	}
+
+	return cfg
+}
+
+func (cfg *Config) ValidateConfig() types.AppConfig {
+	chainList := GetChainList()
+	cfg.ChainList = chainList
+	supportedChains := make([]string, 0, len(chainList))
+	for key := range chainList {
+		supportedChains = append(supportedChains, key)
+	}
+	var found bool
+	if _, found = chainList[cfg.Chain.Name]; found {
+		cfg.Chain = Chain{Name: cfg.Chain.Name}
+	}
+	if !found {
+		log.Fatal(fmt.Sprintf("%s is not supported", cfg.Chain.Name) + fmt.Sprint("\nList of supported chains: ", supportedChains))
+	}
+
+	cfg.CheckInputs(chainList)
+
+	appConfig := types.AppConfig{
+		Chain:         cfg.Chain.Name,
+		OperAddr:      cfg.OperatorAddr,
+		RestAddr:      cfg.RestAddr,
+		RpcAddr:       cfg.RpcAddr,
+		ListeningPort: cfg.ListeningPort,
+		LogOutput:     cfg.LogOutput,
+		LogLevel:      GetLogLevel(cfg.LogLevel),
+		Logger:        logging.InitLogger(cfg.LogOutput, GetLogLevel(cfg.LogLevel)),
+	}
+
+	return appConfig
 }

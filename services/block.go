@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -25,6 +25,10 @@ type Block struct {
 type BlockService struct {
 	Block *types.Blocks
 	DB    *sql.DB
+}
+
+func (bs *BlockService) Init(db *sql.DB) {
+	bs.DB = db
 }
 
 func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {

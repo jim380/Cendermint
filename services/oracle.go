@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -15,6 +15,10 @@ import (
 
 type OracleService struct {
 	DB *sql.DB
+}
+
+func (os *OracleService) Init(db *sql.DB) {
+	os.DB = db
 }
 
 func (os *OracleService) GetMissedCounterInfoByValidator(cfg config.Config, rd *types.RESTData) {

@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -14,6 +14,10 @@ type AbsentValidator struct {
 
 type AbsentValidatorService struct {
 	DB *sql.DB
+}
+
+func (abs *AbsentValidatorService) Init(db *sql.DB) {
+	abs.DB = db
 }
 
 func (abs *AbsentValidatorService) Index(height int, consAddrBase64 string) (*AbsentValidator, error) {

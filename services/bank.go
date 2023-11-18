@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -28,6 +28,10 @@ type Commission struct {
 
 type BankService struct {
 	DB *sql.DB
+}
+
+func (bs *BankService) Init(db *sql.DB) {
+	bs.DB = db
 }
 
 func (bs *BankService) GetBalanceInfo(cfg config.Config, rd *types.RESTData) {

@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -15,6 +15,10 @@ import (
 
 type GravityService struct {
 	DB *sql.DB
+}
+
+func (gs *GravityService) Init(db *sql.DB) {
+	gs.DB = db
 }
 
 func GetUmeePrice(rd *types.RESTData) {

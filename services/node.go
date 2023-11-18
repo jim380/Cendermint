@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -16,6 +16,10 @@ import (
 type NodeService struct {
 	Node *types.NodeInfo
 	DB   *sql.DB
+}
+
+func (ns *NodeService) Init(db *sql.DB) {
+	ns.DB = db
 }
 
 func (ns *NodeService) GetInfo(cfg *config.Config, rd *types.RESTData) {

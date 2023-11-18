@@ -1,4 +1,4 @@
-package models
+package services
 
 import (
 	"database/sql"
@@ -17,8 +17,12 @@ type AkashService struct {
 	DB *sql.DB
 }
 
+func (as *AkashService) Init(db *sql.DB) {
+	as.DB = db
+}
+
 func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTData) {
-	if cfg.Chain.Chain != "akash" {
+	if cfg.Chain.Name != "akash" {
 		return
 	}
 	var deployments, activeDeployments types.AkashDeployments

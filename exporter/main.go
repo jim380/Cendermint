@@ -27,7 +27,7 @@ func Start(config *config.Config, port string, logger *zap.Logger, restService c
 }
 
 func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
-	denomList := config.GetDenomList(cfg.Chain.Chain, cfg.ChainList)
+	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
 
 	registerGauges(denomList)
 	counterVecs := registerLabels()
