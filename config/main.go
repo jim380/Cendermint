@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/jim380/Cendermint/logging"
+	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -203,4 +205,35 @@ func LoadConfig() Config {
 	}
 
 	return cfg
+}
+
+func (cfg *Config) ValidateConfig() *types.AppConfig {
+	chainList := GetChainList()
+	cfg.ChainList = chainList
+	supportedChains := make([]string, 0, len(chainList))
+	for key := range chainList {
+		supportedChains = append(supportedChains, key)
+	}
+	var found bool
+	if _, found = chainList[cfg.Chain.Name]; found {
+		cfg.Chain = Chain{Name: cfg.Chain.Name}
+	}
+	if !found {
+		log.Fatal(fmt.Sprintf("%s is not supported", cfg.Chain.Name) + fmt.Sprint("\nList of supported chains: ", supportedChains))
+	}
+
+	cfg.CheckInputs(chainList)
+
+	appConfig := &types.AppConfig{
+		Chain:         cfg.Chain.Name,
+		OperAddr:      cfg.OperatorAddr,
+		RestAddr:      cfg.RestAddr,
+		RpcAddr:       cfg.RpcAddr,
+		ListeningPort: cfg.ListeningPort,
+		LogOutput:     cfg.LogOutput,
+		LogLevel:      GetLogLevel(cfg.LogLevel),
+		Logger:        logging.InitLogger(cfg.LogOutput, GetLogLevel(cfg.LogLevel)),
+	}
+
+	return appConfig
 }

@@ -16,8 +16,6 @@ limitations under the License.
 package main
 
 import (
-	"fmt"
-	"log"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
@@ -28,49 +26,26 @@ import (
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/migrations"
 	"github.com/jim380/Cendermint/models"
+	"github.com/jim380/Cendermint/types"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 var (
-	chain, restAddr, rpcAddr, listeningPort, operAddr, logOutput string
-	logLevel                                                     zapcore.Level
-	logger                                                       *zap.Logger
+	appConfig *types.AppConfig
 )
 
 func main() {
-
 	cfg := config.LoadConfig()
-	chainList := config.GetChainList()
-	cfg.ChainList = chainList
-	supportedChains := make([]string, 0, len(chainList))
-	for key := range chainList {
-		supportedChains = append(supportedChains, key)
-	}
-	var found bool
-	if _, found = chainList[cfg.Chain.Name]; found {
-		cfg.Chain = config.Chain{Name: cfg.Chain.Name}
-	}
-	if !found {
-		log.Fatal(fmt.Sprintf("%s is not supported", cfg.Chain.Name) + fmt.Sprint("\nList of supported chains: ", supportedChains))
-	}
+	appConfig = cfg.ValidateConfig()
 
-	cfg.CheckInputs(chainList)
-
-	chain = cfg.Chain.Name
-	operAddr = cfg.OperatorAddr
-	restAddr = cfg.RestAddr
-	rpcAddr = cfg.RpcAddr
-	listeningPort = cfg.ListeningPort
-	logOutput = cfg.LogOutput
-	logLevel = config.GetLogLevel(cfg.LogLevel)
-	logger = logging.InitLogger(logOutput, logLevel)
+	// initialize logger
+	logger := logging.InitLogger(cfg.LogOutput, appConfig.LogLevel)
 	zap.ReplaceGlobals(logger)
 
 	cfg.SetSDKConfig()
-	constants.RESTAddr = restAddr
-	constants.RPCAddr = rpcAddr
-	constants.OperAddr = operAddr
+	constants.RESTAddr = appConfig.RestAddr
+	constants.RPCAddr = appConfig.RpcAddr
+	constants.OperAddr = appConfig.OperAddr
 
 	// Setup a db connection
 	dbConfig := models.DefaultPostgresConfig()
@@ -147,5 +122,5 @@ func main() {
 		dashboard.StartDashboard()
 	}
 
-	exporter.Start(&cfg, listeningPort, logger, restServicesController, rpcServicesController)
+	exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
 }
