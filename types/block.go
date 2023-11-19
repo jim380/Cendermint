@@ -15,7 +15,10 @@ type Blocks struct {
 		Hash string `json:"hash"`
 	} `json:"block_id"`
 	Block struct {
-		Header     header     `json:"header"`
+		Header header `json:"header"`
+		Data   struct {
+			Txs []string `json:"txs"`
+		} `json:"data"`
 		LastCommit lastCommit `json:"last_commit"`
 	} `json:"block"`
 	MissingValidators []struct {
@@ -25,11 +28,11 @@ type Blocks struct {
 }
 
 type header struct {
-	ChainID          string `json:"chain_id"`
-	Height           string `json:"height"`
-	Proposer_address string `json:"proposer_address"`
-	Timestamp        string `json:"time"`
-	LastTimestamp    string // not part of the response so no json tag
+	ChainID         string `json:"chain_id"`
+	Height          string `json:"height"`
+	ProposerAddress string `json:"proposer_address"`
+	Timestamp       string `json:"time"`
+	LastTimestamp   string // not part of the response so no json tag
 }
 
 type lastCommit struct {

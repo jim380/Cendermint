@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
@@ -49,8 +50,11 @@ type consPubKeyValSet struct {
 }
 
 type Validator struct {
-	ConsHexAddress string
-	Moniker        string
+	ConsPubKey  string
+	ConsAddr    string
+	ConsAddrHex string
+	Moniker     string
+	LastActive  time.Time
 }
 
 type ValidatorService struct {
@@ -61,15 +65,21 @@ func (vs *ValidatorService) Init(db *sql.DB) {
 	vs.DB = db
 }
 
-func (vs *ValidatorService) Index(consHexAddr, moniker string) (*Validator, error) {
+func (vs *ValidatorService) Index(consPubKey, consAddr, consAddrHex, moniker string, lastActive time.Time) (*Validator, error) {
 	validator := Validator{
-		ConsHexAddress: consHexAddr,
-		Moniker:        moniker,
+		ConsPubKey:  consPubKey,
+		ConsAddr:    consAddr,
+		ConsAddrHex: consAddrHex,
+		Moniker:     moniker,
+		LastActive:  lastActive,
 	}
 
 	_, err := vs.DB.Exec(`
-		INSERT INTO validators (cons_pub_address, moniker)
-		VALUES ($1, $2) ON CONFLICT (cons_pub_address) DO NOTHING`, consHexAddr, moniker)
+	INSERT INTO validators (cons_pub_key, cons_address, cons_address_hex, moniker, last_active)
+	VALUES ($1, $2, $3, $4, $5) 
+	ON CONFLICT (cons_pub_key) 
+	DO UPDATE SET moniker = $4, last_active = $5`,
+		consPubKey, consAddr, consAddrHex, moniker, lastActive)
 	if err != nil {
 		return nil, fmt.Errorf("error indexing validator: %w", err)
 	}

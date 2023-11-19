@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE absent_validators (
   block_height INT REFERENCES blocks(height),
-  cons_pub_address TEXT REFERENCES validators(cons_pub_address),
-  PRIMARY KEY (block_height, cons_pub_address)
+  cons_pub_key TEXT REFERENCES validators(cons_pub_key),
+  PRIMARY KEY (block_height, cons_pub_key)
 );
 -- +goose StatementEnd
 

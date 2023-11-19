@@ -20,6 +20,8 @@ type Block struct {
 	Height    int
 	BlockHash string
 	Timestamp time.Time
+	Proposer  string
+	TxnCount  int
 }
 
 type BlockService struct {
@@ -66,15 +68,17 @@ func (bs *BlockService) GetLastBlockTimestamp(cfg config.Config, currentHeight i
 	return *bs.Block
 }
 
-func (bs *BlockService) Index(height int, hash string, timestamp time.Time) (*Block, error) {
+func (bs *BlockService) Index(height int, hash string, timestamp time.Time, proposer string, txnCount int) (*Block, error) {
 	block := Block{
 		Height:    height,
 		BlockHash: hash,
 		Timestamp: timestamp,
+		Proposer:  proposer,
+		TxnCount:  txnCount,
 	}
 	row := bs.DB.QueryRow(`
-		INSERT INTO blocks (height, block_hash, timestamp)
-		VALUES ($1, $2, $3) ON CONFLICT (height) DO NOTHING RETURNING block_hash`, height, hash, timestamp)
+		INSERT INTO blocks (height, block_hash, timestamp, proposer_address, txn_count)
+		VALUES ($1, $2, $3, $4, $5) ON CONFLICT (height) DO NOTHING RETURNING block_hash`, height, hash, timestamp, proposer, txnCount)
 	err := row.Scan(&block.BlockHash)
 	if err != nil {
 		if err == sql.ErrNoRows {

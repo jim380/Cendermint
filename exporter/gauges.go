@@ -5,6 +5,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+const (
+	BalanceIndex    = 0
+	CommissionIndex = 1
+	RewardIndex     = 2
+)
+
 func registerGauges(denomList []string) {
 	defaultGauges = make([]prometheus.Gauge, len(gaugesNamespaceList))
 	gaugesDenom = make([]prometheus.Gauge, len(denomList)*3)
@@ -27,24 +33,26 @@ func registerGauges(denomList []string) {
 }
 
 func (metricData *metric) setDenomGauges(denomList []string) {
-	count := 0
-	for i := 0; i < len(denomList)*3; i += 3 {
-		for _, value := range metricData.Validator.Account.Balances {
-			if value.Denom == denomList[count] {
-				gaugesDenom[i].Set(utils.StringToFloat64(value.Amount))
-			}
-		}
-		for _, value := range metricData.Validator.Account.Commission {
-			if value.Denom == denomList[count] {
-				gaugesDenom[i+1].Set(utils.StringToFloat64(value.Amount))
-			}
-		}
-		for _, value := range metricData.Validator.Account.Rewards {
-			if value.Denom == denomList[count] {
-				gaugesDenom[i+2].Set(utils.StringToFloat64(value.Amount))
-			}
-		}
-		count++
+	balances := make(map[string]float64)
+	for _, value := range metricData.Validator.Account.Balances {
+		balances[value.Denom] = utils.StringToFloat64(value.Amount)
+	}
+
+	commissions := make(map[string]float64)
+	for _, value := range metricData.Validator.Account.Commission {
+		commissions[value.Denom] = utils.StringToFloat64(value.Amount)
+	}
+
+	rewards := make(map[string]float64)
+	for _, value := range metricData.Validator.Account.Rewards {
+		rewards[value.Denom] = utils.StringToFloat64(value.Amount)
+	}
+
+	for i, denom := range denomList {
+		baseIndex := i * 3
+		gaugesDenom[baseIndex+BalanceIndex].Set(balances[denom])
+		gaugesDenom[baseIndex+CommissionIndex].Set(commissions[denom])
+		gaugesDenom[baseIndex+RewardIndex].Set(rewards[denom])
 	}
 }
 

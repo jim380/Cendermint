@@ -15,18 +15,11 @@ import (
 )
 
 func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
-	http.Handle("/metrics", promhttp.Handler())
-	go Run(config, logger, restService, rpcService)
-
-	err := http.ListenAndServe(":"+port, nil)
-	if err != nil {
-		zap.L().Fatal("\t", zap.Bool("Success", false), zap.String("HTTP error", fmt.Sprint(err)))
-	}
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Serving at port", port))
-
+	go CollectMetrics(config, logger, restService, rpcService)
+	StartMetricsHttpServer(port)
 }
 
-func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
+func CollectMetrics(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
 	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
 
 	registerGauges(denomList)
@@ -73,4 +66,13 @@ func Run(cfg *config.Config, log *zap.Logger, restService controllers.RestServic
 		}
 	}()
 	time.Sleep(time.Duration(pollInterval) * time.Second)
+}
+
+func StartMetricsHttpServer(port string) {
+	http.Handle("/metrics", promhttp.Handler())
+	err := http.ListenAndServe(":"+port, nil)
+	if err != nil {
+		zap.L().Fatal("\t", zap.Bool("Success", false), zap.String("HTTP error", fmt.Sprint(err)))
+	}
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Serving at port", port))
 }
