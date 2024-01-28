@@ -1,0 +1,5 @@
+CREATE TABLE addresses (
+  id SERIAL PRIMARY KEY,
+  cons_pub_key TEXT NOT NULL UNIQUE,
+  address TEXT NOT NULL UNIQUE
+);

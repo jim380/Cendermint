@@ -1,0 +1,4 @@
+CREATE TABLE denoms (
+  id SERIAL PRIMARY KEY,
+  denom TEXT NOT NULL UNIQUE
+);
