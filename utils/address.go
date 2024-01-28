@@ -112,7 +112,7 @@ func Base64ToHex(base64String string) (string, error) {
 func HexToBase64(hexAddr string) string {
 	bytes, err := decodeHex([]byte(hexAddr))
 	if err != nil {
-		fmt.Println(err)
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	}
 	return string(base64Encode(bytes))
 }

@@ -142,7 +142,7 @@ func GetDenomList(chain string, chainList map[string][]string) []string {
 func GetChainList() map[string][]string {
 	jsonFile, err := os.Open("chains.json")
 	if err != nil {
-		fmt.Println(err)
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	defer jsonFile.Close()
 

@@ -1,14 +1,53 @@
 package types
 
 type TxInfo struct {
-	Txs        txs    `json:"txs"`
-	TxResp     txResp `json:"tx_responses"`
+	Txs        []Txs    `json:"txs"`
+	TxResp     []TxResp `json:"tx_responses"`
 	Pagination struct {
 		NextKey string `json:"next_key"`
-		Total   string `json:"total"`
-	}
+	} `json:"pagination"`
+	Total  string `json:"total"`
 	Result TxResult
 	TPS    float64
+}
+
+type Txs struct {
+	Body struct {
+		Messages []struct {
+			Type string `json:"@type"`
+		} `json:"messages"`
+		Memo string `json:"memo"`
+	} `json:"body"`
+	AuthInfo struct {
+		Fee struct {
+			Amount []struct {
+				Denom  string `json:"denom"`
+				Amount string `json:"amount"`
+			} `json:"amount"`
+			GasLimit string `json:"gas_limit"`
+			Payer    string `json:"payer"`
+			Granter  string `json:"granter"`
+		} `json:"fee"`
+	} `json:"auth_info"`
+}
+
+type TxResp struct {
+	Hash      string `json:"txhash"`
+	Timestamp string `json:"timestamp"`
+	Tx        struct {
+		Type string `json:"@type"`
+	} `json:"tx"`
+	Logs []struct {
+		Events []struct {
+			Type       string `json:"type"`
+			Attributes []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"attributes"`
+		} `json:"events"`
+	} `json:"logs"`
+	GasWanted string `json:"gas_wanted"`
+	GasUsed   string `json:"gas_used"`
 }
 
 type TxResult struct {
@@ -48,31 +87,4 @@ type TxResult struct {
 	// DelegateActionTotal          float64
 	// BeginUnbondingTotal          float64
 	// WithdrawDelegatorRewardTotal float64
-}
-
-type txs []struct {
-	AuthInfo struct {
-		Fee []struct {
-			Amount []struct {
-				Denom  string `json:"denom"`
-				Amount string `json:"amount"`
-			}
-			GasLimit string `json:"gas_limit"`
-		}
-	}
-}
-
-type txResp []struct {
-	Hash string `json:"txhash"`
-	Logs []struct {
-		Events []struct {
-			Type       string `json:"type"`
-			Attributes []struct {
-				Key   string `json:"key"`
-				Value string `json:"value"`
-			}
-		}
-	}
-	GasWanted string `json:"gas_wanted"`
-	GasUsd    string `json:"gas_used"`
 }

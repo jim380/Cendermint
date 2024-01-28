@@ -32,6 +32,7 @@ func CollectMetrics(cfg *config.Config, log *zap.Logger, restService controllers
 		for {
 			block := restService.GetBlockInfo(*cfg)
 			currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
+
 			if previousBlockHeight != currentBlockHeight {
 				block = restService.GetLastBlockTimestamp(*cfg, currentBlockHeight)
 				select {

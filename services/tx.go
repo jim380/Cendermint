@@ -19,29 +19,17 @@ type TxnService struct {
 	DB *sql.DB
 }
 
-func (ts *TxnService) GetInfo(cfg config.Config, currentBlockHeight int64, rd *types.RESTData) {
-	var txInfo types.TxInfo
+func (os *TxnService) Init(db *sql.DB) {
+	os.DB = db
+}
+
+func (ts *TxnService) PopulateRestData(rd *types.RESTData, txInfo types.TxInfo) {
 	var txRes types.TxResult
 
-	route := rest.GetTxByHeightRoute(cfg)
-	res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprintf("%v", currentBlockHeight))
-	if err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-	}
-	json.Unmarshal(res, &txInfo)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else {
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Pagination.Total))
-	}
-
 	for _, v := range txInfo.TxResp {
-		// zap.L().Info("", zap.Bool("Success", true), zap.String("Tx #:", fmt.Sprintf("%v", i)))
 		gasWantedRes, _ := strconv.ParseFloat(v.GasWanted, 64)
-		txRes.GasWantedTotal = txRes.GasWantedTotal + gasWantedRes
-		gasUsedRes, _ := strconv.ParseFloat(v.GasUsd, 64)
+		txRes.GasWantedTotal += gasWantedRes
+		gasUsedRes, _ := strconv.ParseFloat(v.GasUsed, 64)
 		txRes.GasUsedTotal = txRes.GasUsedTotal + gasUsedRes
 		for _, v := range v.Logs {
 			for _, v := range v.Events {
@@ -92,23 +80,6 @@ func (ts *TxnService) GetInfo(cfg config.Config, currentBlockHeight int64, rd *t
 				default:
 					txRes.OthersTotal++
 				}
-				// if v.Type == "message" {
-				// 	for _, v := range v.Attributes {
-				// 		if v.Key == "action" {
-				// 			actionsTotal++
-				// 			switch v.Value {
-				// 			case "send":
-				// 				sendTotal++
-				// 			case "delegate":
-				// 				delegateActionTotal++
-				// 			case "begin_unbonding":
-				// 				beginUnbondingTotal++
-				// 			case "withdraw_delegator_reward":
-				// 				withdrawDelegatorRewardTotal++
-				// 			}
-				// 		}
-				// 	}
-				// }
 			}
 		}
 	}
@@ -119,4 +90,99 @@ func (ts *TxnService) GetInfo(cfg config.Config, currentBlockHeight int64, rd *t
 
 	rd.TxInfo = txInfo
 	rd.TxInfo.Result = txRes
+}
+
+func (ts *TxnService) GetTxnsInBlock(cfg config.Config, height int64) (types.TxInfo, error) {
+	var txInfo types.TxInfo
+
+	route := rest.GetTxByHeightRoute(cfg)
+	res, err := utils.HttpQuery(constants.RESTAddr + route + fmt.Sprintf("%v", height))
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
+	json.Unmarshal(res, &txInfo)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else {
+		zap.L().Info("", zap.Bool("Success", true), zap.String("Total txs in this block", txInfo.Total))
+	}
+
+	return txInfo, nil
+}
+
+type TransactionData struct {
+	TxsData    types.Txs
+	TxRespData types.TxResp
+}
+
+func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.TxInfo) error {
+	// start a new transaction
+	tx, err := ts.DB.Begin()
+	if err != nil {
+		return err
+	}
+
+	// create a slice of TransactionData
+	var txData []TransactionData
+	for i := range txsInBlock.Txs {
+		txData = append(txData, TransactionData{TxsData: txsInBlock.Txs[i], TxRespData: txsInBlock.TxResp[i]})
+	}
+
+	for _, txnData := range txData {
+		// Insert into transactions table
+		_, err = tx.Exec(`
+	INSERT INTO transactions (hash, height, timestamp, type, gas_wanted, gas_used, memo, payer, granter)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	ON CONFLICT (hash) DO NOTHING`,
+			txnData.TxRespData.Hash, height, txnData.TxRespData.Timestamp, txnData.TxRespData.Tx.Type, txnData.TxRespData.GasWanted, txnData.TxRespData.GasUsed, txnData.TxsData.Body.Memo, txnData.TxsData.AuthInfo.Fee.Payer, txnData.TxsData.AuthInfo.Fee.Granter)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		// insert into transaction_messages table
+		for _, msg := range txnData.TxsData.Body.Messages {
+			_, err = tx.Exec(`
+			INSERT INTO transaction_messages (type, transaction_hash)
+			VALUES ($1, $2)`,
+				msg.Type, txnData.TxRespData.Hash)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+
+		// insert into the denoms table & transaction_fee_amounts table
+		for _, v := range txnData.TxsData.AuthInfo.Fee.Amount {
+			var denomId int
+			err = tx.QueryRow(`
+				INSERT INTO denoms (denom)
+				VALUES ($1) ON CONFLICT (denom) DO UPDATE SET denom = $1 RETURNING id`,
+				v.Denom).Scan(&denomId)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			_, err = tx.Exec(`
+				INSERT INTO transaction_fee_amounts (amount, transaction_hash, denom_id)
+				VALUES ($1, $2, $3)`,
+				v.Amount, txnData.TxRespData.Hash, denomId)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	// Commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
 }
