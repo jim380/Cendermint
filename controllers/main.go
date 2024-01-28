@@ -72,7 +72,7 @@ func computerTPS(blockData types.Blocks, rd *types.RESTData) {
 	interval := (currentTimestamp.UnixMilli() - lastTimestamp.UnixMilli()) / 1000 // ms -> s
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Block interval", strconv.Itoa(int(interval))))
 	rd.BlockInterval = interval
-	totalTxs, _ := strconv.Atoi(rd.TxInfo.Pagination.Total)
+	totalTxs, _ := strconv.Atoi(rd.TxInfo.Total)
 	tps := float64(totalTxs) / float64(interval)
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("TPS", fmt.Sprintf("%.2f", tps)))
 	rd.TxInfo.TPS = tps

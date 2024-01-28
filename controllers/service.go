@@ -63,6 +63,7 @@ func InitializeRestServices(db *sql.DB) RestServices {
 		&services.GravityService{},
 		&services.AkashService{},
 		&services.OracleService{},
+		&services.TxnService{},
 	}
 
 	for _, service := range restServices {
@@ -84,6 +85,7 @@ func InitializeRestServices(db *sql.DB) RestServices {
 		GravityService:         restServices[11].(*services.GravityService),
 		AkashService:           restServices[12].(*services.AkashService),
 		OracleService:          restServices[13].(*services.OracleService),
+		TxnService:             restServices[14].(*services.TxnService),
 	}
 
 	return restServicesController

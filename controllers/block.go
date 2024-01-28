@@ -37,6 +37,7 @@ func (rs RestServices) GetBlockInfo(cfg config.Config) types.Blocks {
 	propser := block.Block.Header.ProposerAddress
 
 	rs.IndexBlock(height, block.BlockId.Hash, timestamp, propser, txnCount)
+	// rs.IndexTxnsInBlock(cfg, int64(height))
 
 	return block
 }
