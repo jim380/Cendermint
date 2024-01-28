@@ -5,7 +5,7 @@ CREATE TABLE transaction_message_amounts (
   amount INT NOT NULL,
   message_id INT NOT NULL,
   denom_id INT NOT NULL,
-  FOREIGN KEY (message_id) REFERENCES messages(id),
+  FOREIGN KEY (message_id) REFERENCES transaction_messages(id),
   FOREIGN KEY (denom_id) REFERENCES denoms(id)
 );
 -- +goose StatementEnd
