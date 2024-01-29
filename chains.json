@@ -207,5 +207,16 @@
       }
     ],
     "addr_prefix": "pryzm"
+  },
+  {
+    "chain": "berachain",
+    "assets": [
+      {
+        "denom": "abgt",
+        "symbol": "BERA",
+        "decimals": "18"
+      }
+    ],
+    "addr_prefix": "bera"
   }
 ]

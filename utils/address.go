@@ -57,6 +57,8 @@ func GetPrefix(chain string) string {
 		return "n"
 	case "pryzm":
 		return "pryzm"
+	case "berachain":
+		return "bera"
 	default:
 		return "cosmos"
 	}
