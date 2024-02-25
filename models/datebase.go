@@ -86,8 +86,10 @@ func SetupDatabase() *sql.DB {
 }
 
 func MigrateDatabase(db *sql.DB) {
+	// migrate general tables
 	err := MigrateFS(db, migrations.FS, ".")
 	if err != nil {
 		panic(err)
 	}
+	// migrate chain specific tables
 }
