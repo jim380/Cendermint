@@ -6,10 +6,9 @@ import (
 )
 
 var (
-	defaultGauges       []prometheus.Gauge
-	gaugesDenom         []prometheus.Gauge
-	previousBlockHeight int64
-	metricData          metric
+	defaultGauges []prometheus.Gauge
+	gaugesDenom   []prometheus.Gauge
+	metricData    metric
 )
 
 type metric struct {

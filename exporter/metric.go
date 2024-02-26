@@ -167,5 +167,9 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 }
 
 func GetMetric() *metric {
+	if metricData.Network.ChainID == "" {
+		return nil
+	}
+
 	return &metricData
 }

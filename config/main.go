@@ -232,6 +232,7 @@ func (cfg *Config) ValidateConfig() types.AppConfig {
 		RpcAddr:       cfg.RpcAddr,
 		ListeningPort: cfg.ListeningPort,
 		LogOutput:     cfg.LogOutput,
+		PollInterval:  cfg.PollInterval,
 		LogLevel:      GetLogLevel(cfg.LogLevel),
 		Logger:        logging.InitLogger(cfg.LogOutput, GetLogLevel(cfg.LogLevel)),
 	}

@@ -16,13 +16,17 @@ limitations under the License.
 package main
 
 import (
+	"strconv"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/controllers"
 	"github.com/jim380/Cendermint/dashboard"
 	"github.com/jim380/Cendermint/exporter"
+	"github.com/jim380/Cendermint/fetcher"
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/models"
 	"github.com/jim380/Cendermint/types"
@@ -31,6 +35,8 @@ import (
 
 var (
 	appConfig types.AppConfig
+	mutex     = &sync.Mutex{}
+	ticker    = time.NewTicker(1 * time.Second).C
 )
 
 func main() {
@@ -48,6 +54,7 @@ func main() {
 	constants.RESTAddr = appConfig.RestAddr
 	constants.RPCAddr = appConfig.RpcAddr
 	constants.OperAddr = appConfig.OperAddr
+	constants.PollInterval, _ = strconv.Atoi(appConfig.PollInterval)
 
 	// Setup a db connection
 	db := models.SetupDatabase()
@@ -65,5 +72,9 @@ func main() {
 		dashboard.StartDashboard()
 	}
 
-	exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
+	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
+
+	// always start fetch first
+	fetcher.Start(&cfg, restServicesController, rpcServicesController, mutex, ticker, denomList, logger)
+	exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController, mutex)
 }

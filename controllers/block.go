@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -44,11 +43,6 @@ func (rs RestServices) GetBlockInfo(cfg config.Config) types.Blocks {
 
 func (rs RestServices) GetLastBlockTimestamp(cfg config.Config, currentHeight int64) types.Blocks {
 	block := rs.BlockService.GetLastBlockTimestamp(cfg, currentHeight)
-
-	fmt.Println("--------------------------- Start ---------------------------")
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
-	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentHeight)))
 
 	return block
 }
