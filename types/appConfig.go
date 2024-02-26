@@ -12,6 +12,7 @@ type AppConfig struct {
 	ListeningPort string
 	OperAddr      string
 	LogOutput     string
+	PollInterval  string
 	LogLevel      zapcore.Level
 	Logger        *zap.Logger
 }

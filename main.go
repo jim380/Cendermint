@@ -16,6 +16,7 @@ limitations under the License.
 package main
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/jim380/Cendermint/config"
@@ -23,6 +24,7 @@ import (
 	"github.com/jim380/Cendermint/controllers"
 	"github.com/jim380/Cendermint/dashboard"
 	"github.com/jim380/Cendermint/exporter"
+	"github.com/jim380/Cendermint/fetcher"
 	"github.com/jim380/Cendermint/logging"
 	"github.com/jim380/Cendermint/models"
 	"github.com/jim380/Cendermint/types"
@@ -48,22 +50,32 @@ func main() {
 	constants.RESTAddr = appConfig.RestAddr
 	constants.RPCAddr = appConfig.RpcAddr
 	constants.OperAddr = appConfig.OperAddr
+	constants.PollInterval, _ = strconv.Atoi(appConfig.PollInterval)
 
-	// Setup a db connection
+	// setup a db connection
 	db := models.SetupDatabase()
 	defer db.Close()
 
-	// DB migration
+	// db migration
 	models.MigrateDatabase(db)
 
 	// initialize services
 	rpcServicesController := controllers.InitializeRpcServices(db)
 	restServicesController := controllers.InitializeRestServices(db)
 
-	// run dashboard in a separate thread in enabled
+	// start dashboard in a separate thread in enabled
 	if strings.ToLower(cfg.DashboardEnabled) == "true" {
-		dashboard.StartDashboard()
+		go dashboard.StartDashboard()
 	}
 
-	exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
+	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
+
+	// start the data fetcher in a separate thread
+	go fetcher.Start(&cfg, restServicesController, rpcServicesController, denomList, logger)
+
+	// start the exporter in a separate thread
+	go exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
+
+	// start the metrics server
+	exporter.StartMetricsHttpServer(cfg.ListeningPort)
 }

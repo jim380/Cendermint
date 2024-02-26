@@ -23,6 +23,15 @@ services:
       - local
     restart: unless-stopped
 
+  redis:
+    image: redis:latest
+    container_name: cdt_cache
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      - local
+
   db:
     image: postgres
     container_name: cdt_db
