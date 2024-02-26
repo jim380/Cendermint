@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// TO-DO store in db
+// TO-DO cache this
 var previousBlockHeight int64
 
 func Start(cfg *config.Config, restService controllers.RestServices, rpcService controllers.RpcServices, mutex *sync.Mutex, ticker <-chan time.Time, denomList []string, log *zap.Logger) {
@@ -31,6 +31,8 @@ func FetchRESTData(cfg *config.Config, restService controllers.RestServices, rpc
 		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))
 
 		mutex.Lock()
+		// TO-DO fetch previousBlockHeight from cache and check
+		// if (previousBlockHeight != currentBlockHeight && previousBlockHeight != 0 && previousBlockHeight - currentBlockHeight == 1) {
 		if previousBlockHeight != currentBlockHeight {
 			block = restService.GetLastBlockTimestamp(*cfg, currentBlockHeight)
 			select {
@@ -44,6 +46,8 @@ func FetchRESTData(cfg *config.Config, restService controllers.RestServices, rpc
 				// tends to halt the node too. Caution !!!
 				// restService.DelegationService.GetInfo(*cfg, restData)
 				// SetMetric(currentBlockHeight, restData, log)
+			default:
+				// do nothing
 			}
 			previousBlockHeight = currentBlockHeight
 			fmt.Println("--------------------------- Finished fetching REST data ---------------------------")
