@@ -3,7 +3,6 @@ package exporter
 import (
 	"fmt"
 	"net/http"
-	"sync"
 	"time"
 
 	"go.uber.org/zap"
@@ -14,9 +13,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices, mutex *sync.Mutex) {
-	go CollectMetrics(config, logger, restService, rpcService)
-	StartMetricsHttpServer(port)
+func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
+	CollectMetrics(config, logger, restService, rpcService)
 }
 
 func CollectMetrics(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {

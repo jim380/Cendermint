@@ -25,44 +25,121 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 
 	rd := restData.New(blockHeight)
 
-	rs.GetNodeInfo(cfg, rd)
-
 	wg := sync.WaitGroup{}
+
 	wg.Add(1)
 	go func() {
 		rpcService.GetRpcInfo(*cfg, rpc)
-		rs.GetStakingInfo(*cfg, denom, rd)
-		rs.GetSlashingInfo(*cfg, rd)
-		rs.GetInflationInfo(*cfg, rd)
-		rs.GetGovInfo(*cfg, rd)
-		valInfo := rpcService.GetValidatorInfo(*cfg, blockHeight, rd)
-		rs.GetBalanceInfo(*cfg, rd)
-		rs.GetRewardsCommissionInfo(*cfg, rd)
-		rs.GetSigningInfo(*cfg, valInfo[0], rd)
-
-		consHexAddr := utils.Bech32AddrToHexAddr(valInfo[0])
-		rs.GetCommitInfo(*cfg, rd, blockData, consHexAddr)
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validator.Description.Moniker))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("VP", valInfo[1]))
-		zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
-		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
-		rs.GetIbcChannelInfo(*cfg, rd)
-		rs.GetIbcConnectionInfo(*cfg, rd)
-		rs.GetTxnInfo(*cfg, blockHeight, rd)
-		computerTPS(blockData, rd)
-		rs.GetUpgradeInfo(*cfg, rd)
-		// akash
-		rs.GetAkashInfo(*cfg, rd)
-		// gravity
-		rs.GetGravityBridgeInfo(*cfg, rd)
-		// oracle
-		rs.GetOracleInfo(*cfg, rd)
-
 		wg.Done()
 	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetNodeInfo(cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetStakingInfo(*cfg, denom, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetSlashingInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetInflationInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetGovInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		valInfo := rpcService.GetValidatorInfo(*cfg, blockHeight, rd)
+		rs.GetSigningInfo(*cfg, valInfo[0], rd)
+		consHexAddr := utils.Bech32AddrToHexAddr(valInfo[0])
+		rs.GetCommitInfo(*cfg, rd, blockData, consHexAddr)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetBalanceInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetRewardsCommissionInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetIbcChannelInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetIbcConnectionInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetTxnInfo(*cfg, blockHeight, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		computerTPS(blockData, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetUpgradeInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetAkashInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetGravityBridgeInfo(*cfg, rd)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.GetOracleInfo(*cfg, rd)
+		wg.Done()
+	}()
+
 	wg.Wait()
+
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Moniker", rd.Validator.Description.Moniker))
+	zap.L().Info("", zap.Bool("Success", true), zap.String("Precommit", fmt.Sprintf("%f", rd.Commit.ValidatorPrecommitStatus)))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Balances", fmt.Sprint(rd.Balances)))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Rewards", fmt.Sprint(rd.Rewards)))
+	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
+
 	return rd
 }
 

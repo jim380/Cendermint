@@ -18,8 +18,6 @@ package main
 import (
 	"strconv"
 	"strings"
-	"sync"
-	"time"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
@@ -35,8 +33,6 @@ import (
 
 var (
 	appConfig types.AppConfig
-	mutex     = &sync.Mutex{}
-	ticker    = time.NewTicker(1 * time.Second).C
 )
 
 func main() {
@@ -56,25 +52,30 @@ func main() {
 	constants.OperAddr = appConfig.OperAddr
 	constants.PollInterval, _ = strconv.Atoi(appConfig.PollInterval)
 
-	// Setup a db connection
+	// setup a db connection
 	db := models.SetupDatabase()
 	defer db.Close()
 
-	// DB migration
+	// db migration
 	models.MigrateDatabase(db)
 
 	// initialize services
 	rpcServicesController := controllers.InitializeRpcServices(db)
 	restServicesController := controllers.InitializeRestServices(db)
 
-	// run dashboard in a separate thread in enabled
+	// start dashboard in a separate thread in enabled
 	if strings.ToLower(cfg.DashboardEnabled) == "true" {
-		dashboard.StartDashboard()
+		go dashboard.StartDashboard()
 	}
 
 	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
 
-	// always start fetch first
-	fetcher.Start(&cfg, restServicesController, rpcServicesController, mutex, ticker, denomList, logger)
-	exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController, mutex)
+	// start the data fetcher in a separate thread
+	go fetcher.Start(&cfg, restServicesController, rpcServicesController, denomList, logger)
+
+	// start the exporter in a separate thread
+	go exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
+
+	// start the metrics server
+	exporter.StartMetricsHttpServer(cfg.ListeningPort)
 }
