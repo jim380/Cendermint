@@ -5,6 +5,6 @@ import (
 	"github.com/jim380/Cendermint/types"
 )
 
-func (rs RestServices) GetAkashInfo(cfg config.Config, rd *types.RESTData) {
-	rs.AkashService.GetAkashDeployments(cfg, rd)
+func (rs RestServices) GetAkashData(cfg config.Config, data *types.AsyncData) {
+	rs.AkashService.GetAkashDeployments(cfg, data)
 }

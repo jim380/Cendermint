@@ -6,13 +6,14 @@ import (
 )
 
 type AppConfig struct {
-	Chain         string
-	RestAddr      string
-	RpcAddr       string
-	ListeningPort string
-	OperAddr      string
-	LogOutput     string
-	PollInterval  string
-	LogLevel      zapcore.Level
-	Logger        *zap.Logger
+	Chain             string
+	RestAddr          string
+	RpcAddr           string
+	ListeningPort     string
+	OperAddr          string
+	LogOutput         string
+	PollIntervalChain string
+	PollIntervalAsync string
+	LogLevel          zapcore.Level
+	Logger            *zap.Logger
 }

@@ -11,7 +11,7 @@ import (
 )
 
 // gauges/labels <-> value
-func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
+func SetMetricChain(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	operAddr := constants.OperAddr
 	consPubKey := restData.Validator.ConsPubKey
 	consAddr := restData.Validatorsets[consPubKey.Key][0]
@@ -154,16 +154,13 @@ func SetMetric(currentBlock int64, restData *types.RESTData, log *zap.Logger) {
 	metricData.Validator.Account.Balances = restData.Balances
 	metricData.Validator.Account.Commission = restData.Commission
 	metricData.Validator.Account.Rewards = restData.Rewards
+}
 
+func SetMetricAsync(data *types.AsyncData, log *zap.Logger) {
 	// akash
-	metricData.Akash.TotalDeployments = float64(restData.AkashInfo.TotalDeployments)
-	metricData.Akash.ActiveDeployments = float64(restData.AkashInfo.ActiveDeployments)
-	metricData.Akash.ClosedDeployments = float64(restData.AkashInfo.ClosedDeployments)
-
-	// oracle
-	metricData.Oracle.MissedCounter = utils.StringToFloat64(restData.OracleInfo.MissedCounter.Counter)
-	metricData.Oracle.PrevoteSubmitHeight = utils.StringToFloat64(restData.OracleInfo.Prevote.SubmitBlock)
-	metricData.Oracle.ModuleVotes = float64(len(restData.OracleInfo.VoteInfo.Vote.ModuleVotes))
+	metricData.Akash.TotalDeployments = float64(data.AkashInfo.TotalDeployments)
+	metricData.Akash.ActiveDeployments = float64(data.AkashInfo.ActiveDeployments)
+	metricData.Akash.ClosedDeployments = float64(data.AkashInfo.ClosedDeployments)
 }
 
 func GetMetric() *metric {

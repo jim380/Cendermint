@@ -14,7 +14,7 @@ import (
 )
 
 func Start(config *config.Config, port string, logger *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
-	CollectMetrics(config, logger, restService, rpcService)
+	go CollectMetrics(config, logger, restService, rpcService)
 }
 
 func CollectMetrics(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
@@ -38,7 +38,7 @@ func CollectMetrics(cfg *config.Config, log *zap.Logger, restService controllers
 		metricData.setAddrLabels(counterVecs[1])
 		metricData.setUpgradeLabels(counterVecs[2])
 
-		time.Sleep(time.Duration(constants.PollInterval) * time.Second)
+		time.Sleep(time.Duration(constants.PollIntervalChain) * time.Second)
 	}
 }
 

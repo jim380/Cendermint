@@ -21,7 +21,7 @@ func (as *AkashService) Init(db *sql.DB) {
 	as.DB = db
 }
 
-func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTData) {
+func (as *AkashService) GetAkashDeployments(cfg config.Config, data *types.AsyncData) {
 	if cfg.Chain.Name != "akash" {
 		return
 	}
@@ -39,7 +39,7 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTDat
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	rd.AkashInfo.TotalDeployments = totalDeploymentsCount
+	data.AkashInfo.TotalDeployments = totalDeploymentsCount
 
 	// get active deployments count
 	resActive, err := utils.HttpQuery(constants.RESTAddr + route + "?filters.state=active")
@@ -52,8 +52,8 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, rd *types.RESTDat
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	rd.AkashInfo.ActiveDeployments = activeDeploymentsCount
+	data.AkashInfo.ActiveDeployments = activeDeploymentsCount
 
 	// get closed deployments count
-	rd.AkashInfo.ClosedDeployments = totalDeploymentsCount - activeDeploymentsCount
+	data.AkashInfo.ClosedDeployments = totalDeploymentsCount - activeDeploymentsCount
 }
