@@ -145,7 +145,7 @@ func (rs RestServices) GetAsyncData(cfg *config.Config) *types.AsyncData {
 
 	wg.Add(1)
 	go func() {
-		rs.GetAkashData(*cfg, dt)
+		rs.GetAkashInfo(*cfg, dt)
 		wg.Done()
 	}()
 

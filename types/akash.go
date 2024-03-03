@@ -1,7 +1,10 @@
 package types
 
 type AkashInfo struct {
-	// Deployments       akashDeployments
+	Deployments
+}
+
+type Deployments struct {
 	TotalDeployments  int
 	ActiveDeployments int
 	ClosedDeployments int

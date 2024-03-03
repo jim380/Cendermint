@@ -21,9 +21,9 @@ func (as *AkashService) Init(db *sql.DB) {
 	as.DB = db
 }
 
-func (as *AkashService) GetAkashDeployments(cfg config.Config, data *types.AsyncData) {
+func (as *AkashService) GetAkashDeployments(cfg config.Config, data *types.AsyncData) types.Deployments {
 	if cfg.Chain.Name != "akash" {
-		return
+		return types.Deployments{}
 	}
 	var deployments, activeDeployments types.AkashDeployments
 
@@ -56,4 +56,14 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, data *types.Async
 
 	// get closed deployments count
 	data.AkashInfo.ClosedDeployments = totalDeploymentsCount - activeDeploymentsCount
+
+	return data.AkashInfo.Deployments
+}
+
+func (as *AkashService) IndexDeployments(cfg config.Config, depoyments types.Deployments) error {
+	if cfg.Chain.Name != "akash" {
+		return nil
+	}
+
+	return nil
 }
