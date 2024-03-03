@@ -8,4 +8,5 @@ var (
 	PollIntervalChain    int
 	PollIntervalAsync    int
 	PollIntervalBackfill int
+	LastUpdatedMoreThan  int
 )

@@ -15,6 +15,7 @@ type AppConfig struct {
 	PollIntervalChain    string
 	PollIntervalAsync    string
 	PollIntervalBackfill string
+	LastUpdatedMoreThan  string
 	LogLevel             zapcore.Level
 	Logger               *zap.Logger
 }

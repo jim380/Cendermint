@@ -32,6 +32,7 @@ type Config struct {
 	PollIntervalChain    string
 	PollIntervalAsync    string
 	PollIntervalBackfill string
+	LastUpdatedMoreThan  string
 	LogLevel             string
 	DashboardEnabled     string
 }
@@ -105,6 +106,10 @@ func (config Config) CheckInputs(chainList map[string][]string) {
 
 	if config.PollIntervalBackfill == "" {
 		log.Fatal("Poll interval for backfilling data was not provided")
+	}
+
+	if config.LastUpdatedMoreThan == "" {
+		log.Fatal("Last updated more than was not provided")
 	}
 
 	if config.LogLevel == "" {
@@ -213,6 +218,7 @@ func LoadConfig() Config {
 		PollIntervalChain:    os.Getenv("POLL_INTERVAL_CHAIN"),
 		PollIntervalAsync:    os.Getenv("POLL_INTERVAL_ASYNC"),
 		PollIntervalBackfill: os.Getenv("POLL_INTERVAL_BACKFILL"),
+		LastUpdatedMoreThan:  os.Getenv("LAST_UPDATED_MORE_THAN"),
 		LogLevel:             os.Getenv("LOG_LEVEL"),
 		DashboardEnabled:     os.Getenv("DASHBOARD_ENABLED"),
 	}
@@ -247,6 +253,7 @@ func (cfg *Config) ValidateConfig() types.AppConfig {
 		PollIntervalChain:    cfg.PollIntervalChain,
 		PollIntervalAsync:    cfg.PollIntervalAsync,
 		PollIntervalBackfill: cfg.PollIntervalBackfill,
+		LastUpdatedMoreThan:  cfg.LastUpdatedMoreThan,
 		LogLevel:             GetLogLevel(cfg.LogLevel),
 		Logger:               logging.InitLogger(cfg.LogOutput, GetLogLevel(cfg.LogLevel)),
 	}

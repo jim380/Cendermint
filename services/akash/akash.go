@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
@@ -102,10 +103,10 @@ func (as *AkashService) IndexProviders(cfg config.Config, providers akash.Provid
 
 	for _, provider := range providers.Providers {
 		_, err := as.DB.Exec(`
-		INSERT INTO akash_providers (owner, host_uri, email, website)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO akash_providers (owner, host_uri, email, website, last_updated)
+		VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
 		ON CONFLICT (owner)
-		DO UPDATE SET host_uri = $2, email = $3, website = $4`,
+		DO UPDATE SET host_uri = $2, email = $3, website = $4, last_updated = CURRENT_TIMESTAMP`,
 			provider.Owner, provider.HostURI, provider.Info.Email, provider.Info.Website)
 		if err != nil {
 			return fmt.Errorf("error indexing provider: %w", err)
@@ -125,15 +126,22 @@ func (as *AkashService) IndexProviders(cfg config.Config, providers akash.Provid
 	return nil
 }
 
-func (as *AkashService) FindProvidersWithNullAuditor() ([]string, error) {
+func (as *AkashService) FindProvidersPendingAuditorUpdate(period time.Duration) ([]string, error) {
+	cutoff := time.Now().Add(-period)
+
 	rows, err := as.DB.Query(`
-		SELECT owner FROM akash_providers 
-		WHERE owner NOT IN (
-			SELECT DISTINCT provider_owner FROM akash_provider_auditors
-		)
-	`)
+		SELECT owner FROM (
+			SELECT DISTINCT owner FROM akash_providers 
+			WHERE owner NOT IN (
+				SELECT DISTINCT provider_owner FROM akash_provider_auditors
+			)
+			UNION
+			SELECT provider_owner FROM akash_provider_auditors 
+			WHERE last_updated < $1
+		) AS subquery
+	`, cutoff)
 	if err != nil {
-		return nil, fmt.Errorf("error querying providers with null auditor: %w", err)
+		return nil, fmt.Errorf("error querying providers pending auditor update: %w", err)
 	}
 	defer rows.Close()
 
@@ -187,7 +195,12 @@ func (as *AkashService) IndexAuditorForProviderOwners(cfg config.Config, provide
 		}
 
 		for _, provider := range auditors.Providers {
-			_, err = as.DB.Exec("INSERT INTO akash_provider_auditors (provider_owner, auditor) VALUES ($1, $2)", owner, provider.Auditor)
+			_, err = as.DB.Exec(`
+			INSERT INTO akash_provider_auditors (provider_owner, auditor, last_updated) 
+			VALUES ($1, $2, CURRENT_TIMESTAMP)
+			ON CONFLICT (provider_owner, auditor)
+			DO UPDATE SET last_updated = CURRENT_TIMESTAMP`,
+				owner, provider.Auditor)
 			if err != nil {
 				return fmt.Errorf("error indexing provider auditor: %w", err)
 			}
