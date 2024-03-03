@@ -92,8 +92,6 @@ func (as *AkashService) GetAkashProviders(cfg config.Config, data *types.AsyncDa
 		nextKey = nextPage.Pagination.NextKey
 	}
 
-	zap.L().Info("", zap.Bool("Success", true), zap.String("Providers", fmt.Sprint(providers.Providers)))
-
 	return providers
 }
 
@@ -120,6 +118,78 @@ func (as *AkashService) IndexProviders(cfg config.Config, providers akash.Provid
 				provider.Owner, attribute.Key, attribute.Value)
 			if err != nil {
 				return fmt.Errorf("error indexing provider attribute: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func (as *AkashService) FindProvidersWithNullAuditor() ([]string, error) {
+	rows, err := as.DB.Query(`
+		SELECT owner FROM akash_providers 
+		WHERE owner NOT IN (
+			SELECT DISTINCT provider_owner FROM akash_provider_auditors
+		)
+	`)
+	if err != nil {
+		return nil, fmt.Errorf("error querying providers with null auditor: %w", err)
+	}
+	defer rows.Close()
+
+	var providerOwners []string
+	for rows.Next() {
+		var owner string
+		err := rows.Scan(&owner)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning provider owner: %w", err)
+		}
+		providerOwners = append(providerOwners, owner)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	return providerOwners, nil
+}
+
+func (as *AkashService) IndexAuditorForProviderOwners(cfg config.Config, providerOwners []string) error {
+	if cfg.Chain.Name != "akash" {
+		return nil
+	}
+
+	for _, owner := range providerOwners {
+		var auditors akash.AuditorsResponse
+
+		route := rest.GetAuditorForProviderOwnerRoute(owner)
+		res, err := utils.HttpQuery(constants.RESTAddr + route)
+		if err != nil {
+			return fmt.Errorf("error querying auditors for provider owner: %w", err)
+		}
+		json.Unmarshal(res, &auditors)
+
+		// handle pagination
+		nextKey := auditors.Pagination.NextKey
+		for nextKey != "" {
+			res, err := utils.HttpQuery(constants.RESTAddr + route + "?pagination.key=" + nextKey)
+			if err != nil {
+				zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			}
+			var nextPage akash.AuditorsResponse
+			json.Unmarshal(res, &nextPage)
+
+			// append to the response
+			auditors.Providers = append(auditors.Providers, nextPage.Providers...)
+
+			// update the next key
+			nextKey = nextPage.Pagination.NextKey
+		}
+
+		for _, provider := range auditors.Providers {
+			_, err = as.DB.Exec("INSERT INTO akash_provider_auditors (provider_owner, auditor) VALUES ($1, $2)", owner, provider.Auditor)
+			if err != nil {
+				return fmt.Errorf("error indexing provider auditor: %w", err)
 			}
 		}
 	}

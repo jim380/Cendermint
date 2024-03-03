@@ -143,6 +143,10 @@ func GetProvidersRoute() string {
 	return "/akash/provider/v1beta3/providers"
 }
 
+func GetAuditorForProviderOwnerRoute(owner string) string {
+	return "/akash/audit/v1beta3/audit/attributes/" + owner + "/list"
+}
+
 /***********************
  * Oracle Routes
 ************************/

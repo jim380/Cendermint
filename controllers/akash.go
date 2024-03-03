@@ -23,3 +23,24 @@ func (rs RestServices) IndexAkashProviders(cfg config.Config, providers akash.Pr
 		zap.L().Info("Akash providers successfully indexed", zap.Int("Amount: ", len(providers.Providers)))
 	}
 }
+
+func (rs RestServices) IndexAkashAuditors(cfg config.Config) {
+	providersWithNullAuditor, err := rs.AkashService.FindProvidersWithNullAuditor()
+	if err != nil {
+		zap.L().Error("Error finding akash providers with null auditor", zap.String("Error", err.Error()))
+		return
+	}
+
+	if len(providersWithNullAuditor) == 0 {
+		zap.L().Info("No akash providers with null auditor found")
+		return
+	}
+
+	err = rs.AkashService.IndexAuditorForProviderOwners(cfg, providersWithNullAuditor)
+	if err != nil {
+		zap.L().Error("Error indexing akash auditors", zap.String("Error", err.Error()))
+		return
+	} else {
+		zap.L().Info("Akash auditors successfully indexed", zap.Int("Amount: ", len(providersWithNullAuditor)))
+	}
+}

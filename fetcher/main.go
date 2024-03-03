@@ -75,3 +75,16 @@ func FetchAsyncData(cfg *config.Config, restService controllers.RestServices, lo
 		time.Sleep(time.Duration(constants.PollIntervalAsync) * time.Second)
 	}
 }
+
+func BackfillData(cfg *config.Config, restService controllers.RestServices, log *zap.Logger) {
+	for {
+		fmt.Println("--------------------------- Started backfilling data ---------------------------")
+		restService.BackfillData(cfg)
+		fmt.Println("--------------------------- Finished backfilling data ---------------------------")
+		fmt.Println("")
+		fmt.Println("")
+		fmt.Println("")
+
+		time.Sleep(time.Duration(constants.PollIntervalAsync) * time.Second)
+	}
+}
