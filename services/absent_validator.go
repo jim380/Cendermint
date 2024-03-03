@@ -3,6 +3,8 @@ package services
 import (
 	"database/sql"
 	"fmt"
+
+	"go.uber.org/zap"
 )
 
 type AbsentValidator struct {
@@ -19,7 +21,7 @@ func (abs *AbsentValidatorService) Init(db *sql.DB) {
 }
 
 func (abs *AbsentValidatorService) Index(height int, consAddrBase64 string) (*AbsentValidator, error) {
-	// zap.L().Info("Indexing absent validator", zap.Int("height", height), zap.String("consAddrBase64", consAddrBase64))
+	zap.L().Info("Indexing absent validator", zap.Int("height", height), zap.String("consAddrBase64", consAddrBase64))
 	abscentValidator := AbsentValidator{
 		BlockHeight:    height,
 		ConsAddrBase64: consAddrBase64,

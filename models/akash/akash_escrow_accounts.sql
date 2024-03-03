@@ -11,8 +11,5 @@ CREATE TABLE akash_escrow_accounts (
   depositor TEXT,
   funds_denom TEXT,
   funds_amount TEXT,
-  PRIMARY KEY (id_scope, id_xid),
-  FOREIGN KEY (balance_denom) REFERENCES denoms(denom),
-  FOREIGN KEY (transferred_denom) REFERENCES denoms(denom),
-  FOREIGN KEY (funds_denom) REFERENCES denoms(denom)
+  PRIMARY KEY (id_scope, id_xid)
 );

@@ -2,10 +2,10 @@
 -- +goose StatementBegin
 CREATE TABLE akash_resource_storage (
   id SERIAL PRIMARY KEY,
-  resource_id INT NOT NULL,
+  group_dseq INT NOT NULL,
   name TEXT NOT NULL,
   quantity TEXT NOT NULL,
-  FOREIGN KEY (resource_id) REFERENCES akash_resources(id)
+  FOREIGN KEY (group_dseq) REFERENCES akash_resources(group_dseq)
 );
 -- +goose StatementEnd
 

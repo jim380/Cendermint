@@ -2,10 +2,10 @@
 -- +goose StatementBegin
 CREATE TABLE akash_resource_endpoints (
   id SERIAL PRIMARY KEY,
-  resource_id INT NOT NULL,
+  group_dseq INT NOT NULL,
   kind TEXT NOT NULL,
   sequence_number INT NOT NULL,
-  FOREIGN KEY (resource_id) REFERENCES akash_resources(id)
+  FOREIGN KEY (group_dseq) REFERENCES akash_resources(group_dseq)
 );
 -- +goose StatementEnd
 

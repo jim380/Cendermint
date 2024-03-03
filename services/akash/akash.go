@@ -306,17 +306,33 @@ func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, provi
 				for _, signedByAnyOf := range group.GroupSpec.Requirements.SignedBy.AnyOf {
 					_, err = as.DB.Exec(`
 					INSERT INTO akash_group_requirements_signed_by_any_of (group_dseq, signed_by_any_of) 
-					VALUES ($1, $2)`,
+					VALUES ($1, $2)
+					ON CONFLICT (group_dseq)
+					DO UPDATE SET signed_by_any_of = $2`,
 						group.GroupId.Dseq, signedByAnyOf)
 					if err != nil {
 						return fmt.Errorf("error indexing group requirement signed by any of: %w", err)
 					}
 				}
 
+				for _, signedByAllOf := range group.GroupSpec.Requirements.SignedBy.AllOf {
+					_, err = as.DB.Exec(`
+					INSERT INTO akash_group_requirements_signed_by_all_of (group_dseq, signed_by_all_of) 
+					VALUES ($1, $2)
+					ON CONFLICT (group_dseq)
+					DO UPDATE SET signed_by_all_of = $2`,
+						group.GroupId.Dseq, signedByAllOf)
+					if err != nil {
+						return fmt.Errorf("error indexing group requirement signed by all of: %w", err)
+					}
+				}
+
 				for _, attribute := range group.GroupSpec.Requirements.Attributes {
 					_, err = as.DB.Exec(`
-					INSERT INTO akash_group_requirements_attributes (group_dseq, attribute_key, attribute_value) 
-					VALUES ($1, $2, $3)`,
+						INSERT INTO akash_group_requirements_attributes (group_dseq, attribute_key, attribute_value) 
+						VALUES ($1, $2, $3)
+						ON CONFLICT (group_dseq)
+						DO UPDATE SET attribute_key = $2, attribute_value = $3`,
 						group.GroupId.Dseq, attribute.Key, attribute.Value)
 					if err != nil {
 						return fmt.Errorf("error indexing group requirement attribute: %w", err)
@@ -327,11 +343,11 @@ func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, provi
 				for _, resource := range group.GroupSpec.Resources {
 					dseq, _ := strconv.Atoi(group.GroupId.Dseq)
 					_, err = as.DB.Exec(`
-    				INSERT INTO akash_resources (group_dseq, resource_id, cpu_units, memory_quantity, gpu_units, price_denom, price_amount) 
-    				VALUES ($1, $2, $3, $4, $5, $6, $7)
-    				ON CONFLICT (group_dseq, resource_id)
-    				DO UPDATE SET cpu_units = $3, memory_quantity = $4, gpu_units = $5, price_denom = $6, price_amount = $7`,
-						dseq, resource.ResourceDetails.ID, resource.ResourceDetails.CPU.Units.Val, resource.ResourceDetails.Memory.Quantity.Val, resource.ResourceDetails.GPU.Units.Val, resource.Price.Denom, resource.Price.Amount)
+						INSERT INTO akash_resources (group_dseq, cpu_units, memory_quantity, gpu_units, price_denom, price_amount) 
+						VALUES ($1, $2, $3, $4, $5, $6)
+						ON CONFLICT (group_dseq)
+						DO UPDATE SET cpu_units = $2, memory_quantity = $3, gpu_units = $4, price_denom = $5, price_amount = $6`,
+						dseq, resource.ResourceDetails.CPU.Units.Val, resource.ResourceDetails.Memory.Quantity.Val, resource.ResourceDetails.GPU.Units.Val, resource.Price.Denom, resource.Price.Amount)
 					if err != nil {
 						return fmt.Errorf("error indexing resource: %w", err)
 					}
@@ -339,9 +355,9 @@ func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, provi
 					// Index resource endpoints and storage
 					for _, endpoint := range resource.ResourceDetails.Endpoints {
 						_, err = as.DB.Exec(`
-						INSERT INTO akash_resource_endpoints (resource_id, kind, sequence_number) 
-						VALUES ($1, $2, $3)`,
-							resource.ResourceDetails.ID, endpoint.Kind, endpoint.Sequence_number)
+							INSERT INTO akash_resource_endpoints (group_dseq, kind, sequence_number) 
+							VALUES ($1, $2, $3)`,
+							dseq, endpoint.Kind, endpoint.Sequence_number)
 						if err != nil {
 							return fmt.Errorf("error indexing resource endpoint: %w", err)
 						}
@@ -349,9 +365,9 @@ func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, provi
 
 					for _, storage := range resource.ResourceDetails.Storage {
 						_, err = as.DB.Exec(`
-						INSERT INTO akash_resource_storage (resource_id, name, quantity) 
-						VALUES ($1, $2, $3)`,
-							resource.ResourceDetails.ID, storage.Name, storage.Quantity.Val)
+							INSERT INTO akash_resource_storage (group_dseq, name, quantity) 
+							VALUES ($1, $2, $3)`,
+							dseq, storage.Name, storage.Quantity.Val)
 						if err != nil {
 							return fmt.Errorf("error indexing resource storage: %w", err)
 						}
