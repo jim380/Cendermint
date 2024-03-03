@@ -3,21 +3,23 @@ package controllers
 import (
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/types"
+	"github.com/jim380/Cendermint/types/akash"
 	"go.uber.org/zap"
 )
 
 func (rs RestServices) GetAkashInfo(cfg config.Config, data *types.AsyncData) {
-	deployments := rs.AkashService.GetAkashDeployments(cfg, data)
+	rs.AkashService.GetAkashDeployments(cfg, data)
+	providers := rs.AkashService.GetAkashProviders(cfg, data)
 	// index
-	rs.IndexAkashDeployments(cfg, deployments)
+	rs.IndexAkashProviders(cfg, providers)
 }
 
-func (rs RestServices) IndexAkashDeployments(cfg config.Config, deployments types.Deployments) {
-	err := rs.AkashService.IndexDeployments(cfg, deployments)
+func (rs RestServices) IndexAkashProviders(cfg config.Config, providers akash.ProvidersResponse) {
+	err := rs.AkashService.IndexProviders(cfg, providers)
 	if err != nil {
-		zap.L().Error("Error indexing akash deployments", zap.String("Error", err.Error()))
+		zap.L().Error("Error indexing akash providers", zap.String("Error", err.Error()))
 		return
 	} else {
-		zap.L().Debug("Akash deployments successfully indexed", zap.String("", ""))
+		zap.L().Info("Akash providers successfully indexed", zap.Int("Amount: ", len(providers.Providers)))
 	}
 }

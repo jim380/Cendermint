@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/jim380/Cendermint/services"
+	akash_services "github.com/jim380/Cendermint/services/akash"
 )
 
 type RestServices struct {
@@ -20,7 +21,7 @@ type RestServices struct {
 	UpgradeService         *services.UpgradeService
 	IbcServices            *services.IbcService
 	GravityService         *services.GravityService
-	AkashService           *services.AkashService
+	AkashService           *akash_services.AkashService
 	OracleService          *services.OracleService
 }
 
@@ -61,7 +62,7 @@ func InitializeRestServices(db *sql.DB) RestServices {
 		&services.UpgradeService{},
 		&services.IbcService{},
 		&services.GravityService{},
-		&services.AkashService{},
+		&akash_services.AkashService{},
 		&services.OracleService{},
 		&services.TxnService{},
 	}
@@ -83,7 +84,7 @@ func InitializeRestServices(db *sql.DB) RestServices {
 		UpgradeService:         restServices[9].(*services.UpgradeService),
 		IbcServices:            restServices[10].(*services.IbcService),
 		GravityService:         restServices[11].(*services.GravityService),
-		AkashService:           restServices[12].(*services.AkashService),
+		AkashService:           restServices[12].(*akash_services.AkashService),
 		OracleService:          restServices[13].(*services.OracleService),
 		TxnService:             restServices[14].(*services.TxnService),
 	}

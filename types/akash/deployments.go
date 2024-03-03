@@ -1,23 +1,21 @@
-package types
+package akash
 
-type AkashInfo struct {
-	Deployments
-}
-
+// for http metrics
 type Deployments struct {
 	TotalDeployments  int
 	ActiveDeployments int
 	ClosedDeployments int
 }
 
-type AkashDeployments struct {
-	Deployments []akashDeployment `json:"deployments"`
+// for http
+type DeploymentsResponse struct {
+	Deployments []deployment `json:"deployments"`
 	Pagination  struct {
 		Total string `json:"total"`
 	} `json:"pagination"`
 }
 
-type akashDeployment struct {
+type deployment struct {
 	Deployment    `json:"deployment"`
 	Groups        []Group `json:"groups"`
 	EscrowAccount struct {

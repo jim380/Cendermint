@@ -136,7 +136,11 @@ func GetCurrentValidatorSetRoute() string {
  * Akash Routes
 ************************/
 func GetDeploymentsRoute() string {
-	return "/akash/deployment/v1beta2/deployments/list"
+	return "/akash/deployment/v1beta3/deployments/list"
+}
+
+func GetProvidersRoute() string {
+	return "/akash/provider/v1beta3/providers"
 }
 
 /***********************
