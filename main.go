@@ -52,6 +52,7 @@ func main() {
 	constants.OperAddr = appConfig.OperAddr
 	constants.PollIntervalChain, _ = strconv.Atoi(appConfig.PollIntervalChain)
 	constants.PollIntervalAsync, _ = strconv.Atoi(appConfig.PollIntervalAsync)
+	constants.PollIntervalBackfill, _ = strconv.Atoi(appConfig.PollIntervalBackfill)
 
 	// setup a db connection
 	db := models.SetupDatabase()

@@ -149,12 +149,6 @@ func (rs RestServices) GetAsyncData(cfg *config.Config) *types.AsyncData {
 		wg.Done()
 	}()
 
-	wg.Add(1)
-	go func() {
-		rs.IndexAkashAuditors(*cfg)
-		wg.Done()
-	}()
-
 	wg.Wait()
 
 	return dt

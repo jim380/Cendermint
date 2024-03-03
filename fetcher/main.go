@@ -16,6 +16,7 @@ import (
 func Start(cfg *config.Config, restService controllers.RestServices, rpcService controllers.RpcServices, denomList []string, log *zap.Logger) {
 	go FetchChainData(cfg, restService, rpcService, denomList, log)
 	go FetchAsyncData(cfg, restService, log)
+	go BackfillData(cfg, restService, log)
 }
 
 func FetchChainData(cfg *config.Config, restService controllers.RestServices, rpcService controllers.RpcServices, denomList []string, log *zap.Logger) {
@@ -85,6 +86,6 @@ func BackfillData(cfg *config.Config, restService controllers.RestServices, log 
 		fmt.Println("")
 		fmt.Println("")
 
-		time.Sleep(time.Duration(constants.PollIntervalAsync) * time.Second)
+		time.Sleep(time.Duration(constants.PollIntervalBackfill) * time.Second)
 	}
 }

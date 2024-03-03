@@ -19,20 +19,21 @@ import (
 )
 
 type Config struct {
-	Chain             Chain
-	ChainList         map[string][]string
-	SDKVersion        string
-	OperatorAddr      string
-	RestAddr          string
-	RpcAddr           string
-	ListeningPort     string
-	MissThreshold     string
-	MissConsecutive   string
-	LogOutput         string
-	PollIntervalChain string
-	PollIntervalAsync string
-	LogLevel          string
-	DashboardEnabled  string
+	Chain                Chain
+	ChainList            map[string][]string
+	SDKVersion           string
+	OperatorAddr         string
+	RestAddr             string
+	RpcAddr              string
+	ListeningPort        string
+	MissThreshold        string
+	MissConsecutive      string
+	LogOutput            string
+	PollIntervalChain    string
+	PollIntervalAsync    string
+	PollIntervalBackfill string
+	LogLevel             string
+	DashboardEnabled     string
 }
 
 type Chain struct {
@@ -100,6 +101,10 @@ func (config Config) CheckInputs(chainList map[string][]string) {
 
 	if config.PollIntervalAsync == "" {
 		log.Fatal("Poll interval for async data was not provided")
+	}
+
+	if config.PollIntervalBackfill == "" {
+		log.Fatal("Poll interval for backfilling data was not provided")
 	}
 
 	if config.LogLevel == "" {
@@ -197,18 +202,19 @@ func LoadConfig() Config {
 	}
 
 	cfg := Config{
-		Chain:             Chain{Name: os.Getenv("CHAIN")},
-		OperatorAddr:      os.Getenv("OPERATOR_ADDR"),
-		RestAddr:          os.Getenv("REST_ADDR"),
-		RpcAddr:           os.Getenv("RPC_ADDR"),
-		ListeningPort:     os.Getenv("LISTENING_PORT"),
-		MissThreshold:     os.Getenv("MISS_THRESHOLD"),
-		MissConsecutive:   os.Getenv("MISS_CONSECUTIVE"),
-		LogOutput:         os.Getenv("LOG_OUTPUT"),
-		PollIntervalChain: os.Getenv("POLL_INTERVAL_CHAIN"),
-		PollIntervalAsync: os.Getenv("POLL_INTERVAL_ASYNC"),
-		LogLevel:          os.Getenv("LOG_LEVEL"),
-		DashboardEnabled:  os.Getenv("DASHBOARD_ENABLED"),
+		Chain:                Chain{Name: os.Getenv("CHAIN")},
+		OperatorAddr:         os.Getenv("OPERATOR_ADDR"),
+		RestAddr:             os.Getenv("REST_ADDR"),
+		RpcAddr:              os.Getenv("RPC_ADDR"),
+		ListeningPort:        os.Getenv("LISTENING_PORT"),
+		MissThreshold:        os.Getenv("MISS_THRESHOLD"),
+		MissConsecutive:      os.Getenv("MISS_CONSECUTIVE"),
+		LogOutput:            os.Getenv("LOG_OUTPUT"),
+		PollIntervalChain:    os.Getenv("POLL_INTERVAL_CHAIN"),
+		PollIntervalAsync:    os.Getenv("POLL_INTERVAL_ASYNC"),
+		PollIntervalBackfill: os.Getenv("POLL_INTERVAL_BACKFILL"),
+		LogLevel:             os.Getenv("LOG_LEVEL"),
+		DashboardEnabled:     os.Getenv("DASHBOARD_ENABLED"),
 	}
 
 	return cfg
@@ -232,16 +238,17 @@ func (cfg *Config) ValidateConfig() types.AppConfig {
 	cfg.CheckInputs(chainList)
 
 	appConfig := types.AppConfig{
-		Chain:             cfg.Chain.Name,
-		OperAddr:          cfg.OperatorAddr,
-		RestAddr:          cfg.RestAddr,
-		RpcAddr:           cfg.RpcAddr,
-		ListeningPort:     cfg.ListeningPort,
-		LogOutput:         cfg.LogOutput,
-		PollIntervalChain: cfg.PollIntervalChain,
-		PollIntervalAsync: cfg.PollIntervalAsync,
-		LogLevel:          GetLogLevel(cfg.LogLevel),
-		Logger:            logging.InitLogger(cfg.LogOutput, GetLogLevel(cfg.LogLevel)),
+		Chain:                cfg.Chain.Name,
+		OperAddr:             cfg.OperatorAddr,
+		RestAddr:             cfg.RestAddr,
+		RpcAddr:              cfg.RpcAddr,
+		ListeningPort:        cfg.ListeningPort,
+		LogOutput:            cfg.LogOutput,
+		PollIntervalChain:    cfg.PollIntervalChain,
+		PollIntervalAsync:    cfg.PollIntervalAsync,
+		PollIntervalBackfill: cfg.PollIntervalBackfill,
+		LogLevel:             GetLogLevel(cfg.LogLevel),
+		Logger:               logging.InitLogger(cfg.LogOutput, GetLogLevel(cfg.LogLevel)),
 	}
 
 	return appConfig
