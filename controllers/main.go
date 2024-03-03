@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, blockHeight int64, blockData types.Blocks, denom string) *types.RESTData {
+func (rs RestServices) GetChainData(cfg *config.Config, rpcService RpcServices, blockHeight int64, blockData types.Blocks, denom string) *types.RESTData {
 	// rpc
 	var rpcData types.RPCData
 	rpc := rpcData.New()
@@ -116,12 +116,6 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 
 	wg.Add(1)
 	go func() {
-		rs.GetAkashInfo(*cfg, rd)
-		wg.Done()
-	}()
-
-	wg.Add(1)
-	go func() {
 		rs.GetGravityBridgeInfo(*cfg, rd)
 		wg.Done()
 	}()
@@ -141,6 +135,41 @@ func (rs RestServices) GetData(cfg *config.Config, rpcService RpcServices, block
 	zap.L().Info("\t", zap.Bool("Success", true), zap.String("Commission", fmt.Sprint(rd.Commission)))
 
 	return rd
+}
+
+func (rs RestServices) GetAsyncData(cfg *config.Config) *types.AsyncData {
+	var data types.AsyncData
+	dt := data.New()
+
+	wg := sync.WaitGroup{}
+
+	wg.Add(1)
+	go func() {
+		rs.GetAkashInfo(*cfg, dt)
+		wg.Done()
+	}()
+
+	wg.Wait()
+
+	return dt
+}
+
+func (rs RestServices) BackfillData(cfg *config.Config) {
+	wg := sync.WaitGroup{}
+
+	wg.Add(1)
+	go func() {
+		rs.IndexAkashAuditors(*cfg)
+		wg.Done()
+	}()
+
+	wg.Add(1)
+	go func() {
+		rs.IndexAkashDeployments(*cfg)
+		wg.Done()
+	}()
+
+	wg.Wait()
 }
 
 func computerTPS(blockData types.Blocks, rd *types.RESTData) {

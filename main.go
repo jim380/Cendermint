@@ -50,7 +50,10 @@ func main() {
 	constants.RESTAddr = appConfig.RestAddr
 	constants.RPCAddr = appConfig.RpcAddr
 	constants.OperAddr = appConfig.OperAddr
-	constants.PollInterval, _ = strconv.Atoi(appConfig.PollInterval)
+	constants.PollIntervalChain, _ = strconv.Atoi(appConfig.PollIntervalChain)
+	constants.PollIntervalAsync, _ = strconv.Atoi(appConfig.PollIntervalAsync)
+	constants.PollIntervalBackfill, _ = strconv.Atoi(appConfig.PollIntervalBackfill)
+	constants.LastUpdatedMoreThan, _ = strconv.Atoi(appConfig.LastUpdatedMoreThan)
 
 	// setup a db connection
 	db := models.SetupDatabase()
@@ -71,10 +74,10 @@ func main() {
 	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
 
 	// start the data fetcher in a separate thread
-	go fetcher.Start(&cfg, restServicesController, rpcServicesController, denomList, logger)
+	fetcher.Start(&cfg, restServicesController, rpcServicesController, denomList, logger)
 
 	// start the exporter in a separate thread
-	go exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
+	exporter.Start(&cfg, cfg.ListeningPort, logger, restServicesController, rpcServicesController)
 
 	// start the metrics server
 	exporter.StartMetricsHttpServer(cfg.ListeningPort)

@@ -23,7 +23,6 @@ type RESTData struct {
 	}
 	UpgradeInfo UpgradeInfo
 	GravityInfo GravityInfo
-	AkashInfo   AkashInfo
 	OracleInfo  OracleInfo
 }
 

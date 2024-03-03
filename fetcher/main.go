@@ -14,10 +14,12 @@ import (
 )
 
 func Start(cfg *config.Config, restService controllers.RestServices, rpcService controllers.RpcServices, denomList []string, log *zap.Logger) {
-	FetchRESTData(cfg, restService, rpcService, denomList, log)
+	go FetchChainData(cfg, restService, rpcService, denomList, log)
+	go FetchAsyncData(cfg, restService, log)
+	go BackfillData(cfg, restService, log)
 }
 
-func FetchRESTData(cfg *config.Config, restService controllers.RestServices, rpcService controllers.RpcServices, denomList []string, log *zap.Logger) {
+func FetchChainData(cfg *config.Config, restService controllers.RestServices, rpcService controllers.RpcServices, denomList []string, log *zap.Logger) {
 	for {
 		block := restService.GetBlockInfo(*cfg)
 		currentBlockHeight, _ := strconv.ParseInt(block.Block.Header.Height, 10, 64)
@@ -30,7 +32,7 @@ func FetchRESTData(cfg *config.Config, restService controllers.RestServices, rpc
 		shouldPoll := lastCachedHeight != currentBlockHeight
 
 		if shouldPoll {
-			fmt.Println("--------------------------- Started fetching REST data ---------------------------")
+			fmt.Println("--------------------------- Started fetching chain data ---------------------------")
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Last block timestamp", block.Block.Header.LastTimestamp))
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block timestamp", block.Block.Header.Timestamp))
 			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Current block height", fmt.Sprint(currentBlockHeight)))
@@ -38,26 +40,52 @@ func FetchRESTData(cfg *config.Config, restService controllers.RestServices, rpc
 			block = restService.GetLastBlockTimestamp(*cfg, currentBlockHeight)
 
 			// fetch data with block info via REST
-			restData := restService.GetData(cfg, rpcService, currentBlockHeight, block, denomList[0])
-
-			exporter.SetMetric(currentBlockHeight, restData, log)
+			restData := restService.GetChainData(cfg, rpcService, currentBlockHeight, block, denomList[0])
+			exporter.SetMetricChain(currentBlockHeight, restData, log)
 			// case <-ticker2:
 			// takes ~5-6 blocks to return results per request
 			// tends to halt the node too. Caution !!!
 			// restService.DelegationService.GetInfo(*cfg, restData)
-			// SetMetric(currentBlockHeight, restData, log)
+			// SetMetricSetMetricChain(currentBlockHeight, restData, log)
 
 			err := cache.Set("lastCachedHeight", currentBlockHeight)
 			if err != nil {
 				panic(err)
 			}
 
-			fmt.Println("--------------------------- Finished fetching REST data ---------------------------")
+			fmt.Println("--------------------------- Finished fetching chain data ---------------------------")
 			fmt.Println("")
 			fmt.Println("")
 			fmt.Println("")
 		}
 
-		time.Sleep(time.Duration(constants.PollInterval) * time.Second)
+		time.Sleep(time.Duration(constants.PollIntervalChain) * time.Second)
+	}
+}
+
+func FetchAsyncData(cfg *config.Config, restService controllers.RestServices, log *zap.Logger) {
+	for {
+		fmt.Println("--------------------------- Started fetching async data ---------------------------")
+		data := restService.GetAsyncData(cfg)
+		exporter.SetMetricAsync(data, log)
+		fmt.Println("--------------------------- Finished fetching async data ---------------------------")
+		fmt.Println("")
+		fmt.Println("")
+		fmt.Println("")
+
+		time.Sleep(time.Duration(constants.PollIntervalAsync) * time.Second)
+	}
+}
+
+func BackfillData(cfg *config.Config, restService controllers.RestServices, log *zap.Logger) {
+	for {
+		fmt.Println("--------------------------- Started backfilling data ---------------------------")
+		restService.BackfillData(cfg)
+		fmt.Println("--------------------------- Finished backfilling data ---------------------------")
+		fmt.Println("")
+		fmt.Println("")
+		fmt.Println("")
+
+		time.Sleep(time.Duration(constants.PollIntervalBackfill) * time.Second)
 	}
 }
