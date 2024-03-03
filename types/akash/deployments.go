@@ -9,44 +9,21 @@ type Deployments struct {
 
 // for http
 type DeploymentsResponse struct {
-	Deployments []deployment `json:"deployments"`
-	Pagination  struct {
-		Total string `json:"total"`
-	} `json:"pagination"`
-}
-
-type deployment struct {
-	Deployment    `json:"deployment"`
-	Groups        []Group `json:"groups"`
-	EscrowAccount struct {
-		Id struct {
-			Scope string `json:"scope"`
-			Xid   string `json:"xid"`
-		} `json:"id"`
-		Owner   string `json:"owner"`
-		State   string `json:"state"`
-		Balance struct {
-			Denom  string `json:"denom"`
-			Amount string `json:"amount"`
-		} `json:"balance"`
-		Transferred struct {
-			Denom  string `json:"denom"`
-			Amount string `json:"amount"`
-		} `json:"transferred"`
-		SettledAt string `json:"settled_at"`
-		Depositor string `json:"depositor"`
-		Funds     struct {
-			Denom  string `json:"denom"`
-			Amount string `json:"amount"`
-		} `json:"funds"`
-	} `json:"escrow_account"`
+	Deployments []Deployment `json:"deployments"`
+	Pagination  Pagination   `json:"pagination"`
 }
 
 type Deployment struct {
-	DeploymentId `json:"deployment_id"`
-	State        string `json:"state"`
-	Version      string `json:"version"`
-	CreatedAt    string `json:"created_at"`
+	DeploymentDetails DeploymentDetails `json:"deployment"`
+	Groups            []Group           `json:"groups"`
+	EscrowAccount     EscrowAccount     `json:"escrow_account"`
+}
+
+type DeploymentDetails struct {
+	DeploymentId DeploymentId `json:"deployment_id"`
+	State        string       `json:"state"`
+	Version      string       `json:"version"`
+	CreatedAt    string       `json:"created_at"`
 }
 
 type DeploymentId struct {
@@ -55,48 +32,97 @@ type DeploymentId struct {
 }
 
 type Group struct {
-	GroupId   `json:"group_id"`
-	State     string `json:"state"`
-	GroupSpec `json:"group_spec"`
-	CreatedAt string `json:"created_at"`
+	GroupId   GroupId   `json:"group_id"`
+	State     string    `json:"state"`
+	GroupSpec GroupSpec `json:"group_spec"`
+	CreatedAt string    `json:"created_at"`
 }
 
 type GroupId struct {
 	Owner string `json:"owner"`
 	Dseq  string `json:"dseq"`
-	Gseq  string `json:"gseq"`
+	Gseq  int    `json:"gseq"`
 }
 
 type GroupSpec struct {
-	Name string `json:"name"`
-	// Requirements `json:"requirements"`
-	Resources []struct {
-		Resources struct {
-			Cpu struct {
-				Units struct {
-					Val string `json:"Val"`
-				} `json:"units"`
-			} `json:"cpu"`
-			Memory struct {
-				Quantity struct {
-					Val string `json:"Val"`
-				} `json:"quantity"`
-			} `json:"memory"`
-			Storage struct {
-				Name     string `json:"name"`
-				Quantity struct {
-					Val string `json:"Val"`
-				} `json:"quantity"`
-			} `json:"storage"`
-			Endpoints []struct {
-				Kind            string `json:"kind"`
-				Sequence_number int    `json:"sequence_number"`
-			} `json:"endpoints"`
-		} `json:"resources"`
-		Count string `json:"count"`
-		Price struct {
-			Denom  string `json:"denom"`
-			Amount string `json:"amount"`
-		} `json:"price"`
-	} `json:"resources"`
+	Name         string       `json:"name"`
+	Requirements Requirements `json:"requirements"`
+	Resources    []Resource   `json:"resources"`
+}
+
+type Requirements struct {
+	SignedBy   SignedBy    `json:"signed_by"`
+	Attributes []Attribute `json:"attributes"`
+}
+
+type SignedBy struct {
+	AllOf []string `json:"all_of"`
+	AnyOf []string `json:"any_of"`
+}
+
+type Resource struct {
+	ResourceDetails ResourceDetails `json:"resource"`
+	Count           string          `json:"count"`
+	Price           Price           `json:"price"`
+}
+
+type ResourceDetails struct {
+	ID        int        `json:"id"`
+	CPU       CPU        `json:"cpu"`
+	Memory    Memory     `json:"memory"`
+	Storage   []Storage  `json:"storage"`
+	GPU       GPU        `json:"gpu"`
+	Endpoints []Endpoint `json:"endpoints"`
+}
+
+type CPU struct {
+	Units Units `json:"units"`
+}
+
+type Memory struct {
+	Quantity Units `json:"quantity"`
+}
+
+type Storage struct {
+	Name     string `json:"name"`
+	Quantity Units  `json:"quantity"`
+}
+
+type GPU struct {
+	Units Units `json:"units"`
+}
+
+type Units struct {
+	Val string `json:"val"`
+}
+
+type Endpoint struct {
+	Kind            string `json:"kind"`
+	Sequence_number int    `json:"sequence_number"`
+}
+
+type Price struct {
+	Denom  string `json:"denom"`
+	Amount string `json:"amount"`
+}
+
+type EscrowAccount struct {
+	ID          ID     `json:"id"`
+	Owner       string `json:"owner"`
+	State       string `json:"state"`
+	Balance     Amount `json:"balance"`
+	Transferred Amount `json:"transferred"`
+	SettledAt   string `json:"settled_at"`
+	Depositor   string `json:"depositor"`
+	Funds       Amount `json:"funds"`
+}
+
+type ID struct {
+	Scope string `json:"scope"`
+	Xid   string `json:"xid"`
+}
+
+type Amount struct {
+	Denom  string `json:"denom"`
+	Amount string `json:"amount"`
 }

@@ -126,7 +126,7 @@ func (as *AkashService) IndexProviders(cfg config.Config, providers akash.Provid
 	return nil
 }
 
-func (as *AkashService) FindProvidersPendingAuditorUpdate(period time.Duration) ([]string, error) {
+func (as *AkashService) FindProviderOwnersPendingAuditorUpdate(period time.Duration) ([]string, error) {
 	cutoff := time.Now().Add(-period)
 
 	rows, err := as.DB.Query(`
@@ -170,7 +170,7 @@ func (as *AkashService) IndexAuditorForProviderOwners(cfg config.Config, provide
 	for _, owner := range providerOwners {
 		var auditors akash.AuditorsResponse
 
-		route := rest.GetAuditorForProviderOwnerRoute(owner)
+		route := rest.GetAuditorsForProviderOwnerRoute(owner)
 		res, err := utils.HttpQuery(constants.RESTAddr + route)
 		if err != nil {
 			return fmt.Errorf("error querying auditors for provider owner: %w", err)
@@ -203,6 +203,172 @@ func (as *AkashService) IndexAuditorForProviderOwners(cfg config.Config, provide
 				owner, provider.Auditor)
 			if err != nil {
 				return fmt.Errorf("error indexing provider auditor: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func (as *AkashService) FindProviderOwnersPendingDeploymentUpdate(period time.Duration) ([]string, error) {
+	cutoff := time.Now().Add(-period)
+
+	rows, err := as.DB.Query(`
+		SELECT owner FROM (
+			SELECT DISTINCT owner FROM akash_providers 
+			WHERE owner NOT IN (
+				SELECT DISTINCT owner FROM akash_deployments
+			)
+			UNION
+			SELECT owner FROM akash_deployments 
+			WHERE last_updated < $1
+		) AS subquery
+	`, cutoff)
+	if err != nil {
+		return nil, fmt.Errorf("error querying providers pending deployment update: %w", err)
+	}
+	defer rows.Close()
+
+	var providerOwners []string
+	for rows.Next() {
+		var owner string
+		err := rows.Scan(&owner)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning provider owner: %w", err)
+		}
+		providerOwners = append(providerOwners, owner)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	return providerOwners, nil
+}
+
+func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, providerOwners []string) error {
+	if cfg.Chain.Name != "akash" {
+		return nil
+	}
+
+	for _, owner := range providerOwners {
+		var deployments akash.DeploymentsResponse
+
+		route := rest.GetDeploymentsForProviderOwnerRoute(owner)
+		res, err := utils.HttpQuery(constants.RESTAddr + route)
+		if err != nil {
+			return fmt.Errorf("error querying deployments for provider owner: %w", err)
+		}
+		json.Unmarshal(res, &deployments)
+
+		// handle pagination
+		nextKey := deployments.Pagination.NextKey
+		for nextKey != "" {
+			res, err := utils.HttpQuery(constants.RESTAddr + route + "&pagination.key=" + nextKey)
+			if err != nil {
+				zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			}
+			var nextPage akash.DeploymentsResponse
+			json.Unmarshal(res, &nextPage)
+
+			// append to the response
+			deployments.Deployments = append(deployments.Deployments, nextPage.Deployments...)
+
+			// update the next key
+			nextKey = nextPage.Pagination.NextKey
+		}
+
+		for _, deployment := range deployments.Deployments {
+			// index deployments
+			_, err = as.DB.Exec(`
+			INSERT INTO akash_deployments (owner, dseq, state, version, created_at, last_updated) 
+			VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+			ON CONFLICT (owner, dseq)
+			DO UPDATE SET state = $3, version = $4, created_at = $5, last_updated = CURRENT_TIMESTAMP`,
+				deployment.DeploymentDetails.DeploymentId.Owner, deployment.DeploymentDetails.DeploymentId.Dseq, deployment.DeploymentDetails.State, deployment.DeploymentDetails.Version, deployment.DeploymentDetails.CreatedAt)
+			if err != nil {
+				return fmt.Errorf("error indexing deployment: %w", err)
+			}
+
+			// index groups
+			for _, group := range deployment.Groups {
+				_, err = as.DB.Exec(`
+				INSERT INTO akash_groups (owner, dseq, gseq, state, name, created_at) 
+				VALUES ($1, $2, $3, $4, $5, $6)
+				ON CONFLICT (owner, dseq, gseq)
+				DO UPDATE SET state = $4, name = $5, created_at = $6`,
+					deployment.DeploymentDetails.DeploymentId.Owner, deployment.DeploymentDetails.DeploymentId.Dseq, group.GroupId.Gseq, group.State, group.GroupSpec.Name, group.CreatedAt)
+				if err != nil {
+					return fmt.Errorf("error indexing group: %w", err)
+				}
+
+				// Index group requirements
+				for _, signedByAnyOf := range group.GroupSpec.Requirements.SignedBy.AnyOf {
+					_, err = as.DB.Exec(`
+					INSERT INTO akash_group_requirements_signed_by_any_of (group_dseq, signed_by_any_of) 
+					VALUES ($1, $2)`,
+						group.GroupId.Dseq, signedByAnyOf)
+					if err != nil {
+						return fmt.Errorf("error indexing group requirement signed by any of: %w", err)
+					}
+				}
+
+				for _, attribute := range group.GroupSpec.Requirements.Attributes {
+					_, err = as.DB.Exec(`
+					INSERT INTO akash_group_requirements_attributes (group_dseq, attribute_key, attribute_value) 
+					VALUES ($1, $2, $3)`,
+						group.GroupId.Dseq, attribute.Key, attribute.Value)
+					if err != nil {
+						return fmt.Errorf("error indexing group requirement attribute: %w", err)
+					}
+				}
+
+				// Index resources
+				for _, resource := range group.GroupSpec.Resources {
+					dseq, _ := strconv.Atoi(group.GroupId.Dseq)
+					_, err = as.DB.Exec(`
+    				INSERT INTO akash_resources (group_dseq, resource_id, cpu_units, memory_quantity, gpu_units, price_denom, price_amount) 
+    				VALUES ($1, $2, $3, $4, $5, $6, $7)
+    				ON CONFLICT (group_dseq, resource_id)
+    				DO UPDATE SET cpu_units = $3, memory_quantity = $4, gpu_units = $5, price_denom = $6, price_amount = $7`,
+						dseq, resource.ResourceDetails.ID, resource.ResourceDetails.CPU.Units.Val, resource.ResourceDetails.Memory.Quantity.Val, resource.ResourceDetails.GPU.Units.Val, resource.Price.Denom, resource.Price.Amount)
+					if err != nil {
+						return fmt.Errorf("error indexing resource: %w", err)
+					}
+
+					// Index resource endpoints and storage
+					for _, endpoint := range resource.ResourceDetails.Endpoints {
+						_, err = as.DB.Exec(`
+						INSERT INTO akash_resource_endpoints (resource_id, kind, sequence_number) 
+						VALUES ($1, $2, $3)`,
+							resource.ResourceDetails.ID, endpoint.Kind, endpoint.Sequence_number)
+						if err != nil {
+							return fmt.Errorf("error indexing resource endpoint: %w", err)
+						}
+					}
+
+					for _, storage := range resource.ResourceDetails.Storage {
+						_, err = as.DB.Exec(`
+						INSERT INTO akash_resource_storage (resource_id, name, quantity) 
+						VALUES ($1, $2, $3)`,
+							resource.ResourceDetails.ID, storage.Name, storage.Quantity.Val)
+						if err != nil {
+							return fmt.Errorf("error indexing resource storage: %w", err)
+						}
+					}
+				}
+			}
+
+			// index escrow account
+			escrow := deployment.EscrowAccount
+			_, err = as.DB.Exec(`
+			INSERT INTO akash_escrow_accounts (id_scope, id_xid, owner, state, balance_denom, balance_amount, transferred_denom, transferred_amount, settled_at, depositor, funds_denom, funds_amount) 
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+			ON CONFLICT (id_scope, id_xid)
+			DO UPDATE SET owner = $3, state = $4, balance_denom = $5, balance_amount = $6, transferred_denom = $7, transferred_amount = $8, settled_at = $9, depositor = $10, funds_denom = $11, funds_amount = $12`,
+				escrow.ID.Scope, escrow.ID.Xid, escrow.Owner, escrow.State, escrow.Balance.Denom, escrow.Balance.Amount, escrow.Transferred.Denom, escrow.Transferred.Amount, escrow.SettledAt, escrow.Depositor, escrow.Funds.Denom, escrow.Funds.Amount)
+			if err != nil {
+				return fmt.Errorf("error indexing escrow account: %w", err)
 			}
 		}
 	}

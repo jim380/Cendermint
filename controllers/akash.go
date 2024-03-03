@@ -28,22 +28,44 @@ func (rs RestServices) IndexAkashProviders(cfg config.Config, providers akash.Pr
 }
 
 func (rs RestServices) IndexAkashAuditors(cfg config.Config) {
-	providersPendingUpdate, err := rs.AkashService.FindProvidersPendingAuditorUpdate(time.Duration(constants.LastUpdatedMoreThan) * time.Second)
+	providerOwnersPendingUpdate, err := rs.AkashService.FindProviderOwnersPendingAuditorUpdate(time.Duration(constants.LastUpdatedMoreThan) * time.Second)
 	if err != nil {
 		zap.L().Error("Error finding akash providers pending auditor update", zap.String("IndexAkashAuditors", err.Error()))
 		return
 	}
 
-	if len(providersPendingUpdate) == 0 {
+	if len(providerOwnersPendingUpdate) == 0 {
 		zap.L().Info("No akash providers pending auditor update", zap.String("IndexAkashAuditors", ""))
 		return
 	}
 
-	err = rs.AkashService.IndexAuditorForProviderOwners(cfg, providersPendingUpdate)
+	err = rs.AkashService.IndexAuditorForProviderOwners(cfg, providerOwnersPendingUpdate)
 	if err != nil {
 		zap.L().Error("Error indexing akash auditors", zap.String("IndexAkashAuditors", err.Error()))
 		return
 	} else {
-		zap.L().Info("Akash auditors successfully indexed", zap.Int("Amount: ", len(providersPendingUpdate)))
+		zap.L().Info("Akash auditors successfully indexed", zap.Int("Amount: ", len(providerOwnersPendingUpdate)))
 	}
+}
+
+func (rs RestServices) IndexAkashDeployments(cfg config.Config) {
+	providerOwnersPendingUpdate, err := rs.AkashService.FindProviderOwnersPendingDeploymentUpdate(time.Duration(constants.LastUpdatedMoreThan) * time.Second)
+	if err != nil {
+		zap.L().Error("Error finding akash providers pending deployment update", zap.String("IndexAkashDeployments", err.Error()))
+		return
+	}
+
+	if len(providerOwnersPendingUpdate) == 0 {
+		zap.L().Info("No akash providers pending deployment update", zap.String("IndexAkashDeployments", ""))
+		return
+	}
+
+	err = rs.AkashService.IndexDeploymentForProviderOwner(cfg, providerOwnersPendingUpdate)
+	if err != nil {
+		zap.L().Error("Error indexing akash deployments", zap.String("IndexAkashDeployments", err.Error()))
+		return
+	} else {
+		zap.L().Info("Akash deployments successfully indexed", zap.Int("Amount: ", len(providerOwnersPendingUpdate)))
+	}
+
 }

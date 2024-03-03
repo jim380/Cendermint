@@ -143,8 +143,12 @@ func GetProvidersRoute() string {
 	return "/akash/provider/v1beta3/providers"
 }
 
-func GetAuditorForProviderOwnerRoute(owner string) string {
+func GetAuditorsForProviderOwnerRoute(owner string) string {
 	return "/akash/audit/v1beta3/audit/attributes/" + owner + "/list"
+}
+
+func GetDeploymentsForProviderOwnerRoute(owner string) string {
+	return "/akash/deployment/v1beta3/deployments/list" + "?filters.owner=" + owner + "&pagination.limit=100"
 }
 
 /***********************

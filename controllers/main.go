@@ -163,6 +163,12 @@ func (rs RestServices) BackfillData(cfg *config.Config) {
 		wg.Done()
 	}()
 
+	wg.Add(1)
+	go func() {
+		rs.IndexAkashDeployments(*cfg)
+		wg.Done()
+	}()
+
 	wg.Wait()
 }
 
