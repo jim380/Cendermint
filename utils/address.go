@@ -80,7 +80,7 @@ func GetAccAddrFromOperAddr(operAddr string) string {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	}
 
-	accAddr, err := sdk.AccAddressFromHex(fmt.Sprint(hexAddr))
+	accAddr, err := sdk.AccAddressFromHexUnsafe(fmt.Sprint(hexAddr))
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 	}
