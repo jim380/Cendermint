@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine AS build-env
+FROM golang:1.21-alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES bash curl make git libc-dev gcc linux-headers eudev-dev python3
