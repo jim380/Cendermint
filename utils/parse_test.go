@@ -20,7 +20,7 @@ type ConsensusState struct {
 }
 
 func TestParseConsensusOutput(t *testing.T) {
-	file, err := os.Open("../test-data/json/dump_consensus_state.json")
+	file, err := os.Open("../testutil/json/dump_consensus_state.json")
 	if err != nil {
 		t.Fatalf("Failed to open JSON file: %v", err)
 	}

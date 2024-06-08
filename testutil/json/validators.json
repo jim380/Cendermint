@@ -1,0 +1,107 @@
+{
+  "validators": [
+    {
+      "operator_address": "cosmosvaloper1q6d3d089hg59x6gcx92uumx70s5y5wadklue8s",
+      "consensus_pubkey": {
+        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "key": "uEUR1gpesU4bnSWL2TOXOf3org2mCYhQHMYkiCJyMD4="
+      },
+      "jailed": false,
+      "status": "BOND_STATUS_BONDED",
+      "tokens": "1123436368202",
+      "delegator_shares": "1123436368202.000000000000000000",
+      "description": {
+        "moniker": "Ubik Capital",
+        "identity": "8265DEAF50B61DF7",
+        "website": "https://www.ubik.capital",
+        "security_contact": "",
+        "details": "Ubik Capital secures major proof of stake networks and is a trusted staking provider with years of industry experience. By delegating to us, you agree to the Terms of Service at: https://ubik.capital"
+      },
+      "unbonding_height": "16925816",
+      "unbonding_time": "2023-09-30T06:17:37.572905825Z",
+      "commission": {
+        "commission_rates": {
+          "rate": "0.050000000000000000",
+          "max_rate": "0.200000000000000000",
+          "max_change_rate": "0.010000000000000000"
+        },
+        "update_time": "2024-03-20T10:40:35.784132044Z"
+      },
+      "min_self_delegation": "1",
+      "unbonding_on_hold_ref_count": "0",
+      "unbonding_ids": ["131285"],
+      "validator_bond_shares": "450000000.000000000000000000",
+      "liquid_shares": "11467974726.000000000000000000"
+    },
+    {
+      "operator_address": "cosmosvaloper1qaa9zej9a0ge3ugpx3pxyx602lxh3ztqgfnp42",
+      "consensus_pubkey": {
+        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "key": "Qajjf1kiAJ0M1UcH1TSUYLP13kgE128Av1XmGQO711c="
+      },
+      "jailed": false,
+      "status": "BOND_STATUS_BONDED",
+      "tokens": "5397109668389",
+      "delegator_shares": "5397109668389.000000000000000000",
+      "description": {
+        "moniker": "GAME",
+        "identity": "6F3A316294AD9D0B",
+        "website": "",
+        "security_contact": "",
+        "details": "For all game enthusiasts"
+      },
+      "unbonding_height": "19747459",
+      "unbonding_time": "2024-04-18T03:14:43.022587233Z",
+      "commission": {
+        "commission_rates": {
+          "rate": "0.050000000000000000",
+          "max_rate": "0.200000000000000000",
+          "max_change_rate": "0.100000000000000000"
+        },
+        "update_time": "2024-03-20T10:40:35.784132044Z"
+      },
+      "min_self_delegation": "1",
+      "unbonding_on_hold_ref_count": "0",
+      "unbonding_ids": ["104638", "573150"],
+      "validator_bond_shares": "4900000000.000000000000000000",
+      "liquid_shares": "1487407523.000000000000000000"
+    },
+    {
+      "operator_address": "cosmosvaloper1ptyzewnns2kn37ewtmv6ppsvhdnmeapvtfc9y5",
+      "consensus_pubkey": {
+        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "key": "XiGz/D6eg3KdjaFB0uYIJwkOTW5xZcFRxJmHcQYB3zg="
+      },
+      "jailed": false,
+      "status": "BOND_STATUS_BONDED",
+      "tokens": "588786353350",
+      "delegator_shares": "588786353350.000000000000000000",
+      "description": {
+        "moniker": "WeStaking",
+        "identity": "DA9C5AD3E308E426",
+        "website": "https://www.westaking.io",
+        "security_contact": "",
+        "details": "We provide you with  continuous uptime and secured."
+      },
+      "unbonding_height": "0",
+      "unbonding_time": "2019-09-07T12:24:58.270714195Z",
+      "commission": {
+        "commission_rates": {
+          "rate": "0.050000000000000000",
+          "max_rate": "0.200000000000000000",
+          "max_change_rate": "0.010000000000000000"
+        },
+        "update_time": "2024-03-20T10:40:35.784132044Z"
+      },
+      "min_self_delegation": "1",
+      "unbonding_on_hold_ref_count": "0",
+      "unbonding_ids": [],
+      "validator_bond_shares": "827000000.000000000000000000",
+      "liquid_shares": "6763600910.000000000000000000"
+    }
+  ],
+  "pagination": {
+    "next_key": null,
+    "total": "0"
+  }
+}
