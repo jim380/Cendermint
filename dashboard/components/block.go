@@ -84,7 +84,12 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap
 		for consAddrInHex, props := range activeSet {
 			// convert consAddrInHex to base64
-			if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consAddrInHex)]; !exists {
+			consAddrInBase64, err := utils.HexToBase64(consAddrInHex)
+			if err != nil {
+				zap.L().Fatal("HexToBase64", zap.Bool("Success", false), zap.String("err:", err.Error()))
+				return types.Blocks{}
+			}
+			if _, exists := validatorConsAddrInHexSignedMap[consAddrInBase64]; !exists {
 				// If the Validator_address does not exist in allSignaturesInBlock, add it to MissingValidators
 				state.MissingValidators = append(state.MissingValidators, struct {
 					Moniker     string

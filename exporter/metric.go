@@ -142,8 +142,8 @@ func SetMetricChain(currentBlock int64, restData *types.RESTData, log *zap.Logge
 	metricData.Network.NodeInfo.SDKVersion = restData.NodeInfo.Application.SDKVersion
 	// labels addr
 	metricData.Validator.Address.Operator = operAddr
-	metricData.Validator.Address.Account = utils.GetAccAddrFromOperAddr(operAddr)
-	metricData.Validator.Address.ConsensusHex = utils.Bech32AddrToHexAddr(consAddr)
+	metricData.Validator.Address.Account, _ = utils.GetAccAddrFromOperAddr(operAddr)
+	metricData.Validator.Address.ConsensusHex, _ = utils.Bech32AddrToHexAddr(consAddr)
 	// labels upgrade
 	metricData.Upgrade.Name = restData.UpgradeInfo.Plan.Name
 	metricData.Upgrade.Time = restData.UpgradeInfo.Plan.Time

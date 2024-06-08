@@ -114,10 +114,15 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 		validatorConsAddrInHexSignedMap[signature.Validator_address] = true
 	}
 
+	base64ConsAddr, err := utils.HexToBase64(consHexAddr)
+	if err != nil {
+		zap.L().Fatal("Failed to convert hex to base64", zap.Bool("Success", false), zap.String("err:", err.Error()))
+	}
+
 	// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap
-	for consAddrInHex, props := range activeSet {
+	for _, props := range activeSet {
 		// convert consAddrInHex to base64
-		if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consAddrInHex)]; !exists {
+		if _, exists := validatorConsAddrInHexSignedMap[base64ConsAddr]; !exists {
 			// If the Validator_address does not exist in allSignaturesInBlock, add it to MissingValidators
 			missingValidators = append(missingValidators, struct {
 				Moniker     string
@@ -130,7 +135,7 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 		}
 	}
 
-	if _, exists := validatorConsAddrInHexSignedMap[utils.HexToBase64(consHexAddr)]; exists {
+	if _, exists := validatorConsAddrInHexSignedMap[base64ConsAddr]; exists {
 		// If exists, then the validator signed this block
 		missed = false
 		cInfo.LastSigned = currentHeight

@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -46,7 +46,10 @@ type Chain struct {
 
 func (cfg Config) SetSDKConfig() {
 	// Bech32MainPrefix is the common prefix of all prefixes
-	Bech32MainPrefix := utils.GetPrefix(cfg.Chain.Name)
+	Bech32MainPrefix, err := utils.GetPrefix(cfg.Chain.Name)
+	if err != nil {
+		log.Fatalf("Failed to get prefix for chain %s: %v", cfg.Chain.Name, err)
+	}
 	// Bech32PrefixAccAddr is the prefix of account addresses
 	Bech32PrefixAccAddr := Bech32MainPrefix
 	// Bech32PrefixAccPub is the prefix of account public keys
@@ -161,7 +164,7 @@ func GetChainList() map[string][]string {
 	}
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, _ := io.ReadAll(jsonFile)
 
 	var chains []Chain
 	json.Unmarshal(byteValue, &chains)
