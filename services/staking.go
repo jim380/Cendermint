@@ -21,10 +21,6 @@ func (stks *StakingService) Init(db *sql.DB) {
 	stks.DB = db
 }
 
-type totalSupply struct {
-	Amount types.Coin
-}
-
 func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RESTData) {
 	var sp types.StakingPool
 
@@ -40,12 +36,12 @@ func (ss *StakingService) GetInfo(cfg config.Config, denom string, rd *types.RES
 		zap.L().Info("", zap.Bool("Success", true), zap.String("Bonded tokens", sp.Pool.Bonded_tokens))
 	}
 
-	sp.Pool.Total_supply = getTotalSupply(cfg, denom, zap.L())
+	sp.Pool.Total_supply = ss.getTotalSupply(cfg, denom, zap.L())
 	rd.StakingPool = sp
 }
 
-func getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
-	var ts totalSupply
+func (ss *StakingService) getTotalSupply(cfg config.Config, denom string, log *zap.Logger) float64 {
+	var ts types.Supply
 
 	route := rest.GetSupplyRoute(cfg)
 	res, err := utils.HttpQuery(constants.RESTAddr + route + denom)

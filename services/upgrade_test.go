@@ -14,8 +14,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNodeService_GetInfo(t *testing.T) {
-	mockData, err := os.ReadFile("../testutil/json/node.json")
+func TestUpgradeService_GetInfo(t *testing.T) {
+	mockData, err := os.ReadFile("../testutil/json/upgrade.json")
 	require.NoError(t, err)
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -28,21 +28,18 @@ func TestNodeService_GetInfo(t *testing.T) {
 	constants.RESTAddr = server.URL
 	defer func() { constants.RESTAddr = originalRESTAddr }()
 
-	ns := &services.NodeService{}
+	us := &services.UpgradeService{}
 
-	cfg := &config.Config{}
+	cfg := config.Config{}
 	rd := &types.RESTData{}
 
-	ns.GetInfo(cfg, rd)
+	us.GetInfo(cfg, rd)
 
-	var expectedData types.NodeInfo
+	var expectedData types.UpgradeInfo
 	err = json.Unmarshal(mockData, &expectedData)
 	require.NoError(t, err)
 
-	require.NotNil(t, rd.NodeInfo)
-	require.Equal(t, expectedData.Application.Version, rd.NodeInfo.Application.Version)
-	require.Equal(t, expectedData.Application.SDKVersion, rd.NodeInfo.Application.SDKVersion)
-	require.Equal(t, expectedData.Default.NodeID, rd.NodeInfo.Default.NodeID)
-	require.Equal(t, expectedData.Default.TMVersion, rd.NodeInfo.Default.TMVersion)
-	require.Equal(t, expectedData.Default.Moniker, rd.NodeInfo.Default.Moniker)
+	require.NotNil(t, rd.UpgradeInfo)
+	require.Equal(t, expectedData.Plan, rd.UpgradeInfo.Plan)
+	require.Equal(t, expectedData.Planned, rd.UpgradeInfo.Planned)
 }
