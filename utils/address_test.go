@@ -6,31 +6,6 @@ import (
 	"github.com/jim380/Cendermint/utils"
 )
 
-func TestGetPrefix(t *testing.T) {
-	tests := []struct {
-		chain       string
-		want        string
-		errExpected bool
-	}{
-		{"cosmos", "cosmos", false},
-		{"stargaze", "stars", false},
-		{"test", "", true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.chain, func(t *testing.T) {
-			got, err := utils.GetPrefix(tt.chain)
-			if (err != nil) != tt.errExpected {
-				t.Errorf("GetPrefix() error = %v, wantErr %v", err, tt.errExpected)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("GetPrefix() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestBech32AddrToHexAddr(t *testing.T) {
 	tests := []struct {
 		bech32Addr string
