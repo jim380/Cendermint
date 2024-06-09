@@ -10,6 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
+var GetConspubMonikerMapWrapper = GetConspubMonikerMap
+
 func GetConspubMonikerMap() map[string]string {
 	var v types.RpcValidators
 	var vResult map[string]string = make(map[string]string)

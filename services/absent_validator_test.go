@@ -13,13 +13,13 @@ import (
 func TestAbsentValidatorService_Index(t *testing.T) {
 	tests := []struct {
 		name        string
-		data        testtypes.TestData
+		data        testtypes.TestDataAbsentValidator
 		mock        testtypes.MockData
 		expectError bool
 	}{
 		{
 			name: "Valid Insert",
-			data: testtypes.TestData{
+			data: testtypes.TestDataAbsentValidator{
 				Height:         12345,
 				ConsAddrBase64: "testConsAddrBase64",
 			},
@@ -33,7 +33,7 @@ func TestAbsentValidatorService_Index(t *testing.T) {
 		},
 		{
 			name: "Insert Error",
-			data: testtypes.TestData{
+			data: testtypes.TestDataAbsentValidator{
 				Height:         12345,
 				ConsAddrBase64: "testConsAddrBase64",
 			},

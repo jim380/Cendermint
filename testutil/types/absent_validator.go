@@ -2,8 +2,8 @@ package types
 
 import "github.com/DATA-DOG/go-sqlmock"
 
-// TestData holds the input data for the tests
-type TestData struct {
+// TestDataAbsentValidator holds the input data for the tests
+type TestDataAbsentValidator struct {
 	Height         int
 	ConsAddrBase64 string
 }
