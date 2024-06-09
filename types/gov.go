@@ -8,14 +8,14 @@ type GovInfo struct {
 }
 
 type Gov struct {
-	Proposals  []proposal `json:"proposals"`
+	Proposals  []Proposal `json:"proposals"`
 	Pagination struct {
 		Total string `json:"total"`
 	} `json:"pagination"`
 }
 
-type proposal struct {
-	ProposalID string `json:"proposal_id"`
+type Proposal struct {
+	ProposalID string `json:"id"`
 	Status     string `json:"status"`
 }
 
