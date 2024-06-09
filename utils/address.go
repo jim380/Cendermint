@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 
@@ -20,7 +22,7 @@ func GetPrefix(chain string) (string, error) {
 		AddrPrefix string `json:"addr_prefix"`
 	}{}
 
-	jsonFile, err := os.Open("../chains.json")
+	jsonFile, err := os.Open("chains.json")
 	if err != nil {
 		return "", fmt.Errorf("failed to open chains.json: %w", err)
 	}
@@ -113,4 +115,34 @@ func base64Encode(input []byte) []byte {
 	eb := make([]byte, base64.StdEncoding.EncodedLen(len(input)))
 	base64.StdEncoding.Encode(eb, input)
 	return eb
+}
+
+func PubkeyToHexAddr(prefix, pubkey string) string {
+	// decode the base64 pubkey
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(pubkey)
+	if err != nil {
+		log.Println("Error decoding base64 pubKey:", err)
+		return ""
+	}
+
+	// hash using SHA-256
+	hash := sha256.Sum256(pubKeyBytes)
+
+	// keep only the first 20 bytes
+	addressBytes := hash[:20]
+
+	// valcons -> hex
+	bech32Addr, err := bech32.ConvertAndEncode(prefix+"valcons", addressBytes)
+	if err != nil {
+		log.Println("Error encoding to Bech32:", err)
+		return ""
+	}
+
+	_, bz, err := bech32.DecodeAndConvert(bech32Addr)
+	if err != nil {
+		log.Println("PubkeyToHexAddr failed:", err)
+		return ""
+	}
+
+	return fmt.Sprintf("%X", bz)
 }

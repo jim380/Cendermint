@@ -45,23 +45,23 @@ type Chain struct {
 }
 
 func (cfg Config) SetSDKConfig() {
-	// Bech32MainPrefix is the common prefix of all prefixes
-	Bech32MainPrefix, err := utils.GetPrefix(cfg.Chain.Name)
+	// bech32Prefix is the common prefix of all prefixes
+	bech32Prefix, err := utils.GetPrefix(cfg.Chain.Name)
 	if err != nil {
 		log.Fatalf("Failed to get prefix for chain %s: %v", cfg.Chain.Name, err)
 	}
 	// Bech32PrefixAccAddr is the prefix of account addresses
-	Bech32PrefixAccAddr := Bech32MainPrefix
+	Bech32PrefixAccAddr := bech32Prefix
 	// Bech32PrefixAccPub is the prefix of account public keys
-	Bech32PrefixAccPub := Bech32MainPrefix + sdktypes.PrefixPublic
+	Bech32PrefixAccPub := bech32Prefix + sdktypes.PrefixPublic
 	// Bech32PrefixValAddr is the prefix of validator operator addresses
-	Bech32PrefixValAddr := Bech32MainPrefix + sdktypes.PrefixValidator + sdktypes.PrefixOperator
+	Bech32PrefixValAddr := bech32Prefix + sdktypes.PrefixValidator + sdktypes.PrefixOperator
 	// Bech32PrefixValPub is the prefix of validator operator public keys
-	Bech32PrefixValPub := Bech32MainPrefix + sdktypes.PrefixValidator + sdktypes.PrefixOperator + sdktypes.PrefixPublic
+	Bech32PrefixValPub := bech32Prefix + sdktypes.PrefixValidator + sdktypes.PrefixOperator + sdktypes.PrefixPublic
 	// Bech32PrefixConsAddr is the prefix of consensus node addresses
-	Bech32PrefixConsAddr := Bech32MainPrefix + sdktypes.PrefixValidator + sdktypes.PrefixConsensus
+	Bech32PrefixConsAddr := bech32Prefix + sdktypes.PrefixValidator + sdktypes.PrefixConsensus
 	// Bech32PrefixConsPub is the prefix of consensus node public keys
-	Bech32PrefixConsPub := Bech32MainPrefix + sdktypes.PrefixValidator + sdktypes.PrefixConsensus + sdktypes.PrefixPublic
+	Bech32PrefixConsPub := bech32Prefix + sdktypes.PrefixValidator + sdktypes.PrefixConsensus + sdktypes.PrefixPublic
 	config := sdktypes.GetConfig()
 	config.SetBech32PrefixForAccount(Bech32PrefixAccAddr, Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)

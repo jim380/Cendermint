@@ -3,6 +3,7 @@ package components
 import (
 	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/rest"
@@ -46,42 +47,35 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		/*
 			Find validators with missing signatures in the block
 		*/
-		var cs types.ConsensusState
 		var activeSet map[string][]string = make(map[string][]string)
 
-		resp, err = utils.HttpQuery(constants.RPCAddr + "/dump_consensus_state")
-		if err != nil {
-			zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return types.Blocks{}
-		}
-
-		err = json.Unmarshal(resp, &cs)
-		if err != nil {
-			zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
-			return types.Blocks{}
-		}
-
 		conspubMonikerMap := rest.GetConspubMonikerMap()
-		// range over all validators in the active set
-		for _, validator := range cs.Result.Validatorset.Validators {
-			// get moniker
-			validator.Moniker = conspubMonikerMap[validator.ConsPubKey.Key]
-			// populate the map => [ConsAddr]{consPubKey, moniker}; ConsAddr is in hex coming back from rpc
-			activeSet[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.Moniker}
+
+		for consPubKey, moniker := range conspubMonikerMap {
+			prefix, err := utils.GetPrefix(os.Getenv("CHAIN"))
+			if err != nil {
+				zap.L().Fatal("Failed to get prefix", zap.Bool("Success", false), zap.String("err", err.Error()))
+			}
+			consAddrInHex := utils.PubkeyToHexAddr(prefix, consPubKey)
+			if consAddrInHex == "" {
+				zap.L().Fatal("Failed to convert public key to hex address", zap.Bool("Success", false))
+			}
+			// populate the map => [ConsAddr]{consPubKey, moniker}
+			activeSet[consAddrInHex] = []string{consPubKey, moniker}
 		}
 
 		/*
-			- Create a map validatorConsAddrInHexSignedMap using allSignaturesInBlock for quick lookup
-			- validatorConsAddrInHexSignedMap gives all validators who signed on this block
+			- Create a map validatorConsAddrSignedMap using allSignaturesInBlock for quick lookup
+			- validatorConsAddrSignedMap gives all validators who signed on this block
 		*/
 		allSignaturesInBlock := state.Block.LastCommit.Signatures
-		validatorConsAddrInHexSignedMap := make(map[string]bool)
+		validatorConsAddrSignedMap := make(map[string]bool)
 		for _, signature := range allSignaturesInBlock {
 			// Validator_address could be in hex or base64; hex is legacy so using base64 here
-			validatorConsAddrInHexSignedMap[signature.Validator_address] = true
+			validatorConsAddrSignedMap[signature.Validator_address] = true
 		}
 
-		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrInHexSignedMap
+		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrSignedMap
 		for consAddrInHex, props := range activeSet {
 			// convert consAddrInHex to base64
 			consAddrInBase64, err := utils.HexToBase64(consAddrInHex)
@@ -89,7 +83,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 				zap.L().Fatal("HexToBase64", zap.Bool("Success", false), zap.String("err:", err.Error()))
 				return types.Blocks{}
 			}
-			if _, exists := validatorConsAddrInHexSignedMap[consAddrInBase64]; !exists {
+			if _, exists := validatorConsAddrSignedMap[consAddrInBase64]; !exists {
 				// If the Validator_address does not exist in allSignaturesInBlock, add it to MissingValidators
 				state.MissingValidators = append(state.MissingValidators, struct {
 					Moniker     string
