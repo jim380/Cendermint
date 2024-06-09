@@ -1,0 +1,30 @@
+{
+  "delegation_responses": [
+    {
+      "delegation": {
+        "delegator_address": "cosmos1qqq9txnw4c77sdvzx0tkedsafl5s3vk7pph2w0",
+        "validator_address": "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn",
+        "shares": "30000000.000000000000000000"
+      },
+      "balance": {
+        "denom": "uatom",
+        "amount": "30000000"
+      }
+    },
+    {
+      "delegation": {
+        "delegator_address": "cosmos1qqqfufq8f7carjudxqujgrka20h29s2kp046su",
+        "validator_address": "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn",
+        "shares": "10013663.000000000000000000"
+      },
+      "balance": {
+        "denom": "uatom",
+        "amount": "10013663"
+      }
+    }
+  ],
+  "pagination": {
+    "next_key": "FAORoM3JSX5+h1gHIJRVzniHGE1JFMfCAdZjtW10WNLx04c6+m/jx1ch",
+    "total": "0"
+  }
+}

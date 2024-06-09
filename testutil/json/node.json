@@ -1,0 +1,35 @@
+{
+  "default_node_info": {
+    "protocol_version": {
+      "p2p": "8",
+      "block": "11",
+      "app": "0"
+    },
+    "default_node_id": "3aa86f390e71f416f66dcf68b22b1b640f1fa23d",
+    "listen_addr": "65.108.131.174:14956",
+    "network": "cosmoshub-4",
+    "version": "0.37.6",
+    "channels": "QCAhIiMwOGBhAA==",
+    "moniker": "node",
+    "other": {
+      "tx_index": "on",
+      "rpc_address": "tcp://0.0.0.0:14957"
+    }
+  },
+  "application_version": {
+    "name": "gaia",
+    "app_name": "gaiad",
+    "version": "v17.2.0",
+    "git_commit": "17f2ba0b90d1d2884f7b67518ec08dfd37f001a7",
+    "build_tags": "netgo,ledger",
+    "go_version": "go version go1.21.7 linux/amd64",
+    "build_deps": [
+      {
+        "path": "cloud.google.com/go",
+        "version": "v0.112.0",
+        "sum": "h1:tpFCD7hpHFlQ8yPwT3x+QeXqc2T6+n6T+hmABHfDUSM="
+      }
+    ],
+    "cosmos_sdk_version": "v0.47.11"
+  }
+}

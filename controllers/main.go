@@ -15,13 +15,17 @@ import (
 )
 
 func (rs RestServices) GetChainData(cfg *config.Config, rpcService RpcServices, blockHeight int64, blockData types.Blocks, denom string) *types.RESTData {
+	var err error
 	// rpc
 	var rpcData types.RPCData
 	rpc := rpcData.New()
 
 	// REST
 	var restData types.RESTData
-	constants.AccAddr = utils.GetAccAddrFromOperAddr(constants.OperAddr)
+	constants.AccAddr, err = utils.GetAccAddrFromOperAddr(constants.OperAddr)
+	if err != nil {
+		zap.L().Error("GetAccAddrFromOperAddr", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
+	}
 
 	rd := restData.New(blockHeight)
 
@@ -67,7 +71,10 @@ func (rs RestServices) GetChainData(cfg *config.Config, rpcService RpcServices, 
 	go func() {
 		valInfo := rpcService.GetValidatorInfo(*cfg, blockHeight, rd)
 		rs.GetSigningInfo(*cfg, valInfo[0], rd)
-		consHexAddr := utils.Bech32AddrToHexAddr(valInfo[0])
+		consHexAddr, err := utils.Bech32AddrToHexAddr(valInfo[0])
+		if err != nil {
+			zap.L().Error("Bech32AddrToHexAddr", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
+		}
 		rs.GetCommitInfo(*cfg, rd, blockData, consHexAddr)
 		wg.Done()
 	}()

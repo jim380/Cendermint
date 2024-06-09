@@ -32,7 +32,7 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	}
 	json.Unmarshal(res, &cs)
 
-	conspubMonikerMap := rest.GetConspubMonikerMap()
+	conspubMonikerMap := rest.GetConspubMonikerMapWrapper()
 	// cs.Result.Validatorset.Validators is already sorted based on voting power
 	for index, validator := range cs.Result.Validatorset.Validators {
 		var prevote, precommit string

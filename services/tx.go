@@ -112,11 +112,6 @@ func (ts *TxnService) GetTxnsInBlock(cfg config.Config, height int64) (types.TxI
 	return txInfo, nil
 }
 
-type TransactionData struct {
-	TxsData    types.Txs
-	TxRespData types.TxResp
-}
-
 func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.TxInfo) error {
 	// start a new transaction
 	tx, err := ts.DB.Begin()
@@ -125,9 +120,9 @@ func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.Tx
 	}
 
 	// create a slice of TransactionData
-	var txData []TransactionData
+	var txData []types.TransactionData
 	for i := range txsInBlock.Txs {
-		txData = append(txData, TransactionData{TxsData: txsInBlock.Txs[i], TxRespData: txsInBlock.TxResp[i]})
+		txData = append(txData, types.TransactionData{TxsData: txsInBlock.Txs[i], TxRespData: txsInBlock.TxResp[i]})
 	}
 
 	for _, txnData := range txData {
