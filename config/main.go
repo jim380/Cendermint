@@ -18,6 +18,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+type Confignator interface {
+	IsLegacySDKVersion() bool
+}
+
 type Config struct {
 	Chain                Chain
 	ChainList            map[string][]string

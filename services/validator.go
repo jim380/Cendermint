@@ -29,24 +29,9 @@ type validatorsetsLegacy struct {
 	}
 }
 
-type validatorsets struct {
-	Block_Height string `json:"block_height"`
-	Validators   []struct {
-		ConsAddr         string           `json:"address"`
-		ConsPubKey       consPubKeyValSet `json:"pub_key"`
-		ProposerPriority string           `json:"proposer_priority"`
-		VotingPower      string           `json:"voting_power"`
-	} `json:"validators"`
-}
-
 type consPubKeyValSetLegacy struct {
 	Type string `json:"type"`
 	Key  string `json:"value"`
-}
-
-type consPubKeyValSet struct {
-	Type string `json:"@type"`
-	Key  string `json:"key"`
 }
 
 type Validator struct {
@@ -91,38 +76,9 @@ func (vs *ValidatorService) GetValidatorInfo(cfg config.Config, currentBlockHeig
 	var vSetsResultFinal map[string][]string
 
 	if cfg.IsLegacySDKVersion() {
-		var vSets, vSets2, vsetTest validatorsetsLegacy
-		var vSetsResult map[string][]string = make(map[string][]string)
-		var vSetsResult2 map[string][]string = make(map[string][]string)
-
-		shouldRunPages := testPageLimit(cfg, currentBlockHeight, &vsetTest, 3)
-
-		if shouldRunPages {
-			runPages(cfg, currentBlockHeight, &vSets, vSetsResult, 1)
-			runPages(cfg, currentBlockHeight, &vSets2, vSetsResult2, 2)
-
-			for _, value := range vSets.Result.Validators {
-				// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-				vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-			}
-
-			for _, value := range vSets2.Result.Validators {
-				// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-				vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-			}
-
-			vSetsResultFinal = mergeMap(vSetsResult, vSetsResult2)
-			zap.L().Info("", zap.Bool("Success", true), zap.String("Active validators", fmt.Sprint(len(vSetsResultFinal))))
-		} else {
-			runPages(cfg, currentBlockHeight, &vSets, vSetsResult, 1)
-			for _, value := range vSets.Result.Validators {
-				// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
-				vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
-			}
-			vSetsResultFinal = vSetsResult
-		}
+		vSetsResultFinal = vs.getLegacyValidatorInfo(cfg, currentBlockHeight)
 	} else {
-		var vSets validatorsets
+		var vSets types.Validatorsets
 		var vSetsResult map[string][]string = make(map[string][]string)
 
 		route := rest.GetValidatorSetByHeightRoute(cfg)
@@ -160,6 +116,38 @@ func (vs *ValidatorService) GetValidatorInfo(cfg config.Config, currentBlockHeig
 	getValidator(cfg, rd)
 	valInfo := locateValidatorInActiveSet(rd)
 	return valInfo
+}
+
+func (vs *ValidatorService) getLegacyValidatorInfo(cfg config.Config, currentBlockHeight int64) map[string][]string {
+	var vSets, vSets2, vsetTest validatorsetsLegacy
+	var vSetsResult map[string][]string = make(map[string][]string)
+	var vSetsResult2 map[string][]string = make(map[string][]string)
+
+	shouldRunPages := testPageLimit(cfg, currentBlockHeight, &vsetTest, 3)
+
+	if shouldRunPages {
+		runPages(cfg, currentBlockHeight, &vSets, vSetsResult, 1)
+		runPages(cfg, currentBlockHeight, &vSets2, vSetsResult2, 2)
+
+		for _, value := range vSets.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+
+		for _, value := range vSets2.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult2[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+
+		return mergeMap(vSetsResult, vSetsResult2)
+	} else {
+		runPages(cfg, currentBlockHeight, &vSets, vSetsResult, 1)
+		for _, value := range vSets.Result.Validators {
+			// populate the validatorset map => [ConsPubKey][]string{ConsAddr, VotingPower, ProposerPriority}
+			vSetsResult[value.ConsPubKey.Key] = []string{value.ConsAddr, value.VotingPower, value.ProposerPriority, "0"}
+		}
+		return vSetsResult
+	}
 }
 
 // TO-DO if consumer chain, use cosmoshub's ConsPubKey

@@ -88,3 +88,8 @@ type TxResult struct {
 	// BeginUnbondingTotal          float64
 	// WithdrawDelegatorRewardTotal float64
 }
+
+type TransactionData struct {
+	TxsData    Txs
+	TxRespData TxResp
+}
