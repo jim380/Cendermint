@@ -1,0 +1,10 @@
+{
+  "val_signing_info": {
+    "address": "cosmosvalcons1px0zkz2cxvc6lh34uhafveea9jnaagckmrlsye",
+    "start_height": "0",
+    "index_offset": "24500271",
+    "jailed_until": "1970-01-01T00:00:00Z",
+    "tombstoned": false,
+    "missed_blocks_counter": "11"
+  }
+}
