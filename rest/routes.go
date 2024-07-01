@@ -4,50 +4,34 @@ import (
 	"github.com/jim380/Cendermint/config"
 )
 
+func getRoute(cfg config.Config, legacyRoute, newRoute string) string {
+	if cfg.IsLegacySDKVersion() {
+		return legacyRoute
+	}
+	return newRoute
+}
+
 /***********************
  * SDK Routes
 ************************/
 func GetBlockInfoRoute(cfg config.Config) string {
-	if cfg.IsLegacySDKVersion() {
-		return "/blocks/latest"
-	} else {
-		return "/cosmos/base/tendermint/v1beta1/blocks/latest"
-	}
+	return getRoute(cfg, "/blocks/latest", "/cosmos/base/tendermint/v1beta1/blocks/latest")
 }
 
 func GetBlockByHeightRoute(cfg config.Config) string {
-	if cfg.IsLegacySDKVersion() {
-		return "/blocks/"
-	} else {
-		return "/cosmos/base/tendermint/v1beta1/blocks/"
-	}
+	return getRoute(cfg, "/blocks/", "/cosmos/base/tendermint/v1beta1/blocks/")
 }
 
 func GetValidatorSetByHeightRoute(cfg config.Config) string {
-	if cfg.IsLegacySDKVersion() {
-		return "/validatorsets/"
-	} else {
-		return "/cosmos/base/tendermint/v1beta1/validatorsets/"
-	}
+	return getRoute(cfg, "/validatorsets/", "/cosmos/base/tendermint/v1beta1/validatorsets/")
 }
 
 func GetValidatorDistributionByAddressRoute(cfg config.Config) string {
-	if cfg.IsLegacySDKVersion() {
-		return "/distribution/validators/"
-	} else {
-		return "/cosmos/distribution/v1beta1/validators/"
-	}
+	return getRoute(cfg, "/distribution/validators/", "/cosmos/distribution/v1beta1/validators/")
 }
 
 func GetInflationRoute(cfg config.Config) string {
-	if cfg.Chain.Name == "irisnet" {
-		return "/irishub/mint/params"
-	} else if cfg.IsLegacySDKVersion() {
-		return "/minting/inflation"
-
-	} else {
-		return "/cosmos/mint/v1beta1/inflation"
-	}
+	return getRoute(cfg, "/minting/inflation", "/cosmos/mint/v1beta1/inflation")
 }
 
 func GetBalancesByAddressRoute(cfg config.Config) string {
