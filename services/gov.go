@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	"github.com/jim380/Cendermint/config"
 	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/rest"
 	"github.com/jim380/Cendermint/types"
 	"github.com/jim380/Cendermint/utils"
+	"github.com/rs/zerolog/log"
 	"go.uber.org/zap"
 )
 
@@ -37,11 +37,6 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	json.Unmarshal(res, &g)
-	if strings.Contains(string(res), "not found") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-	}
 
 	totalProposals := g.Proposals
 	for _, value := range totalProposals {
@@ -57,14 +52,16 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 		var voteInfo types.Vote
 		accAddr, err := utils.GetAccAddrFromOperAddr(constants.OperAddr)
 		if err != nil {
+			log.Info().Msgf("Error getting account address from operator address: %v", err)
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 		res, err := utils.HttpQuery(constants.RESTAddr + route + value + "/votes/" + accAddr)
 		if err != nil {
+			log.Info().Msgf("Error getting vote info: %v", err)
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 		json.Unmarshal(res, &voteInfo)
-		if voteInfo.Votes.Option != "" {
+		if voteInfo.Vote.Options[0].Option != "" {
 			inVotingVoted++
 		} else {
 			inVotingDidNotVote++

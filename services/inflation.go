@@ -14,15 +14,7 @@ import (
 )
 
 type inflation struct {
-	Height string `json:"height"`
-	Result string `json:"result"`
-}
-
-type inflation_iris struct {
-	Params struct {
-		Mint_Denom string
-		Inflation  string
-	}
+	Value string `json:"inflation"`
 }
 
 type InflationService struct {
@@ -35,39 +27,24 @@ func (is *InflationService) Init(db *sql.DB) {
 
 func (is *InflationService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	var result string
+	var i inflation
 
 	route := rest.GetInflationRoute(cfg)
 	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		rd.Inflation = 0
+		return
+	}
 
-	switch cfg.Chain.Name {
-	case "irisnet":
-		var i inflation_iris
-		if err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "Failed to connect to REST-Server"))
-		}
-		json.Unmarshal(res, &i)
-		if strings.Contains(string(res), "not found") {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else {
-			result = i.Params.Inflation
-			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
-		}
-	default:
-		var i inflation
-
-		res, err := utils.HttpQuery(constants.RESTAddr + route) // route does not existing in osmosis
-		if err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
-		}
-		json.Unmarshal(res, &i)
-		if strings.Contains(string(res), "not found") {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
-		} else {
-			result = i.Result
-			zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
-		}
+	json.Unmarshal(res, &i)
+	if strings.Contains(string(res), "not found") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
+	} else {
+		result = i.Value
+		zap.L().Info("\t", zap.Bool("Success", true), zap.String("Inflation", result))
 	}
 
 	rd.Inflation = utils.StringToFloat64(result)

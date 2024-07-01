@@ -1,0 +1,13 @@
+{
+  "vote": {
+    "proposal_id": "12",
+    "voter": "cosmos1clpqr4nrk4khgkxj78fcwwh6dl3uw4ep4tgu9q",
+    "options": [
+      {
+        "option": "VOTE_OPTION_YES",
+        "weight": "1.000000000000000000"
+      }
+    ],
+    "metadata": ""
+  }
+}

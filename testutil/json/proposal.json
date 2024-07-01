@@ -1,0 +1,358 @@
+{
+  "proposals": [
+    {
+      "id": "1",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Adjustment of blocks_per_year to come aligned with actual block time",
+            "description": "This governance proposal is for adjustment of blocks_per_year parameter to normalize the inflation rate and reward rate.\\n ipfs link: https://ipfs.io/ipfs/QmXqEBr56xeUzFpgjsmDKMSit3iqnKaDEL4tabxPXoz9xc"
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "97118903526799",
+        "abstain_count": "402380577234",
+        "no_count": "320545400000",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2019-03-20T06:41:27.040075748Z",
+      "deposit_end_time": "2019-04-03T06:41:27.040075748Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "512100000"
+        }
+      ],
+      "voting_start_time": "2019-03-20T20:43:59.630492307Z",
+      "voting_end_time": "2019-04-03T20:43:59.630492307Z",
+      "metadata": "",
+      "title": "Adjustment of blocks_per_year to come aligned with actual block time",
+      "summary": "This governance proposal is for adjustment of blocks_per_year parameter to normalize the inflation rate and reward rate.\\n ipfs link: https://ipfs.io/ipfs/QmXqEBr56xeUzFpgjsmDKMSit3iqnKaDEL4tabxPXoz9xc",
+      "proposer": ""
+    },
+    {
+      "id": "2",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "ATOM Transfer Enablement",
+            "description": "A plan is proposed to set up a testnet using the Cosmos SDK v0.34.0 release, along with mainnet conditions, plus transfer enablement and increased block size, as a testing ground. Furthermore, a path for upgrading the cosmoshub-1 chain to use the Cosmos SDK release v0.34.0, along with the necessary updates to the genesis file, at block 425000, is outlined. IPFS: https://ipfs.io/ipfs/QmaUaMjXPE6i4gJR1NakQc15TZpSqjSrXNmrS1vA5veF9W"
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_REJECTED",
+      "final_tally_result": {
+        "yes_count": "5195610593628",
+        "abstain_count": "2619844783500",
+        "no_count": "58322135404940",
+        "no_with_veto_count": "43483296883256"
+      },
+      "submit_time": "2019-03-25T21:42:19.240550245Z",
+      "deposit_end_time": "2019-04-08T21:42:19.240550245Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "521400000"
+        }
+      ],
+      "voting_start_time": "2019-03-25T23:44:04.098630937Z",
+      "voting_end_time": "2019-04-08T23:44:04.098630937Z",
+      "metadata": "",
+      "title": "ATOM Transfer Enablement",
+      "summary": "A plan is proposed to set up a testnet using the Cosmos SDK v0.34.0 release, along with mainnet conditions, plus transfer enablement and increased block size, as a testing ground. Furthermore, a path for upgrading the cosmoshub-1 chain to use the Cosmos SDK release v0.34.0, along with the necessary updates to the genesis file, at block 425000, is outlined. IPFS: https://ipfs.io/ipfs/QmaUaMjXPE6i4gJR1NakQc15TZpSqjSrXNmrS1vA5veF9W",
+      "proposer": ""
+    },
+    {
+      "id": "3",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "ATOM Transfer Enablement v2",
+            "description": "A plan for enabling ATOM transfers is being proposed, which involves the release and test of Cosmos SDK v0.34.0 and a strategy for the network to accept the release and upgrade the mainnet once testing has been deemed to be successful. Read the full proposal at  https://ipfs.io/ipfs/Qmam1PU39qmLBzKv3eYA3kMmSJdgR6nursGwWVjnmovpSy or formatted at https://ipfs.ink/e/Qmam1PU39qmLBzKv3eYA3kMmSJdgR6nursGwWVjnmovpSy"
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "91073006010689",
+        "abstain_count": "82100000001",
+        "no_count": "8960614220464",
+        "no_with_veto_count": "91169999999"
+      },
+      "submit_time": "2019-04-03T10:15:22.291176064Z",
+      "deposit_end_time": "2019-04-17T10:15:22.291176064Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "521500000"
+        }
+      ],
+      "voting_start_time": "2019-04-03T17:35:12.673927642Z",
+      "voting_end_time": "2019-04-17T17:35:12.673927642Z",
+      "metadata": "",
+      "title": "ATOM Transfer Enablement v2",
+      "summary": "A plan for enabling ATOM transfers is being proposed, which involves the release and test of Cosmos SDK v0.34.0 and a strategy for the network to accept the release and upgrade the mainnet once testing has been deemed to be successful. Read the full proposal at  https://ipfs.io/ipfs/Qmam1PU39qmLBzKv3eYA3kMmSJdgR6nursGwWVjnmovpSy or formatted at https://ipfs.ink/e/Qmam1PU39qmLBzKv3eYA3kMmSJdgR6nursGwWVjnmovpSy",
+      "proposer": ""
+    },
+    {
+      "id": "4",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Proposal for issuance of fungible tokens directly on the Cosmos Hub",
+            "description": "This proposal is a first step towards enabling fungible token issuance on the Cosmos Hub, with listing of new tokens requiring governance approval. Read the full proposal at https://github.com/validator-network/cosmoshub-proposals/blob/0d306f1fcc841a0ac6ed1171af96e6869d6754b6/issuance-proposal.md"
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_REJECTED",
+      "final_tally_result": {
+        "yes_count": "33723552888122",
+        "abstain_count": "20706168938",
+        "no_count": "26427988266507",
+        "no_with_veto_count": "13368982409321"
+      },
+      "submit_time": "2019-04-15T08:45:39.072577509Z",
+      "deposit_end_time": "2019-04-29T08:45:39.072577509Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "512000001"
+        }
+      ],
+      "voting_start_time": "2019-04-15T15:25:48.465886746Z",
+      "voting_end_time": "2019-04-29T15:25:48.465886746Z",
+      "metadata": "",
+      "title": "Proposal for issuance of fungible tokens directly on the Cosmos Hub",
+      "summary": "This proposal is a first step towards enabling fungible token issuance on the Cosmos Hub, with listing of new tokens requiring governance approval. Read the full proposal at https://github.com/validator-network/cosmoshub-proposals/blob/0d306f1fcc841a0ac6ed1171af96e6869d6754b6/issuance-proposal.md",
+      "proposer": ""
+    },
+    {
+      "id": "5",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Expedited Cosmos Upgrade Proposal",
+            "description": "Proposal to upgrade the Cosmos Hub at block 500,000 on April 22nd 5pm GMT. Details:https://ipfs.io/ipfs/QmS13GPNs1cRKSojete5y9RgW7wyf1sZ1BGqX3zjTGs7sX"
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "100649363640051",
+        "abstain_count": "440382406440",
+        "no_count": "3261263357974",
+        "no_with_veto_count": "4775200426319"
+      },
+      "submit_time": "2019-04-19T00:49:55.251313656Z",
+      "deposit_end_time": "2019-05-03T00:49:55.251313656Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "513000000"
+        }
+      ],
+      "voting_start_time": "2019-04-19T02:48:01.207552384Z",
+      "voting_end_time": "2019-05-03T02:48:01.207552384Z",
+      "metadata": "",
+      "title": "Expedited Cosmos Upgrade Proposal",
+      "summary": "Proposal to upgrade the Cosmos Hub at block 500,000 on April 22nd 5pm GMT. Details:https://ipfs.io/ipfs/QmS13GPNs1cRKSojete5y9RgW7wyf1sZ1BGqX3zjTGs7sX",
+      "proposer": ""
+    },
+    {
+      "id": "6",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Don't Burn Deposits for Rejected Governance Proposals Unless Vetoed",
+            "description": "Read here, or on https://ipfs.ink/e/QmRtR7qkeaZCpCzHDwHgJeJAZdTrbmHLxFDYXhw7RoF1pp\n\nThe Cosmos Hub's state machine handles spam prevention of governance proposals by means of a deposit system. A governance proposal is only considered eligible for voting by the whole validator set if a certain amount of staking token is deposited on the proposal. The intention is that the deposit will be burned if a proposal is spam or has caused a negative externality to the Cosmos community (such as wasting stakeholders’ time having to review the proposal).\n\nIn the current implementation of the governance module used in the Cosmos Hub, the deposit is burned if a proposal does not pass, regardless of how close the final tally result may have been. For example, if 49% of stake votes in favor of a proposal while 51% votes against it, the deposit will still be burned. This seems to be an undesirable behavior as it disincentivizes anyone from creating or depositing on a proposal that might be slightly contentious but not spam, due to fear of losing the deposit minimum (currently 512 atoms). This will especially be the case as TextProposals will be used for signaling purposes, to gauge the sentiment of staked Atom holders. Disincentivizing proposals for which the outcome is uncertain would undermine that effort.\n\nWe instead propose that the deposit be returned on failed votes, and that the deposit only be burned on vetoed votes. If a proposal seems to be spam or is deemed to have caused a negative externality to Cosmos communninty, voters should vote NoWithVeto on the proposal. If \u003E33% of the stake chooses to Veto a proposal, the deposits will then be burned. However, if a proposal gets rejected without being vetoed, the deposits should be returned to the depositors.  This proposal does not make any change to the current behavior for proposals that fail to meet quorum; if a proposal fails to meet quorum its deposit will be burned."
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "110522077231139",
+        "abstain_count": "11773440000",
+        "no_count": "4000000",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2019-05-03T18:14:33.209053883Z",
+      "deposit_end_time": "2019-05-17T18:14:33.209053883Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "516000000"
+        }
+      ],
+      "voting_start_time": "2019-05-03T19:50:58.076569857Z",
+      "voting_end_time": "2019-05-17T19:50:58.076569857Z",
+      "metadata": "",
+      "title": "Don't Burn Deposits for Rejected Governance Proposals Unless Vetoed",
+      "summary": "Read here, or on https://ipfs.ink/e/QmRtR7qkeaZCpCzHDwHgJeJAZdTrbmHLxFDYXhw7RoF1pp\n\nThe Cosmos Hub's state machine handles spam prevention of governance proposals by means of a deposit system. A governance proposal is only considered eligible for voting by the whole validator set if a certain amount of staking token is deposited on the proposal. The intention is that the deposit will be burned if a proposal is spam or has caused a negative externality to the Cosmos community (such as wasting stakeholders’ time having to review the proposal).\n\nIn the current implementation of the governance module used in the Cosmos Hub, the deposit is burned if a proposal does not pass, regardless of how close the final tally result may have been. For example, if 49% of stake votes in favor of a proposal while 51% votes against it, the deposit will still be burned. This seems to be an undesirable behavior as it disincentivizes anyone from creating or depositing on a proposal that might be slightly contentious but not spam, due to fear of losing the deposit minimum (currently 512 atoms). This will especially be the case as TextProposals will be used for signaling purposes, to gauge the sentiment of staked Atom holders. Disincentivizing proposals for which the outcome is uncertain would undermine that effort.\n\nWe instead propose that the deposit be returned on failed votes, and that the deposit only be burned on vetoed votes. If a proposal seems to be spam or is deemed to have caused a negative externality to Cosmos communninty, voters should vote NoWithVeto on the proposal. If \u003E33% of the stake chooses to Veto a proposal, the deposits will then be burned. However, if a proposal gets rejected without being vetoed, the deposits should be returned to the depositors.  This proposal does not make any change to the current behavior for proposals that fail to meet quorum; if a proposal fails to meet quorum its deposit will be burned.",
+      "proposer": ""
+    },
+    {
+      "id": "7",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Activate the Community Pool",
+            "description": "Enable governance to spend funds from the community pool. Full proposal: https://ipfs.io/ipfs/QmNsVCsyRmEiep8rTQLxVNdMHm2uiZkmaSHCR6S72Y1sL1"
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "101546237540481",
+        "abstain_count": "4000000",
+        "no_count": "271654460000",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2019-05-03T21:08:25.443199036Z",
+      "deposit_end_time": "2019-05-17T21:08:25.443199036Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "512000000"
+        }
+      ],
+      "voting_start_time": "2019-05-04T16:02:33.246802950Z",
+      "voting_end_time": "2019-05-18T16:02:33.246802950Z",
+      "metadata": "",
+      "title": "Activate the Community Pool",
+      "summary": "Enable governance to spend funds from the community pool. Full proposal: https://ipfs.io/ipfs/QmNsVCsyRmEiep8rTQLxVNdMHm2uiZkmaSHCR6S72Y1sL1",
+      "proposer": ""
+    },
+    {
+      "id": "8",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Notification for Security Critical Hard Fork at Block 482100",
+            "description": "As described by user @Jessysaurusrex on Cosmos Forum in https://forum.cosmos.network/t/critical-cosmossdk-security-advisory/2211, All in Bits has learned of a critical security vulnerability in the codebase for the Cosmos Hub.  We deem the issue to be of high severity, as if exploited it can potentially degrade the security model of the chain's Proof of Stake system.  This vulnerability CANNOT lead to the theft of Atoms or creation of Atoms out of thin air. \n\n All in Bits has released a source code patch, Gaia v0.34.6, that closes the exploitable code path starting at block 482100. \n\n The proposed upgrade code Git hash is:  80234baf91a15dd9a7df8dca38677b66b8d148c1 \n\n As a proof of stake, we are putting some collateral behind this legitimacy of this bug and patch and encourage others familiar with the report to do so as well.  If the disclosed bug turns out to be fabricated or malicious in some way, we urge the Cosmos Hub governance to slash these Atoms by voting NoWithVeto on this proposal. \n\n We encourage validators and all users to upgrade their nodes to Gaia v0.34.6 before block 482100.  In the absence of another public bulletin board, we request validators to please vote Yes on this proposal AFTER they have upgraded their nodes to v0.34.6, as a method of signalling the readiness of the network for the upgrade."
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "126067366023363",
+        "abstain_count": "0",
+        "no_count": "1389999",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2019-05-30T19:43:02.870666885Z",
+      "deposit_end_time": "2019-06-13T19:43:02.870666885Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "1328000000"
+        }
+      ],
+      "voting_start_time": "2019-05-30T19:48:15.472348272Z",
+      "voting_end_time": "2019-06-13T19:48:15.472348272Z",
+      "metadata": "",
+      "title": "Notification for Security Critical Hard Fork at Block 482100",
+      "summary": "As described by user @Jessysaurusrex on Cosmos Forum in https://forum.cosmos.network/t/critical-cosmossdk-security-advisory/2211, All in Bits has learned of a critical security vulnerability in the codebase for the Cosmos Hub.  We deem the issue to be of high severity, as if exploited it can potentially degrade the security model of the chain's Proof of Stake system.  This vulnerability CANNOT lead to the theft of Atoms or creation of Atoms out of thin air. \n\n All in Bits has released a source code patch, Gaia v0.34.6, that closes the exploitable code path starting at block 482100. \n\n The proposed upgrade code Git hash is:  80234baf91a15dd9a7df8dca38677b66b8d148c1 \n\n As a proof of stake, we are putting some collateral behind this legitimacy of this bug and patch and encourage others familiar with the report to do so as well.  If the disclosed bug turns out to be fabricated or malicious in some way, we urge the Cosmos Hub governance to slash these Atoms by voting NoWithVeto on this proposal. \n\n We encourage validators and all users to upgrade their nodes to Gaia v0.34.6 before block 482100.  In the absence of another public bulletin board, we request validators to please vote Yes on this proposal AFTER they have upgraded their nodes to v0.34.6, as a method of signalling the readiness of the network for the upgrade.",
+      "proposer": ""
+    },
+    {
+      "id": "10",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Increase Max Validator Set Size to 125",
+            "description": "Read here, or on https://ipfs.ink/e/QmRhQycV19QiTQGLuPzPHfJwCioj1wDeHHtZvxiHegTFDd \n\nThis proposal supercedes proposal number 9, which contains conflicting numbers in the title and body. \n\nIn the Cosmos Hub, the total number of active validators is currently capped at 100, ordered by total delegated Atoms. This number was originally proposed in the Cosmos whitepaper section titled [Limitations on the Number of Validators](https://github.com/cosmos/cosmos/blob/master/WHITEPAPER.md#limitations-on-the-number-of-validators 4). This number was chosen as a relatively conservative estimate, as at the time of writing, it was unclear how many widely distributed nodes Tendermint consensus could scale to over the public internet.  \n\nHowever, since then, we have seen empirically through the running of the Game of Stakes incentivized testnet that Tendermint Core with Gaia state machine can operate with over 180 validators at reasonable average block times of \u003C7 seconds. The Game of Stakes results empirically show that adding validators should not delay consensus at small block sizes. At large block sizes, the time it takes for the block to gossip to all validators may increase depending on the newfound network topology. However we view this as unlikely, and if it did become a problem, it could later be solved by known improvements at the p2p layer. The other tradeoff to increasing the number of validators is that the size of commits becomes ~25% larger due to more precommits being included, increasing the network and storage costs for nodes. This can also be resolved in the future with the integration of aggregate signatures. At the time of submission of this proposal, the minimum delegation to become a top 100 validator is 30,600 Atoms, a fairly high barrier to entry for new validators looking to enter the active validator set.  \n\nIn the Cosmos whitepaper, it states that the number of validators on the Hub will increase at a rate of 13% a year until it hits a cap of 300 validators. We propose scrapping this mechanism and instead increasing the max validators to 125 validators in the next chain upgrade with no further planned increases. Future increases to the validator set size will be originated through governance."
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_PASSED",
+      "final_tally_result": {
+        "yes_count": "115845057759826",
+        "abstain_count": "143480099999",
+        "no_count": "6244866096334",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2019-07-01T14:09:25.508939113Z",
+      "deposit_end_time": "2019-07-15T14:09:25.508939113Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "586500001"
+        }
+      ],
+      "voting_start_time": "2019-07-03T11:01:59.653929827Z",
+      "voting_end_time": "2019-07-17T11:01:59.653929827Z",
+      "metadata": "",
+      "title": "Increase Max Validator Set Size to 125",
+      "summary": "Read here, or on https://ipfs.ink/e/QmRhQycV19QiTQGLuPzPHfJwCioj1wDeHHtZvxiHegTFDd \n\nThis proposal supercedes proposal number 9, which contains conflicting numbers in the title and body. \n\nIn the Cosmos Hub, the total number of active validators is currently capped at 100, ordered by total delegated Atoms. This number was originally proposed in the Cosmos whitepaper section titled [Limitations on the Number of Validators](https://github.com/cosmos/cosmos/blob/master/WHITEPAPER.md#limitations-on-the-number-of-validators 4). This number was chosen as a relatively conservative estimate, as at the time of writing, it was unclear how many widely distributed nodes Tendermint consensus could scale to over the public internet.  \n\nHowever, since then, we have seen empirically through the running of the Game of Stakes incentivized testnet that Tendermint Core with Gaia state machine can operate with over 180 validators at reasonable average block times of \u003C7 seconds. The Game of Stakes results empirically show that adding validators should not delay consensus at small block sizes. At large block sizes, the time it takes for the block to gossip to all validators may increase depending on the newfound network topology. However we view this as unlikely, and if it did become a problem, it could later be solved by known improvements at the p2p layer. The other tradeoff to increasing the number of validators is that the size of commits becomes ~25% larger due to more precommits being included, increasing the network and storage costs for nodes. This can also be resolved in the future with the integration of aggregate signatures. At the time of submission of this proposal, the minimum delegation to become a top 100 validator is 30,600 Atoms, a fairly high barrier to entry for new validators looking to enter the active validator set.  \n\nIn the Cosmos whitepaper, it states that the number of validators on the Hub will increase at a rate of 13% a year until it hits a cap of 300 validators. We propose scrapping this mechanism and instead increasing the max validators to 125 validators in the next chain upgrade with no further planned increases. Future increases to the validator set size will be originated through governance.",
+      "proposer": ""
+    },
+    {
+      "id": "12",
+      "messages": [
+        {
+          "@type": "/cosmos.gov.v1.MsgExecLegacyContent",
+          "content": {
+            "@type": "/cosmos.gov.v1beta1.TextProposal",
+            "title": "Are Validators Charging 0% Commission Harmful to the Success of the Cosmos Hub?",
+            "description": "This governance proposal is intended to act purely as a signalling proposal.  Throughout this history of the Cosmos Hub, there has been much debate about the impact that validators charging 0% commission has on the Cosmos Hub, particularly with respect to the decentralization of the Cosmos Hub and the sustainability for validator operations. \n\n Discussion around this topic has taken place in many places including numerous threads on the Cosmos Forum, public Telegram channels, and in-person meetups.  Because this has been one of the primary discussion points in off-chain Cosmos governance discussions, we believe it is important to get a signal on the matter from the on-chain governance process of the Cosmos Hub. \n\n There have been past discussions on the Cosmos Forum about placing an in-protocol restriction on validators from charging 0% commission.  https://forum.cosmos.network/t/governance-limit-validators-from-0-commission-fee/2182 \n\n This proposal is NOT proposing a protocol-enforced minimum.  It is merely a signalling proposal to query the viewpoint of the bonded Atom holders as a whole. \n\n We encourage people to discuss the question behind this governance proposal in the associated Cosmos Hub forum post here:  https://forum.cosmos.network/t/proposal-are-validators-charging-0-commission-harmful-to-the-success-of-the-cosmos-hub/2505 \n\n Also, for voters who believe that 0% commission rates are harmful to the network, we encourage optionally sharing your belief on what a healthy minimum commission rate for the network using the memo field of their vote transaction on this governance proposal or linking to a longer written explanation such as a Forum or blog post. \n\n The question on this proposal is “Are validators charging 0% commission harmful to the success of the Cosmos Hub?”.  A Yes vote is stating that they ARE harmful to the network's success, and a No vote is a statement that they are NOT harmful."
+          },
+          "authority": "cosmos10d07y265gmmuvt4z0w9aw880jnsr700j6zn9kn"
+        }
+      ],
+      "status": "PROPOSAL_STATUS_VOTING_PERIOD",
+      "final_tally_result": {
+        "yes_count": "62973338233484",
+        "abstain_count": "35498146258257",
+        "no_count": "8203669919474",
+        "no_with_veto_count": "5526140000"
+      },
+      "submit_time": "2019-07-23T00:28:15.881319915Z",
+      "deposit_end_time": "2019-08-06T00:28:15.881319915Z",
+      "total_deposit": [
+        {
+          "denom": "uatom",
+          "amount": "514000000"
+        }
+      ],
+      "voting_start_time": "2019-07-23T08:59:37.718897404Z",
+      "voting_end_time": "2019-08-06T08:59:37.718897404Z",
+      "metadata": "",
+      "title": "Are Validators Charging 0% Commission Harmful to the Success of the Cosmos Hub?",
+      "summary": "This governance proposal is intended to act purely as a signalling proposal.  Throughout this history of the Cosmos Hub, there has been much debate about the impact that validators charging 0% commission has on the Cosmos Hub, particularly with respect to the decentralization of the Cosmos Hub and the sustainability for validator operations. \n\n Discussion around this topic has taken place in many places including numerous threads on the Cosmos Forum, public Telegram channels, and in-person meetups.  Because this has been one of the primary discussion points in off-chain Cosmos governance discussions, we believe it is important to get a signal on the matter from the on-chain governance process of the Cosmos Hub. \n\n There have been past discussions on the Cosmos Forum about placing an in-protocol restriction on validators from charging 0% commission.  https://forum.cosmos.network/t/governance-limit-validators-from-0-commission-fee/2182 \n\n This proposal is NOT proposing a protocol-enforced minimum.  It is merely a signalling proposal to query the viewpoint of the bonded Atom holders as a whole. \n\n We encourage people to discuss the question behind this governance proposal in the associated Cosmos Hub forum post here:  https://forum.cosmos.network/t/proposal-are-validators-charging-0-commission-harmful-to-the-success-of-the-cosmos-hub/2505 \n\n Also, for voters who believe that 0% commission rates are harmful to the network, we encourage optionally sharing your belief on what a healthy minimum commission rate for the network using the memo field of their vote transaction on this governance proposal or linking to a longer written explanation such as a Forum or blog post. \n\n The question on this proposal is “Are validators charging 0% commission harmful to the success of the Cosmos Hub?”.  A Yes vote is stating that they ARE harmful to the network's success, and a No vote is a statement that they are NOT harmful.",
+      "proposer": ""
+    }
+  ],
+  "pagination": {
+    "next_key": "AAAAAAAAAA0=",
+    "total": "0"
+  }
+}
