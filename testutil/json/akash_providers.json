@@ -1,0 +1,56 @@
+{
+  "providers": [
+    {
+      "owner": "akash1qphp30grcwp369uf5x5jsen56q2vtgc5l40prd",
+      "host_uri": "https://provider.spheron.wiki:8443",
+      "attributes": [
+        {
+          "key": "region",
+          "value": "eu-east"
+        },
+        {
+          "key": "host",
+          "value": "akash"
+        },
+        {
+          "key": "tier",
+          "value": "community"
+        },
+        {
+          "key": "organization",
+          "value": "spheron"
+        },
+        {
+          "key": "capabilities/storage/1/class",
+          "value": "beta3"
+        },
+        {
+          "key": "capabilities/storage/1/persistent",
+          "value": "true"
+        }
+      ],
+      "info": {
+        "email": "",
+        "website": ""
+      }
+    },
+    {
+      "owner": "akash1qzkvrygsazvwyn7jm0r3efs26qkxde635cgvls",
+      "host_uri": "https://provider-test-14.testcoders.com:8443",
+      "attributes": [
+        {
+          "key": "host",
+          "value": "Testcoders Test 14"
+        }
+      ],
+      "info": {
+        "email": "",
+        "website": ""
+      }
+    }
+  ],
+  "pagination": {
+    "next_key": "FBeBgeU1IKqZl+vydkphf8r6X3De",
+    "total": "1003"
+  }
+}

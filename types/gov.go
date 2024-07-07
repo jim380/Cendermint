@@ -20,7 +20,13 @@ type Proposal struct {
 }
 
 type Vote struct {
-	Votes struct {
-		Option string `json:"option"`
+	Vote struct {
+		ProposalID string `json:"proposal_id"`
+		Voter      string `json:"voter"`
+		Options    []struct {
+			Option string `json:"option"`
+			Weight string `json:"weight"`
+		} `json:"options"`
+		Metadata string `json:"metadata"`
 	} `json:"vote"`
 }
