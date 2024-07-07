@@ -1,0 +1,228 @@
+{
+  "deployments": [
+    {
+      "deployment": {
+        "deployment_id": {
+          "owner": "akash1qqzwc5d7hynl67nsmn9jukvwqp3vzdl6j2t7lk",
+          "dseq": "2528509"
+        },
+        "state": "active",
+        "version": "qFLm0mkB5KLnuGkXkSYKsuFaEFI3ZFbAs532dVZwP5I=",
+        "created_at": "2541988"
+      },
+      "groups": [
+        {
+          "group_id": {
+            "owner": "akash1qqzwc5d7hynl67nsmn9jukvwqp3vzdl6j2t7lk",
+            "dseq": "2528509",
+            "gseq": 1
+          },
+          "state": "open",
+          "group_spec": {
+            "name": "westcoast",
+            "requirements": {
+              "signed_by": {
+                "all_of": [],
+                "any_of": ["akash1qqzwc5d7hynl67nsmn9jukvwqp3vzdl6j2t7lk"]
+              },
+              "attributes": [
+                {
+                  "key": "host",
+                  "value": "akash"
+                }
+              ]
+            },
+            "resources": [
+              {
+                "resource": {
+                  "id": 1,
+                  "cpu": {
+                    "units": {
+                      "val": "100"
+                    },
+                    "attributes": []
+                  },
+                  "memory": {
+                    "quantity": {
+                      "val": "536870912"
+                    },
+                    "attributes": []
+                  },
+                  "storage": [
+                    {
+                      "name": "default",
+                      "quantity": {
+                        "val": "536870912"
+                      },
+                      "attributes": []
+                    }
+                  ],
+                  "gpu": {
+                    "units": {
+                      "val": "0"
+                    },
+                    "attributes": []
+                  },
+                  "endpoints": [
+                    {
+                      "kind": "RANDOM_PORT",
+                      "sequence_number": 0
+                    }
+                  ]
+                },
+                "count": 1,
+                "price": {
+                  "denom": "uakt",
+                  "amount": "1000.000000000000000000"
+                }
+              }
+            ]
+          },
+          "created_at": "2541988"
+        }
+      ],
+      "escrow_account": {
+        "id": {
+          "scope": "deployment",
+          "xid": "akash1qqzwc5d7hynl67nsmn9jukvwqp3vzdl6j2t7lk/2528509"
+        },
+        "owner": "akash1qqzwc5d7hynl67nsmn9jukvwqp3vzdl6j2t7lk",
+        "state": "open",
+        "balance": {
+          "denom": "uakt",
+          "amount": "5000000.000000000000000000"
+        },
+        "transferred": {
+          "denom": "uakt",
+          "amount": "0.000000000000000000"
+        },
+        "settled_at": "2541988",
+        "depositor": "akash1qqzwc5d7hynl67nsmn9jukvwqp3vzdl6j2t7lk",
+        "funds": {
+          "denom": "uakt",
+          "amount": "0.000000000000000000"
+        }
+      }
+    },
+    {
+      "deployment": {
+        "deployment_id": {
+          "owner": "akash1qq0dglkk2urvshaar552yp24phenr4jsgcdxfu",
+          "dseq": "15787441"
+        },
+        "state": "active",
+        "version": "FbCgqqzRK695wRZkhW2U9phxuQ3R7fo4fOmRLgmbrtE=",
+        "created_at": "15787444"
+      },
+      "groups": [
+        {
+          "group_id": {
+            "owner": "akash1qq0dglkk2urvshaar552yp24phenr4jsgcdxfu",
+            "dseq": "15787441",
+            "gseq": 1
+          },
+          "state": "open",
+          "group_spec": {
+            "name": "argoPlacement",
+            "requirements": {
+              "signed_by": {
+                "all_of": [],
+                "any_of": []
+              },
+              "attributes": [
+                {
+                  "key": "host",
+                  "value": "akash"
+                },
+                {
+                  "key": "organization",
+                  "value": "spheron"
+                },
+                {
+                  "key": "region",
+                  "value": "us-west"
+                }
+              ]
+            },
+            "resources": [
+              {
+                "resource": {
+                  "id": 1,
+                  "cpu": {
+                    "units": {
+                      "val": "2000"
+                    },
+                    "attributes": []
+                  },
+                  "memory": {
+                    "quantity": {
+                      "val": "4294967296"
+                    },
+                    "attributes": []
+                  },
+                  "storage": [
+                    {
+                      "name": "default",
+                      "quantity": {
+                        "val": "1073741824"
+                      },
+                      "attributes": []
+                    }
+                  ],
+                  "gpu": {
+                    "units": {
+                      "val": "0"
+                    },
+                    "attributes": []
+                  },
+                  "endpoints": [
+                    {
+                      "kind": "RANDOM_PORT",
+                      "sequence_number": 0
+                    },
+                    {
+                      "kind": "RANDOM_PORT",
+                      "sequence_number": 0
+                    }
+                  ]
+                },
+                "count": 1,
+                "price": {
+                  "denom": "uakt",
+                  "amount": "1.000000000000000000"
+                }
+              }
+            ]
+          },
+          "created_at": "15787444"
+        }
+      ],
+      "escrow_account": {
+        "id": {
+          "scope": "deployment",
+          "xid": "akash1qq0dglkk2urvshaar552yp24phenr4jsgcdxfu/15787441"
+        },
+        "owner": "akash1qq0dglkk2urvshaar552yp24phenr4jsgcdxfu",
+        "state": "open",
+        "balance": {
+          "denom": "uakt",
+          "amount": "0.000000000000000000"
+        },
+        "transferred": {
+          "denom": "uakt",
+          "amount": "0.000000000000000000"
+        },
+        "settled_at": "15787444",
+        "depositor": "akash1mqyskycg0fhd9dpymach6lt24cv5f6ptycvva0",
+        "funds": {
+          "denom": "uakt",
+          "amount": "500000.000000000000000000"
+        }
+      }
+    }
+  ],
+  "pagination": {
+    "next_key": "FAYTyx9SI6qz7cCWBmqCljGOooqeMB6AEK6zuRo=",
+    "total": "7074"
+  }
+}
