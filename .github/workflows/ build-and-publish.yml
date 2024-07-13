@@ -2,7 +2,7 @@ name: Build and Publish
 
 on:
   push:
-    branches: [master, develop]
+    branches: [master, develop, jay/*]
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-dev.[0-9]+"
