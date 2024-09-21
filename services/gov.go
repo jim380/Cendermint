@@ -36,7 +36,9 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &g)
+	if err := json.Unmarshal(res, &g); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	totalProposals := g.Proposals
 	for _, value := range totalProposals {
@@ -60,7 +62,9 @@ func (rs *GovService) GetInfo(cfg config.Config, rd *types.RESTData) {
 			log.Info().Msgf("Error getting vote info: %v", err)
 			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
-		json.Unmarshal(res, &voteInfo)
+		if err := json.Unmarshal(res, &voteInfo); err != nil {
+			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		}
 		if voteInfo.Vote.Options[0].Option != "" {
 			inVotingVoted++
 		} else {

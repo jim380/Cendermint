@@ -18,7 +18,10 @@ func Start(config *config.Config, port string, logger *zap.Logger, restService c
 }
 
 func CollectMetrics(cfg *config.Config, log *zap.Logger, restService controllers.RestServices, rpcService controllers.RpcServices) {
-	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
+	denomList, err := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	registerGauges(denomList)
 	counterVecs := registerLabels()
