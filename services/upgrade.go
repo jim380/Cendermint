@@ -30,7 +30,9 @@ func (us *UpgradeService) GetInfo(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &upgradeInfo)
+	if err := json.Unmarshal(res, &upgradeInfo); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {

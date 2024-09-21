@@ -32,7 +32,9 @@ func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &ibcInfo)
+	if err := json.Unmarshal(res, &ibcInfo); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -45,7 +47,7 @@ func (is *IbcService) GetChannelInfo(cfg config.Config, rd *types.RESTData) {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
-					// precommit failure validator
+					zap.L().Error("", zap.Bool("Success", false), zap.String("err", "failed to get ibc channel info"))
 				}
 			}()
 			ibcChannels[value.ChannelID] = []string{value.State, value.Ordering, value.Counterparty.ChannelID}
@@ -70,7 +72,9 @@ func (is *IbcService) GetConnectionInfo(cfg config.Config, rd *types.RESTData) {
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &ibcInfo)
+	if err := json.Unmarshal(res, &ibcInfo); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -83,7 +87,7 @@ func (is *IbcService) GetConnectionInfo(cfg config.Config, rd *types.RESTData) {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
-					// precommit failure validator
+					zap.L().Error("", zap.Bool("Success", false), zap.String("err", "failed to get ibc connection info"))
 				}
 			}()
 			ibcConnections[value.ID] = []string{value.State, value.ClientID, value.Counterparty.ConnectionID, value.Counterparty.ClientID}

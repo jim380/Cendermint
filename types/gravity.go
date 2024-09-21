@@ -91,11 +91,6 @@ type OracleEventNonce struct {
 	EventNonce string `json:"event_nonce"`
 }
 
-type lastClaimEvent struct {
-	EventNonce  string `json:"ethereum_event_nonce"`
-	EventHeight string `json:"ethereum_event_height"`
-}
-
 type ValSetInfo struct {
 	ValSet   valSet `json:"valset"`
 	ValCount int

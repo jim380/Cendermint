@@ -71,7 +71,10 @@ func main() {
 		go dashboard.StartDashboard()
 	}
 
-	denomList := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
+	denomList, err := config.GetDenomList(cfg.Chain.Name, cfg.ChainList)
+	if err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	// start the data fetcher in a separate thread
 	fetcher.Start(&cfg, restServicesController, rpcServicesController, denomList, logger)

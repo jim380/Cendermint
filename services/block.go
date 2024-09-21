@@ -39,7 +39,9 @@ func (bs *BlockService) GetInfo(cfg config.Config) types.Blocks {
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &bs.Block)
+	if err := json.Unmarshal(res, &bs.Block); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -56,7 +58,9 @@ func (bs *BlockService) GetLastBlockTimestamp(cfg config.Config, currentHeight i
 	if err != nil {
 		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &lastBlock)
+	if err := json.Unmarshal(res, &lastBlock); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {

@@ -146,19 +146,13 @@ func GetLogLevel(lvl string) zapcore.Level {
 	}
 }
 
-func GetDenomList(chain string, chainList map[string][]string) []string {
-	var found bool
-
+func GetDenomList(chain string, chainList map[string][]string) ([]string, error) {
 	for k, v := range chainList {
 		if k == chain {
-			found = true
-			return v
+			return v, nil
 		}
 	}
-	if !found {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", "chain("+chain+") denom not supported"))
-	}
-	return []string{}
+	return []string{}, fmt.Errorf("chain(%s) denom not supported", chain)
 }
 
 func GetChainList() map[string][]string {
@@ -171,7 +165,9 @@ func GetChainList() map[string][]string {
 	byteValue, _ := io.ReadAll(jsonFile)
 
 	var chains []Chain
-	json.Unmarshal(byteValue, &chains)
+	if err := json.Unmarshal(byteValue, &chains); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	chainList := make(map[string][]string)
 	for _, chain := range chains {

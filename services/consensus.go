@@ -30,7 +30,9 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &cs)
+	if err := json.Unmarshal(res, &cs); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 
 	conspubMonikerMap := rest.GetConspubMonikerMapWrapper()
 	// cs.Result.Validatorset.Validators is already sorted based on voting power

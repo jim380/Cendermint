@@ -100,7 +100,9 @@ func (ts *TxnService) GetTxnsInBlock(cfg config.Config, height int64) (types.TxI
 	if err != nil {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
-	json.Unmarshal(res, &txInfo)
+	if err := json.Unmarshal(res, &txInfo); err != nil {
+		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+	}
 	if strings.Contains(string(res), "not found") {
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", string(res)))
 	} else if strings.Contains(string(res), "error:") || strings.Contains(string(res), "error\\\":") {
@@ -133,7 +135,9 @@ func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.Tx
 	ON CONFLICT (hash) DO NOTHING`,
 			txnData.TxRespData.Hash, height, txnData.TxRespData.Timestamp, txnData.TxRespData.Tx.Type, txnData.TxRespData.GasWanted, txnData.TxRespData.GasUsed, txnData.TxsData.Body.Memo, txnData.TxsData.AuthInfo.Fee.Payer, txnData.TxsData.AuthInfo.Fee.Granter)
 		if err != nil {
-			tx.Rollback()
+			if rbErr := tx.Rollback(); rbErr != nil {
+				zap.L().Error("failed to rollback transaction", zap.Error(rbErr))
+			}
 			return err
 		}
 
@@ -144,7 +148,9 @@ func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.Tx
 			VALUES ($1, $2)`,
 				msg.Type, txnData.TxRespData.Hash)
 			if err != nil {
-				tx.Rollback()
+				if rbErr := tx.Rollback(); rbErr != nil {
+					zap.L().Error("failed to rollback transaction", zap.Error(rbErr))
+				}
 				return err
 			}
 		}
@@ -157,7 +163,9 @@ func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.Tx
 				VALUES ($1) ON CONFLICT (denom) DO UPDATE SET denom = $1 RETURNING id`,
 				v.Denom).Scan(&denomId)
 			if err != nil {
-				tx.Rollback()
+				if rbErr := tx.Rollback(); rbErr != nil {
+					zap.L().Error("failed to rollback transaction", zap.Error(rbErr))
+				}
 				return err
 			}
 
@@ -166,7 +174,9 @@ func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.Tx
 				VALUES ($1, $2, $3)`,
 				v.Amount, txnData.TxRespData.Hash, denomId)
 			if err != nil {
-				tx.Rollback()
+				if rbErr := tx.Rollback(); rbErr != nil {
+					zap.L().Error("failed to rollback transaction", zap.Error(rbErr))
+				}
 				return err
 			}
 		}
@@ -175,7 +185,9 @@ func (ts *TxnService) Index(cfg config.Config, height int64, txsInBlock types.Tx
 	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
+		if rbErr := tx.Rollback(); rbErr != nil {
+			zap.L().Error("failed to rollback transaction", zap.Error(rbErr))
+		}
 		return err
 	}
 
