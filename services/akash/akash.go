@@ -36,7 +36,7 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, data *types.Async
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &deployments); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
 	// get total deployments count
@@ -52,7 +52,7 @@ func (as *AkashService) GetAkashDeployments(cfg config.Config, data *types.Async
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(resActive, &activeDeployments); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
 	activeDeploymentsCount, err := strconv.Atoi(activeDeployments.Pagination.Total)
@@ -79,7 +79,7 @@ func (as *AkashService) GetAkashProviders(cfg config.Config, data *types.AsyncDa
 		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 	if err := json.Unmarshal(res, &providers); err != nil {
-		zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+		zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 	}
 
 	// handle pagination
@@ -91,7 +91,7 @@ func (as *AkashService) GetAkashProviders(cfg config.Config, data *types.AsyncDa
 		}
 		var nextPage akash.ProvidersResponse
 		if err := json.Unmarshal(res, &nextPage); err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 
 		// append to the response
@@ -184,7 +184,7 @@ func (as *AkashService) IndexAuditorForProviderOwners(cfg config.Config, provide
 			return fmt.Errorf("error querying auditors for provider owner: %w", err)
 		}
 		if err := json.Unmarshal(res, &auditors); err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 
 		// handle pagination
@@ -196,7 +196,7 @@ func (as *AkashService) IndexAuditorForProviderOwners(cfg config.Config, provide
 			}
 			var nextPage akash.AuditorsResponse
 			if err := json.Unmarshal(res, &nextPage); err != nil {
-				zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+				zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 			}
 
 			// append to the response
@@ -272,7 +272,7 @@ func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, provi
 			return fmt.Errorf("error querying deployments for provider owner: %w", err)
 		}
 		if err := json.Unmarshal(res, &deployments); err != nil {
-			zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+			zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
 
 		// handle pagination
@@ -284,7 +284,7 @@ func (as *AkashService) IndexDeploymentForProviderOwner(cfg config.Config, provi
 			}
 			var nextPage akash.DeploymentsResponse
 			if err := json.Unmarshal(res, &nextPage); err != nil {
-				zap.L().Fatal("", zap.Bool("Success", false), zap.String("err", err.Error()))
+				zap.L().Info("", zap.Bool("Success", false), zap.String("err", err.Error()))
 			}
 
 			// append to the response
