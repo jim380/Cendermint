@@ -22,7 +22,7 @@ func (rpc RpcServices) IndexValidator(consPubKey, consAddr, consAddrHex, moniker
 func (rs RestServices) IndexAbsentValidator(height int, consAddrBase64 string) {
 	absentValidator, err := rs.AbsentValidatorService.Index(height, consAddrBase64)
 	if err != nil {
-		zap.L().Error("Error indexing abscent validator", zap.Error(err))
+		zap.L().Error("Error indexing absent validator", zap.String("ConsAddrBase64", consAddrBase64), zap.Error(err))
 		return
 	} else {
 		zap.L().Debug("Absent validator successfully indexed", zap.String("ConsHexAddress", absentValidator.ConsAddrBase64))

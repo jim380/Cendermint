@@ -54,7 +54,7 @@ $ ./Cendermint run
 ##### Start Up
 
 ```bash
-$ docker-compose up -d db redis adminer prometheus grafana
+$ docker compose up -d db redis adminer prometheus grafana
 $ modd
 ```
 
