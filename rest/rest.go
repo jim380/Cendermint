@@ -14,8 +14,6 @@ import (
 
 var GetConspubMonikerMapWrapper = GetConspubMonikerMap
 
-const activeSetSize = 180
-
 func GetConspubMonikerMap() map[string]string {
 	var v types.RpcValidators
 	var vResult map[string]string = make(map[string]string)
@@ -39,13 +37,42 @@ func GetConspubMonikerMap() map[string]string {
 		return tokensI > tokensJ
 	})
 
-	activeValidators := v.Validators
-	if len(activeValidators) > activeSetSize {
-		activeValidators = activeValidators[:activeSetSize]
+	bondedValidators := v.Validators
+	stakingParams := GetStakingParams()
+
+	/*
+	 *	This logic only applies to chains (e.g. the Cosmos Hub) where
+	 *	a validator can be bonded but inactive (e.g. not signing blocks)
+	 *  e.g. max_validators=200 but only the top 180 are active
+	 *
+	 *	For most other chains, if a validator is bonded, they are active
+	 */
+
+	// TO-DO replace MaxValidators here with active validators
+	if len(bondedValidators) > stakingParams.Params.MaxValidators {
+		bondedValidators = bondedValidators[:stakingParams.Params.MaxValidators]
 	}
 
-	for _, validator := range activeValidators {
+	for _, validator := range bondedValidators {
 		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
 	}
 	return vResult
+}
+
+func GetStakingParams() types.StakingParams {
+	route := GetStakingParamsRoute()
+	res, err := utils.HttpQuery(constants.RESTAddr + route)
+	if err != nil {
+		zap.L().Fatal("Connection to REST failed", zap.Bool("Success", false), zap.String("err:", err.Error()))
+		return types.StakingParams{}
+	}
+
+	var stakingParams types.StakingParams
+	err = json.Unmarshal(res, &stakingParams)
+	if err != nil {
+		zap.L().Fatal("Failed to unmarshal response", zap.Bool("Success", false), zap.String("err:", err.Error()))
+		return types.StakingParams{}
+	}
+
+	return stakingParams
 }
