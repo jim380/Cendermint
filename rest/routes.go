@@ -78,6 +78,10 @@ func GetUpgradeCurrentPlanRoute(cfg config.Config) string {
 	return "/cosmos/upgrade/v1beta1/current_plan"
 }
 
+func GetStakingParamsRoute() string {
+	return "/cosmos/staking/v1beta1/params"
+}
+
 /***********************
  * IBC Routes
 ************************/
