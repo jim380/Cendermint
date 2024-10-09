@@ -67,7 +67,7 @@ func (ss *SlashingService) GetSigningInfo(cfg config.Config, consAddr string, rd
 	rd.Slashing.ValSigning = d.ValSigning
 }
 
-func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) MissingValidators {
+func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consAddrHex string) MissingValidators {
 	var cInfo types.CommitInfo
 	missed := true
 
@@ -79,7 +79,6 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 	/*
 		Find validators with missing signatures in the block
 	*/
-	// var cs types.ConsensusState
 	var activeSet map[string][]string = make(map[string][]string)
 	var missingValidators MissingValidators
 
@@ -89,12 +88,12 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 		if err != nil {
 			zap.L().Fatal("Failed to get prefix", zap.Bool("Success", false), zap.String("err", err.Error()))
 		}
-		consAddrInHex := utils.PubkeyToHexAddr(prefix, consPubKey)
-		if consAddrInHex == "" {
+		consAddrHex := utils.PubkeyToHexAddr(prefix, consPubKey)
+		if consAddrHex == "" {
 			zap.L().Fatal("Failed to convert public key to hex address", zap.Bool("Success", false))
 		}
 		// populate the map => [ConsAddr]{consPubKey, moniker}
-		activeSet[consAddrInHex] = []string{consPubKey, moniker}
+		activeSet[consAddrHex] = []string{consPubKey, moniker}
 	}
 
 	/*
@@ -104,7 +103,7 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 	allSignaturesInBlock := blockData.Block.LastCommit.Signatures
 	validatorConsAddrSignedMap := make(map[string]bool)
 	for _, signature := range allSignaturesInBlock {
-		if consHexAddr == blockProposer {
+		if consAddrHex == blockProposer {
 			cInfo.ValidatorProposingStatus = 1.0
 			zap.L().Info("", zap.Bool("Success", true), zap.String("Proposer:", "true"))
 		}
@@ -113,10 +112,10 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 		validatorConsAddrSignedMap[signature.Validator_address] = true
 	}
 
-	// Check if consAddrInHex in activeSet exists in validatorConsAddrSignedMap
-	for consAddrInHex, props := range activeSet {
-		// convert consAddrInHex to base64
-		base64ConsAddr, err := utils.HexToBase64(consAddrInHex)
+	// Check if consAddrHex in activeSet exists in validatorConsAddrSignedMap
+	for consAddrHex, props := range activeSet {
+		// convert consAddrHex to base64
+		base64ConsAddr, err := utils.HexToBase64(consAddrHex)
 		if err != nil {
 			zap.L().Fatal("Failed to convert hex to base64", zap.Bool("Success", false), zap.String("err:", err.Error()))
 		}
@@ -134,7 +133,7 @@ func (ss *SlashingService) GetCommitInfo(cfg config.Config, rd *types.RESTData, 
 		}
 	}
 
-	base64Addr, err := utils.HexToBase64(consHexAddr)
+	base64Addr, err := utils.HexToBase64(consAddrHex)
 	if err != nil {
 		zap.L().Fatal("Failed to convert hex to base64", zap.Bool("Success", false), zap.String("err:", err.Error()))
 	}

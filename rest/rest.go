@@ -2,6 +2,8 @@ package rest
 
 import (
 	"encoding/json"
+	"sort"
+	"strconv"
 
 	"github.com/jim380/Cendermint/constants"
 	"github.com/jim380/Cendermint/types"
@@ -11,6 +13,8 @@ import (
 )
 
 var GetConspubMonikerMapWrapper = GetConspubMonikerMap
+
+const activeSetSize = 180
 
 func GetConspubMonikerMap() map[string]string {
 	var v types.RpcValidators
@@ -28,8 +32,19 @@ func GetConspubMonikerMap() map[string]string {
 		return map[string]string{}
 	}
 
-	for _, validator := range v.Validators {
-		// populate the map => [conspub]moniker
+	// Sort validators by tokens in descending order
+	sort.Slice(v.Validators, func(i, j int) bool {
+		tokensI, _ := strconv.ParseInt(v.Validators[i].Tokens, 10, 64)
+		tokensJ, _ := strconv.ParseInt(v.Validators[j].Tokens, 10, 64)
+		return tokensI > tokensJ
+	})
+
+	activeValidators := v.Validators
+	if len(activeValidators) > activeSetSize {
+		activeValidators = activeValidators[:activeSetSize]
+	}
+
+	for _, validator := range activeValidators {
 		vResult[validator.ConsPubKey.Key] = validator.Description.Moniker
 	}
 	return vResult

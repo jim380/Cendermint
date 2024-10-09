@@ -16,8 +16,8 @@ func (rs RestServices) GetSigningInfo(cfg config.Config, consAddr string, rd *ty
 	rs.SlashingService.GetSigningInfo(cfg, consAddr, rd)
 }
 
-func (rs RestServices) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consHexAddr string) {
-	missingValidators := rs.SlashingService.GetCommitInfo(cfg, rd, blockData, consHexAddr)
+func (rs RestServices) GetCommitInfo(cfg config.Config, rd *types.RESTData, blockData types.Blocks, consAddrHex string) {
+	missingValidators := rs.SlashingService.GetCommitInfo(cfg, rd, blockData, consAddrHex)
 	height := blockData.Block.Header.Height
 	// convert height to int
 	heightInt, err := strconv.Atoi(height)
@@ -26,6 +26,6 @@ func (rs RestServices) GetCommitInfo(cfg config.Config, rd *types.RESTData, bloc
 	}
 	// index missing validators
 	for _, v := range missingValidators {
-		rs.IndexAbsentValidator(heightInt, v.ConsPubAddr)
+		rs.IndexAbsentValidator(heightInt, v.ConsPubAddr, v.Moniker)
 	}
 }

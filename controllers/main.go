@@ -71,11 +71,11 @@ func (rs RestServices) GetChainData(cfg *config.Config, rpcService RpcServices, 
 	go func() {
 		valInfo := rpcService.GetValidatorInfo(*cfg, blockHeight, rd)
 		rs.GetSigningInfo(*cfg, valInfo[0], rd)
-		consHexAddr, err := utils.Bech32AddrToHexAddr(valInfo[0])
+		consAddrHex, err := utils.Bech32AddrToHexAddr(valInfo[0])
 		if err != nil {
 			zap.L().Error("Bech32AddrToHexAddr", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))
 		}
-		rs.GetCommitInfo(*cfg, rd, blockData, consHexAddr)
+		rs.GetCommitInfo(*cfg, rd, blockData, consAddrHex)
 		wg.Done()
 	}()
 

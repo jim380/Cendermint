@@ -56,12 +56,12 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 			if err != nil {
 				zap.L().Fatal("Failed to get prefix", zap.Bool("Success", false), zap.String("err", err.Error()))
 			}
-			consAddrInHex := utils.PubkeyToHexAddr(prefix, consPubKey)
-			if consAddrInHex == "" {
+			consAddrHex := utils.PubkeyToHexAddr(prefix, consPubKey)
+			if consAddrHex == "" {
 				zap.L().Fatal("Failed to convert public key to hex address", zap.Bool("Success", false))
 			}
 			// populate the map => [ConsAddr]{consPubKey, moniker}
-			activeSet[consAddrInHex] = []string{consPubKey, moniker}
+			activeSet[consAddrHex] = []string{consPubKey, moniker}
 		}
 
 		/*
@@ -76,9 +76,9 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 		}
 
 		// Check if validator.ConsAddr in activeSet exists in validatorConsAddrSignedMap
-		for consAddrInHex, props := range activeSet {
-			// convert consAddrInHex to base64
-			consAddrInBase64, err := utils.HexToBase64(consAddrInHex)
+		for consAddrHex, props := range activeSet {
+			// convert consAddrHex to base64
+			consAddrInBase64, err := utils.HexToBase64(consAddrHex)
 			if err != nil {
 				zap.L().Fatal("HexToBase64", zap.Bool("Success", false), zap.String("err:", err.Error()))
 				return types.Blocks{}
@@ -90,7 +90,7 @@ func GetBlockInfo(ctx *kyoto.Context) (state types.Blocks) {
 					ConsHexAddr string
 				}{
 					Moniker:     props[1],
-					ConsHexAddr: consAddrInHex,
+					ConsHexAddr: consAddrHex,
 					// TO-DO add operator address
 				})
 			}

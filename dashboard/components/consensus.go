@@ -49,8 +49,8 @@ func GetConsensusInfo(ctx *kyoto.Context) (state types.RPCData) {
 				precommit = "❌"
 			}
 
-			// populate the map => [ConsAddr][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, Moniker}
-			vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
+			// populate the map => [ConsAddrHex][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, Moniker}
+			vSetsResult[validator.ConsAddrHex] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
 		}
 
 		// cs.Result.RoundState.Votes[0].PrevotesBitArray = utils.ParseConsensusOutput(cs.Result.RoundState.Votes[0].PrevotesBitArray, "\\= (.*)", 1)

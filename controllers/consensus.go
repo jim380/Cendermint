@@ -13,9 +13,8 @@ import (
 func (rs RpcServices) GetRpcInfo(cfg config.Config, rpc *types.RPCData) {
 	validatorsetMap := rs.ConsensusService.GetConsensusDump(cfg, rpc)
 	lastActive := time.Now().UTC()
-	for k, v := range validatorsetMap {
+	for consAddrHex, v := range validatorsetMap {
 		consPubKey := v[0]
-		consAddrHex := k
 		consAddr, err := utils.HexToBase64(consAddrHex)
 		if err != nil {
 			zap.L().Fatal("GetRpcInfo", zap.Bool("Success", false), zap.String("err", fmt.Sprint(err)))

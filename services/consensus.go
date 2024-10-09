@@ -53,8 +53,8 @@ func (css *ConsensusService) GetConsensusDump(cfg config.Config, rpc *types.RPCD
 			precommit = "❌"
 		}
 
-		// populate the map => [ConsAddr][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, moniker}
-		vSetsResult[validator.ConsAddr] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
+		// populate the map => [ConsAddrHex][]string{ConsPubKey, VotingPower, ProposerPriority, prevote, precommit, moniker}
+		vSetsResult[validator.ConsAddrHex] = []string{validator.ConsPubKey.Key, validator.VotingPower, validator.ProposerPriority, prevote, precommit, validator.Moniker}
 	}
 
 	rpc.ConsensusState = cs

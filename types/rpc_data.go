@@ -26,8 +26,8 @@ type RoundState struct {
 
 type rpcValidatorsets struct {
 	Validators []struct {
-		ConsAddr   string `json:"address"`
-		ConsPubKey struct {
+		ConsAddrHex string `json:"address"`
+		ConsPubKey  struct {
 			Type string `json:"type"`
 			Key  string `json:"value"`
 		} `json:"pub_key"`
@@ -43,6 +43,7 @@ type RpcValidators struct {
 			Type string `json:"@type"`
 			Key  string `json:"key"`
 		} `json:"consensus_pubkey"`
+		Tokens      string `json:"tokens"`
 		Description struct {
 			Moniker string `json:"moniker"`
 		} `json:"description"`
